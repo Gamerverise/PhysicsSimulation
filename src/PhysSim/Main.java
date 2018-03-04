@@ -22,28 +22,58 @@ public class Main extends Application {
     ReentrantLock particles_pos_lock = new ReentrantLock();
 
     double G = 6.67408e-11;    // pretend gravitation constant
-    double dt = 1;   // time step in ms
-
-    double canvas_width = 800;
-    double scale;
-    double x_offset;
-    double y_offset;
-
-    // register your screen coordinates and your simulation coordinates
-    // constant of proportionality for the masses
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    Particle sun = new Particle(0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0);
-    Particle earth = new Particle(1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0);
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(255, 100, 0, 0.1));
+//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 255, 1));
+
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+
+    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+    Particle earth = new Particle("earth", 0, 1.496e11, 3e4, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+
+//    double earth_x = Math.sqrt(1.496e11 * 1.496e11 / 2);
+//    double earth_speed = Math.sqrt(3e4 * 3e4 / 2);
+//
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+//    Particle earth = new Particle("earth", earth_x, earth_x, earth_speed, earth_speed, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+
+    // register screen coordinates and simulation coordinates
+
+    double canvas_width = 1800;
+    double canvas_height = 1000;
+    double canvas_aspect_ratio = canvas_width / canvas_height;
+
+    double dist_scale = (400 / 2 - 20) / earth.y;
+
+    // time_scale_real_per_sim (ms [rea] / s [sim]) = elapsed_time_real (ms) / elapsed_time_sim (s)
+    //
+    // because Thread.sleep takes ms, and our math simulation is based on seconds. So,
+    //
+    // time_scale_real_per_sim (ms/s)
+    //   = time_scale_real_per_sim (min [real] / yr [sim]) * 60 s/min  * 1000 ms/s * 1/365 yr/d * 1/24 d/hr * 1/60 h/min * 1/60 min/s
+    //   = time_scale_real_per_sim (min [real] / yr [sim]) * 1000 ms/s * 1/365 yr/d * 1/24 d/hr * 1/60 h/min
+
+    double time_scale_real_per_sim = 1 * 1000.0 / 365.0 / 24.0 / 60.0;       // scale (ms/s) for 1 min / 1 yr
+    double time_scale_sim_per_real = 1 / time_scale_real_per_sim;    // scale (s/ms) for 1 yr / 1 min
+
+    double dt_real = 1;     // (ms)
+//    double dt_sim = dt_real * time_scale_sim_per_real;     // (s)
+    double dt_sim = 10;     // (s)
+
+    // Which corresponds to dt_sim as follows:
+    //
+    // dt_sim = dt_real / scale     // (s/ms)
+    //        = 1 ms /
+
+
 
     @Override
     public void start(Stage stage) throws InterruptedException {
-        double earth_acc = G * sun.mass / earth.x / earth.x;
-        earth.ax = -earth_acc;
-
         double sun_volume = 4 / 3.0 * Math.PI * Math.pow(sun.radius, 3);
         sun.density = sun.mass / sun_volume;
 
@@ -56,7 +86,7 @@ public class Main extends Application {
             while (true) {
                 time_step();
                 try {
-                    Thread.sleep((long)dt);
+                    Thread.sleep((long)(dt_real));
                 } catch (InterruptedException e) {
                     System.out.println("SimulationThread.run: InterruptedException");
                 }
@@ -70,10 +100,10 @@ public class Main extends Application {
         };
 
         Group root = new Group();
-        Canvas canvas = new Canvas(canvas_width, canvas_width / 2);
+        Canvas canvas = new Canvas(canvas_width, canvas_width);
 
         root.getChildren().add(canvas);
-        Scene scene = new Scene(root, 800, 400);
+        Scene scene = new Scene(root, canvas_width, canvas_width);
         stage.setScene(scene);
 
         gc = canvas.getGraphicsContext2D();
@@ -88,12 +118,12 @@ public class Main extends Application {
     }
 
    public void redraw() {
-//        gc.clearRect(0, 0, 800, 400);
+        gc.clearRect(0, 0, canvas_width, canvas_height);
 
         particles_pos_lock.lock();
 
         for (Particle p : particles)
-            draw_particle(p, (canvas_width / 2 - 20) / earth.radius, canvas_width / 2);
+            draw_particle(p, dist_scale);
 
         particles_pos_lock.unlock();
     }
@@ -105,7 +135,6 @@ public class Main extends Application {
                 Particle pj = particles[j];
 
                 double dist = pi.distance(pj);
-                double acc = G * pj.mass / dist / dist;
 
                 double dir_pi_pj_x = pj.x - pi.x; // x-component of the (pi -> pj) vector
                 double dir_pi_pj_y = pj.y - pi.y; // y-component of the (pi -> pj) vector
@@ -113,14 +142,27 @@ public class Main extends Application {
                 double ux = dir_pi_pj_x / dist;   // x-component of the unit vector in the direction (pi -> pj)
                 double uy = dir_pi_pj_y / dist;   // y-component of the unit vector in the direction (pi -> pj)
 
-                double ax = acc * ux;             // x-component of the acceleration times the unit vector
-                double ay = acc * uy;             // y-component of the acceleration times the unit vector
+                // By physics,
+                //
+                // force = G * m1 * m2 / dist^2
+                //
+                // acc_m1 = force / m1 = G * m2 / dist^2
+
+                double acc_factor = G / dist / dist;
+
+                double acc_pi = acc_factor * pj.mass;
+                double ax = acc_pi * ux;             // x-component of the acceleration times the unit vector
+                double ay = acc_pi * uy;             // y-component of the acceleration times the unit vector
 
                 pi.ax += ax;
                 pi.ay += ay;
 
-                pj.ax += -ax;
-                pj.ay += -ay;
+                double acc_pj = -acc_factor * pi.mass;
+                ax = acc_pj * ux;             // x-component of the acceleration times the unit vector
+                ay = acc_pj * uy;             // y-component of the acceleration times the unit vector
+
+                pj.ax += ax;
+                pj.ay += ay;
             }
         }
 
@@ -128,23 +170,45 @@ public class Main extends Application {
 
         for (int i = 0; i < particles.length; i++) {
             Particle p = particles[i];
-            p.vx += p.ax * dt;
-            p.vy += p.ay * dt;
-            p.x += p.vx * dt;
-            p.y += p.vy * dt;
+            p.vx += p.ax * dt_sim;
+            p.vy += p.ay * dt_sim;
+            p.x += p.vx * dt_sim;
+            p.y += p.vy * dt_sim;
+            int fkdj= 6;
         }
 
         particles_pos_lock.unlock();
     }
 
-    void draw_particle(Particle p, double scale, double x_offset, double y_offset) {
-        gc.setFill(Color.rgb(0, 0, 255, 0.5));
-        double radius = p.mass * scale;
-        gc.fillOval(p.x * scale + x_offset, p.y * scale + y_offset, mass, mass);
+    void draw_particle(Particle p, double scale) {
+        double scaled_radius = p.radius * scale;
+
+        gc.setFill(p.color);
+
+        if (p == earth) {
+//            gc.setFill(Color.rgb(0, 0, 255, 1));
+            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 2);
+            return;
+        }
+
+        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, scaled_radius);
+
+//        if (p == sun) {
+//            gc.setFill(Color.rgb(255, 100, 0, 0.1));
+//            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 400);
+//        }
+    }
+
+    void fill_circle(double x, double y, double radius) {
+        // The location is offset by the radius because for this function (x, y) specify
+        // the center, but for fillOval (x, y) specifies the top-left of the bounding box
+        // of the oval
+        gc.fillOval(x - radius / 2, y - radius / 2, radius, radius);
     }
 }
 
 class Particle {
+    String name;
     double x;
     double y;
     double vx;
@@ -154,8 +218,10 @@ class Particle {
     double mass;
     double radius;
     double density;
+    Color color;
 
-    Particle(double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, double density) {
+    Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, double density, Color color) {
+        this.name = name;
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -165,6 +231,7 @@ class Particle {
         this.mass = mass;
         this.radius = radius;
         this.density = density;
+        this.color = color;
     }
 
     double distance(Particle p) {
