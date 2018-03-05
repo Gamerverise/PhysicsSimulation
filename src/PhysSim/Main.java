@@ -27,17 +27,29 @@ public class Main extends Application {
         launch(args);
     }
 
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(255, 100, 0, 0.1));
-//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 255, 1));
-
+//    // Original setup, not working
 //    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
 //    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
 
+    // Symmetry of original setup about x = y
     Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
     Particle earth = new Particle("earth", 0, 1.496e11, 3e4, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
 
+    // FIXME: Not sure if this is correct
+//    // Original setup, working with speed change
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 1.485e11, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+
+    // FIXME: Not sure if this is correct
+//    // Symmetry of original setup about x = y, working with speed change
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+//    Particle earth = new Particle("earth", 0, 1.496e11, 1.485e11, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+
+    // FIXME: Not sure if this is correct
 //    double earth_x = Math.sqrt(1.496e11 * 1.496e11 / 2);
 //    double earth_speed = Math.sqrt(3e4 * 3e4 / 2);
+//
+//    // Another symmetry of original setup, working with speed change
 //
 //    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
 //    Particle earth = new Particle("earth", earth_x, earth_x, earth_speed, earth_speed, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
@@ -48,7 +60,10 @@ public class Main extends Application {
     double canvas_height = 1000;
     double canvas_aspect_ratio = canvas_width / canvas_height;
 
-    double dist_scale = (400 / 2 - 20) / earth.y;
+    double dist_earth_sun_px = canvas_width / 2 * 0.50;
+    double dist_inset_px = 20;      // So the earth won't be at the exact edge
+
+    double dist_scale = (dist_earth_sun_px - dist_inset_px) / Math.sqrt(earth.x * earth.x + earth.y * earth.y);
 
     // time_scale_real_per_sim (ms [rea] / s [sim]) = elapsed_time_real (ms) / elapsed_time_sim (s)
     //
