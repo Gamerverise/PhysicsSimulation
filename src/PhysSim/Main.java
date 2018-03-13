@@ -22,6 +22,8 @@ public class Main extends Application {
     ReentrantLock particles_pos_lock = new ReentrantLock();
 
     double G = 6.67408e-11;    // pretend gravitation constant
+    double c = 299_792_458;    // speed of light in m/s
+    double max_speed = c - 1;    // naive max speed
 
     public static void main(String[] args) {
         launch(args);
@@ -187,9 +189,17 @@ public class Main extends Application {
             Particle p = particles[i];
             p.vx += p.ax * dt_sim;
             p.vy += p.ay * dt_sim;
+
+            double new_speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+
+            if (new_speed > max_speed) {
+                p.vx = p.vx / new_speed * max_speed;
+                p.vy = p.vy / new_speed * max_speed;
+            }
+
             p.x += p.vx * dt_sim;
             p.y += p.vy * dt_sim;
-            int fkdj= 6;
+            int fkdj= 6;                // FIXME
         }
 
         particles_pos_lock.unlock();
