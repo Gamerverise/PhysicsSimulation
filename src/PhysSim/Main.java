@@ -29,13 +29,13 @@ public class Main extends Application {
         launch(args);
     }
 
-//    // Original setup, not working
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+    // Original setup, not working
+    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
 
     // Symmetry of original setup about x = y
-    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-    Particle earth = new Particle("earth", 0, 1.496e11, 3e4, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
+//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
+//    Particle earth = new Particle("earth", 0, 1.496e11, 3e4, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
 
     // FIXME: Not sure if this is correct
 //    // Original setup, working with speed change
@@ -80,7 +80,7 @@ public class Main extends Application {
 
     double dt_real = 1;     // (ms)
 //    double dt_sim = dt_real * time_scale_sim_per_real;     // (s)
-    double dt_sim = 10;     // (s)
+    double dt_sim = 60*60;     // (s)
 
     // Which corresponds to dt_sim as follows:
     //
@@ -135,7 +135,9 @@ public class Main extends Application {
     }
 
    public void redraw() {
-        gc.clearRect(0, 0, canvas_width, canvas_height);
+//       gc.clearRect(0, 0, canvas_width, canvas_height);
+       gc.setFill(Color.BLACK);
+       gc.fillRect(0, 0, 10, 10);
 
         particles_pos_lock.lock();
 
@@ -168,18 +170,12 @@ public class Main extends Application {
                 double acc_factor = G / dist / dist;
 
                 double acc_pi = acc_factor * pj.mass;
-                double ax = acc_pi * ux;             // x-component of the acceleration times the unit vector
-                double ay = acc_pi * uy;             // y-component of the acceleration times the unit vector
-
-                pi.ax += ax;
-                pi.ay += ay;
+                pi.ax = acc_pi * ux;             // x-component of the acceleration times the unit vector
+                pi.ay = acc_pi * uy;             // y-component of the acceleration times the unit vector
 
                 double acc_pj = -acc_factor * pi.mass;
-                ax = acc_pj * ux;             // x-component of the acceleration times the unit vector
-                ay = acc_pj * uy;             // y-component of the acceleration times the unit vector
-
-                pj.ax += ax;
-                pj.ay += ay;
+                pj.ax = acc_pj * ux;             // x-component of the acceleration times the unit vector
+                pj.ay = acc_pj * uy;             // y-component of the acceleration times the unit vector
             }
         }
 
@@ -212,11 +208,18 @@ public class Main extends Application {
 
         if (p == earth) {
 //            gc.setFill(Color.rgb(0, 0, 255, 1));
-            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 2);
+//            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 2);
+            double scalet = 1e8;
+            scalet = 1e7;
+            scalet = 5e7;
+            scalet = 2.5e7;
+
+            fill_circle((p.x - 1.496e11) / scalet + canvas_width / 2, p.y / scalet + canvas_height / 2, 2);
             return;
         }
 
-        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, scaled_radius);
+//        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, scaled_radius);
+//        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 20);
 
 //        if (p == sun) {
 //            gc.setFill(Color.rgb(255, 100, 0, 0.1));
