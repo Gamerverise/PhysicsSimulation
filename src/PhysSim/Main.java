@@ -6,9 +6,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main extends Application {
@@ -19,7 +22,12 @@ public class Main extends Application {
     AnimationTimer anim_timer;
     GraphicsContext gc;
 
+    Font size_30_font = new Font(30);
+
     ReentrantLock particles_pos_lock = new ReentrantLock();
+    Semaphore sim_permit = new Semaphore(1, true);
+
+    boolean is_playing = false;
 
     double G = 6.67408e-11;    // pretend gravitation constant
     double c = 299_792_458;    // speed of light in m/s
@@ -81,12 +89,15 @@ public class Main extends Application {
 
     double dt_real = 1;     // (ms)
 //    double dt_sim = dt_real * time_scale_sim_per_real;     // (s)
-    double dt_sim = 60*60*10;     // (s)
+    double dt_sim = 60*60*10*10*5;     // (s)
+//    double dt_sim = 1;     // (s)
 
     // Which corresponds to dt_sim as follows:
     //
     // dt_sim = dt_real / scale     // (s/ms)
     //        = 1 ms /
+
+    double time_step_counter = 0;
 
 
 
@@ -112,14 +123,18 @@ public class Main extends Application {
 //        set_view_scale(sun, earth, initial_zoom, canvas_height);
 
         // initial_zoom relative to the diameter of the earth (in units of px/m)
-        double initial_zoom = 0.1;
-        set_view(earth, initial_zoom, canvas_height);
+        double initial_zoom = 0.005;
+        set_view(sun, initial_zoom, canvas_height);
 
         sim_thread = new Thread(() -> {
             while (true) {
-                time_step();
                 try {
-                    Thread.sleep((long)(dt_real));
+//                    if (time_step_counter > 1)
+//                        continue;
+                    sim_permit.acquire();
+                    time_step();
+                    sim_permit.release();
+                    Thread.sleep((long)dt_real);
                 } catch (InterruptedException e) {
                     System.out.println("SimulationThread.run: InterruptedException");
                 }
@@ -141,13 +156,36 @@ public class Main extends Application {
 
         gc = canvas.getGraphicsContext2D();
 
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.SPACE) {
+                try {
+                    is_playing = !is_playing;
+
+                    if (is_playing == true) {
+                        sim_permit.release();
+                        anim_timer.start();
+                    } else {
+                        sim_permit.acquire();
+                        anim_timer.stop();
+                        redraw();
+                    }
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        // Starting in the paused state
+        sim_permit.acquire();
+        // sim_thread will start paused because sim_permit is not available
+        sim_thread.start();
+        // Draw the screen once to see the initial state
+        redraw();
+
         stage.setTitle("Physics Simulation");
         stage.setResizable(false);
 
         stage.show();
-
-        sim_thread.start();
-        anim_timer.start();
     }
 
     // set_view is for viewing a particle:
@@ -169,9 +207,9 @@ public class Main extends Application {
     }
 
     public void redraw() {
-//       gc.clearRect(0, 0, canvas_width, canvas_height);
-       gc.setFill(Color.BLACK);
-       gc.fillRect(0, 0, 10, 10);
+//        gc.clearRect(0, 0, canvas_width, canvas_height);
+        gc.clearRect(0, 0, 100, 100);
+        gc.setFill(Color.BLACK);
 
         particles_pos_lock.lock();
 
@@ -179,6 +217,34 @@ public class Main extends Application {
             draw_particle(p, view.scale);
 
         particles_pos_lock.unlock();
+
+        gc.setFill(Color.rgb(255, 0, 0, 0.5));
+        gc.setFont(size_30_font);
+        if (is_playing)
+            gc.fillText("Playing", 5, 50);
+        else
+            gc.fillText("Paused", 5, 50);
+    }
+
+    void draw_particle(Particle p, double scale) {
+        double scaled_radius = p.radius * scale;
+
+        gc.setFill(p.color);
+
+        if (p == earth) {
+            gc.setFill(Color.rgb(0, 0, 255, 1));
+            fill_circle((p.x - view.world_x) * scale + canvas_width / 2, (p.y - view.world_y) * scale + canvas_height / 2, 2);
+            return;
+        }
+
+        fill_circle((p.x - view.world_x) * scale + canvas_width / 2, (p.y - view.world_y) * scale + canvas_height / 2, scaled_radius);
+    }
+
+    void fill_circle(double x, double y, double radius) {
+        // The location is offset by the radius because for this function (x, y) specify
+        // the center, but for fillOval (x, y) specifies the top-left of the bounding box
+        // of the oval
+        gc.fillOval(x - radius / 2, y - radius / 2, radius, radius);
     }
 
     public void time_step() {
@@ -233,27 +299,8 @@ public class Main extends Application {
         }
 
         particles_pos_lock.unlock();
-    }
 
-    void draw_particle(Particle p, double scale) {
-        double scaled_radius = p.radius * scale;
-
-        gc.setFill(p.color);
-
-        if (p == earth) {
-            gc.setFill(Color.rgb(0, 0, 255, 1));
-            fill_circle((p.x + view.world_x) * scale + canvas_width / 2, (p.y + view.world_y) * scale + canvas_height / 2, 2);
-            return;
-        }
-
-        fill_circle((p.x + view.world_x) * scale + canvas_width / 2, (p.y + view.world_y) * scale + canvas_height / 2, scaled_radius);
-    }
-
-    void fill_circle(double x, double y, double radius) {
-        // The location is offset by the radius because for this function (x, y) specify
-        // the center, but for fillOval (x, y) specifies the top-left of the bounding box
-        // of the oval
-        gc.fillOval(x - radius / 2, y - radius / 2, radius, radius);
+        time_step_counter += 1;
     }
 }
 
