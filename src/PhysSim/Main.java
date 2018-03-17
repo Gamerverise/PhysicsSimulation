@@ -65,7 +65,8 @@ public class Main extends Application {
     double dist_earth_sun_px = canvas_width / 2 * 0.50;
     double dist_inset_px = 20;      // So the earth won't be at the exact edge
 
-    double dist_scale = (dist_earth_sun_px - dist_inset_px) / Math.sqrt(earth.x * earth.x + earth.y * earth.y);
+
+    View view = new View();
 
     // time_scale_real_per_sim (ms [rea] / s [sim]) = elapsed_time_real (ms) / elapsed_time_sim (s)
     //
@@ -80,7 +81,7 @@ public class Main extends Application {
 
     double dt_real = 1;     // (ms)
 //    double dt_sim = dt_real * time_scale_sim_per_real;     // (s)
-    double dt_sim = 60*60;     // (s)
+    double dt_sim = 60*60*10;     // (s)
 
     // Which corresponds to dt_sim as follows:
     //
@@ -98,6 +99,21 @@ public class Main extends Application {
         earth.density = earth.mass / earth_volume;
 
         particles = new Particle[]{sun, earth};
+
+//        double scalet = 1e8;
+//        scalet = 1e7;
+//        scalet = 5e7;
+//        scalet = 2.5e7;
+//
+//        fill_circle((p.x - 1.496e11) / scalet + canvas_width / 2, p.y / scalet + canvas_height / 2, 2);
+
+        // initial_zoom relative to the distance between the sun and earth (in units of px/m)
+//        double initial_zoom = 0.5 - 0.1;
+//        set_view_scale(sun, earth, initial_zoom, canvas_height);
+
+        // initial_zoom relative to the diameter of the earth (in units of px/m)
+        double initial_zoom = 0.1;
+        set_view(earth, initial_zoom, canvas_height);
 
         sim_thread = new Thread(() -> {
             while (true) {
@@ -134,7 +150,25 @@ public class Main extends Application {
         anim_timer.start();
     }
 
-   public void redraw() {
+    // set_view is for viewing a particle:
+    //     * the world coordinates of the view are set to the particles coordinates, and
+    //     * and the view's scale is zoomed relative to the particle's diameter
+    //
+    // zoom of 1 means that the particle's diameter (in px) equals the canvas's height
+
+    public void set_view(Particle p, double zoom, double canvas_height) {
+        view.set_view(p.x, p.y, canvas_height / 2 / p.radius * zoom);
+    }
+
+    // set_view_scale is for zooming the view's scale relative to the distance between two particles
+    //
+    // zoom of 1 means that the distance (in px) between the two particles equals the canvas's height
+
+    public void set_view_scale(Particle p, Particle q, double zoom, double canvas_height) {
+        view.scale = canvas_height / p.distance(q) * zoom;
+    }
+
+    public void redraw() {
 //       gc.clearRect(0, 0, canvas_width, canvas_height);
        gc.setFill(Color.BLACK);
        gc.fillRect(0, 0, 10, 10);
@@ -142,7 +176,7 @@ public class Main extends Application {
         particles_pos_lock.lock();
 
         for (Particle p : particles)
-            draw_particle(p, dist_scale);
+            draw_particle(p, view.scale);
 
         particles_pos_lock.unlock();
     }
@@ -207,24 +241,12 @@ public class Main extends Application {
         gc.setFill(p.color);
 
         if (p == earth) {
-//            gc.setFill(Color.rgb(0, 0, 255, 1));
-//            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 2);
-            double scalet = 1e8;
-            scalet = 1e7;
-            scalet = 5e7;
-            scalet = 2.5e7;
-
-            fill_circle((p.x - 1.496e11) / scalet + canvas_width / 2, p.y / scalet + canvas_height / 2, 2);
+            gc.setFill(Color.rgb(0, 0, 255, 1));
+            fill_circle((p.x + view.world_x) * scale + canvas_width / 2, (p.y + view.world_y) * scale + canvas_height / 2, 2);
             return;
         }
 
-//        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, scaled_radius);
-//        fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 20);
-
-//        if (p == sun) {
-//            gc.setFill(Color.rgb(255, 100, 0, 0.1));
-//            fill_circle(p.x * scale + canvas_width / 2, p.y * scale + canvas_height / 2, 400);
-//        }
+        fill_circle((p.x + view.world_x) * scale + canvas_width / 2, (p.y + view.world_y) * scale + canvas_height / 2, scaled_radius);
     }
 
     void fill_circle(double x, double y, double radius) {
@@ -232,6 +254,30 @@ public class Main extends Application {
         // the center, but for fillOval (x, y) specifies the top-left of the bounding box
         // of the oval
         gc.fillOval(x - radius / 2, y - radius / 2, radius, radius);
+    }
+}
+
+class View {
+    double world_x;
+    double world_y;
+    double scale;
+
+    View() {
+        world_x = 0;
+        world_y = 0;
+        scale = 1;
+    }
+
+    View(double x, double y, double scale) {
+        world_x = x;
+        world_y = y;
+        this.scale = scale;
+    }
+
+    void set_view(double x, double y, double scale) {
+        world_x = x;
+        world_y = y;
+        this.scale = scale;
     }
 }
 
