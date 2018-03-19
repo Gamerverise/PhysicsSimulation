@@ -2,112 +2,119 @@ package PhysSim;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main extends Application {
 
-    Particle[] particles;
+    static double sun_mass = 1.989e30;
+    static double sun_radius = 6.957e8;
+
+    static double earth_sun_dist = 1.496e11;
+    static double earth_tangential_speed = 3e4;
+    static double earth_mass = 5.972e24;
+    static double earth_radius = 6.371e6;
+
+    static Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
+    static Particle earth = new Particle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
+
+    class ParticleConfigurations {
+
+        LinkedList<Particle[]> configs = new LinkedList<>();
+
+        ParticleConfigurations() {
+            Particle new_earth;
+
+            // Original configuration
+            add_config(sun, earth);
+
+            // Symmetry of original setup about x = y
+            new_earth = earth.copy();
+            new_earth.rotate_velocity_abs(100);
+            add_config(sun, new_earth);
+
+            // Symmetry of original setup about x = y
+            new_earth = earth.copy();
+            new_earth.y = earth_sun_dist;
+            new_earth.x = 0;
+            new_earth.vy = earth_tangential_speed;
+            new_earth.vx = 0;
+            add_config(sun, new_earth);
+        }
+
+        void add_config(Particle... particles) {
+            configs.add(particles);
+        }
+    }
+
+    ParticleConfigurations particle_configs = new ParticleConfigurations();
+
+    class State {
+        Particle[] particles = particle_configs.configs.get(0);     // FIXME: Think about this
+
+        double dt_real = 1;         // (ms)
+        double dt_sim = 60*8;       // (s) = 8 min
+        double time_step_counter = 0;
+
+        View view = new View();
+
+        boolean is_playing = false;
+
+        void reset() {
+            cur_state = new State();
+        }
+    }
+
+    State default_state = new State();
+    State cur_state;
+
     Thread sim_thread;
 
     AnimationTimer anim_timer;
     GraphicsContext gc;
+
+    Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
 
     Font size_30_font = new Font(30);
 
     ReentrantLock particles_pos_lock = new ReentrantLock();
     Semaphore sim_permit = new Semaphore(1, true);
 
-    boolean is_playing = false;
-
     double G = 6.67408e-11;    // pretend gravitation constant
     double c = 299_792_458;    // speed of light in m/s
     double max_speed = c - 1;    // naive max speed
 
     public static void main(String[] args) {
+
         launch(args);
     }
 
-    // Original setup, not working
-    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-    Particle earth = new Particle("earth", 1.496e11, 0, 0, 3e4, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
-
-    // Symmetry of original setup about x = y
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-//    Particle earth = new Particle("earth", 0, 1.496e11, 3e4, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
-
-    // FIXME: Not sure if this is correct
-//    // Original setup, working with speed change
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-//    Particle earth = new Particle("earth", 1.496e11, 0, 0, 1.485e11, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
-
-    // FIXME: Not sure if this is correct
-//    // Symmetry of original setup about x = y, working with speed change
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-//    Particle earth = new Particle("earth", 0, 1.496e11, 1.485e11, 0, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
-
-    // FIXME: Not sure if this is correct
-//    double earth_x = Math.sqrt(1.496e11 * 1.496e11 / 2);
-//    double earth_speed = Math.sqrt(3e4 * 3e4 / 2);
-//
-//    // Another symmetry of original setup, working with speed change
-//
-//    Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, 1.989e30, 6.957e8, 0, Color.rgb(0, 0, 0, 1));
-//    Particle earth = new Particle("earth", earth_x, earth_x, earth_speed, earth_speed, 0, 0, 5.972e24, 6.371e6, 0, Color.rgb(0, 0, 0, 1));
-
     // register screen coordinates and simulation coordinates
 
-    double canvas_width = 1800;
-    double canvas_height = 1000;
+    double canvas_width = 1305;
+    double canvas_height = 795;
     double canvas_aspect_ratio = canvas_width / canvas_height;
 
     double dist_earth_sun_px = canvas_width / 2 * 0.50;
     double dist_inset_px = 20;      // So the earth won't be at the exact edge
 
 
-    View view = new View();
-
-    // time_scale_real_per_sim (ms [rea] / s [sim]) = elapsed_time_real (ms) / elapsed_time_sim (s)
-    //
-    // because Thread.sleep takes ms, and our math simulation is based on seconds. So,
-    //
-    // time_scale_real_per_sim (ms/s)
-    //   = time_scale_real_per_sim (min [real] / yr [sim]) * 60 s/min  * 1000 ms/s * 1/365 yr/d * 1/24 d/hr * 1/60 h/min * 1/60 min/s
-    //   = time_scale_real_per_sim (min [real] / yr [sim]) * 1000 ms/s * 1/365 yr/d * 1/24 d/hr * 1/60 h/min
-
-    double time_scale_real_per_sim = 1 * 1000.0 / 365.0 / 24.0 / 60.0;       // scale (ms/s) for 1 min / 1 yr
-    double time_scale_sim_per_real = 1 / time_scale_real_per_sim;    // scale (s/ms) for 1 yr / 1 min
-
-    double dt_real = 1;     // (ms)
-//    double dt_sim = dt_real * time_scale_sim_per_real;     // (s)
-    double dt_sim = 60*60*10*10*5;     // (s)
-//    double dt_sim = 1;     // (s)
-
-    // Which corresponds to dt_sim as follows:
-    //
-    // dt_sim = dt_real / scale     // (s/ms)
-    //        = 1 ms /
-
-    double time_step_counter = 0;
-
-
-
     @Override
     public void start(Stage stage) throws InterruptedException {
         double sun_volume = 4 / 3.0 * Math.PI * Math.pow(sun.radius, 3);
-        sun.density = sun.mass / sun_volume;
 
         double earth_volume = 4 / 3.0 * Math.PI * Math.pow(earth.radius, 3);
-        earth.density = earth.mass / earth_volume;
 
         particles = new Particle[]{sun, earth};
 
@@ -148,30 +155,34 @@ public class Main extends Application {
         };
 
         Group root = new Group();
-        Canvas canvas = new Canvas(canvas_width, canvas_width);
+        Canvas canvas = new Canvas(canvas_width, canvas_height);
 
         root.getChildren().add(canvas);
-        Scene scene = new Scene(root, canvas_width, canvas_width);
+        Scene scene = new Scene(root, canvas_width, canvas_height);
         stage.setScene(scene);
 
         gc = canvas.getGraphicsContext2D();
 
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.SPACE) {
-                try {
-                    is_playing = !is_playing;
+            switch (e.getCode()) {
+                case SPACE:
+                    try {
+                        is_playing = !is_playing;
 
-                    if (is_playing == true) {
-                        sim_permit.release();
-                        anim_timer.start();
-                    } else {
-                        sim_permit.acquire();
-                        anim_timer.stop();
-                        redraw();
+                        if (is_playing == true) {
+                            sim_permit.release();
+                            anim_timer.start();
+                        } else {
+                            sim_permit.acquire();
+                            anim_timer.stop();
+                            redraw();
+                        }
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
                     }
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
+                    break;
+                case R:
+                    restart();
             }
         });
 
@@ -183,9 +194,15 @@ public class Main extends Application {
         redraw();
 
         stage.setTitle("Physics Simulation");
+        stage.setX(screen_bounds.getMaxX() - canvas_width);
+        stage.setY(screen_bounds.getMinY());
         stage.setResizable(false);
 
         stage.show();
+    }
+
+    public void restart() {
+
     }
 
     // set_view is for viewing a particle:
@@ -295,7 +312,6 @@ public class Main extends Application {
 
             p.x += p.vx * dt_sim;
             p.y += p.vy * dt_sim;
-            int fkdj= 6;                // FIXME
         }
 
         particles_pos_lock.unlock();
@@ -338,10 +354,9 @@ class Particle {
     double ay;
     double mass;
     double radius;
-    double density;
     Color color;
 
-    Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, double density, Color color) {
+    Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -351,13 +366,23 @@ class Particle {
         this.ay = ay;
         this.mass = mass;
         this.radius = radius;
-        this.density = density;
         this.color = color;
+    }
+
+    Particle copy() {
+        return new Particle(name, x, y, vx, vy, ax, ay, mass, radius, color);
     }
 
     double distance(Particle p) {
         double dx = p.x - x;
         double dy = p.y - y;
         return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    void rotate_velocity_abs(double degrees) {
+        double radians = Math.PI / 180 * degrees;
+        double velocity_scalar = Math.sqrt(vx*vx + vy*vy);
+        vx = velocity_scalar * Math.cos(radians);
+        vy = velocity_scalar * Math.sin(radians);
     }
 }
