@@ -12,72 +12,13 @@ import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Main extends Application {
 
-    static double sun_mass = 1.989e30;
-    static double sun_radius = 6.957e8;
-
-    static double earth_sun_dist = 1.496e11;
-    static double earth_tangential_speed = 3e4;
-    static double earth_mass = 5.972e24;
-    static double earth_radius = 6.371e6;
-
-    static Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
-    static Particle earth = new Particle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
-
-    class ParticleConfigurations {
-
-        LinkedList<Particle[]> configs = new LinkedList<>();
-
-        ParticleConfigurations() {
-            Particle new_earth;
-
-            // Original configuration
-            add_config(sun, earth);
-
-            // Symmetry of original setup about x = y
-            new_earth = earth.copy();
-            new_earth.rotate_velocity_abs(100);
-            add_config(sun, new_earth);
-
-            // Symmetry of original setup about x = y
-            new_earth = earth.copy();
-            new_earth.y = earth_sun_dist;
-            new_earth.x = 0;
-            new_earth.vy = earth_tangential_speed;
-            new_earth.vx = 0;
-            add_config(sun, new_earth);
-        }
-
-        void add_config(Particle... particles) {
-            configs.add(particles);
-        }
-    }
-
-    ParticleConfigurations particle_configs = new ParticleConfigurations();
-
-    class State {
-        Particle[] particles = particle_configs.configs.get(0);     // FIXME: Think about this
-
-        double dt_real = 1;         // (ms)
-        double dt_sim = 60*8;       // (s) = 8 min
-        double time_step_counter = 0;
-
-        View view = new View();
-
-        boolean is_playing = false;
-
-        void reset() {
-            cur_state = new State();
-        }
-    }
-
-    State default_state = new State();
-    State cur_state;
+    Simulation default_state = new Simulation();
+    Simulation cur_state;
 
     Thread sim_thread;
 
@@ -91,24 +32,10 @@ public class Main extends Application {
     ReentrantLock particles_pos_lock = new ReentrantLock();
     Semaphore sim_permit = new Semaphore(1, true);
 
-    double G = 6.67408e-11;    // pretend gravitation constant
-    double c = 299_792_458;    // speed of light in m/s
-    double max_speed = c - 1;    // naive max speed
-
     public static void main(String[] args) {
 
         launch(args);
     }
-
-    // register screen coordinates and simulation coordinates
-
-    double canvas_width = 1305;
-    double canvas_height = 795;
-    double canvas_aspect_ratio = canvas_width / canvas_height;
-
-    double dist_earth_sun_px = canvas_width / 2 * 0.50;
-    double dist_inset_px = 20;      // So the earth won't be at the exact edge
-
 
     @Override
     public void start(Stage stage) throws InterruptedException {
@@ -118,14 +45,7 @@ public class Main extends Application {
 
         particles = new Particle[]{sun, earth};
 
-//        double scalet = 1e8;
-//        scalet = 1e7;
-//        scalet = 5e7;
-//        scalet = 2.5e7;
-//
-//        fill_circle((p.x - 1.496e11) / scalet + canvas_width / 2, p.y / scalet + canvas_height / 2, 2);
-
-        // initial_zoom relative to the distance between the sun and earth (in units of px/m)
+//        initial_zoom relative to the distance between the sun and earth (in units of px/m)
 //        double initial_zoom = 0.5 - 0.1;
 //        set_view_scale(sun, earth, initial_zoom, canvas_height);
 
@@ -320,69 +240,3 @@ public class Main extends Application {
     }
 }
 
-class View {
-    double world_x;
-    double world_y;
-    double scale;
-
-    View() {
-        world_x = 0;
-        world_y = 0;
-        scale = 1;
-    }
-
-    View(double x, double y, double scale) {
-        world_x = x;
-        world_y = y;
-        this.scale = scale;
-    }
-
-    void set_view(double x, double y, double scale) {
-        world_x = x;
-        world_y = y;
-        this.scale = scale;
-    }
-}
-
-class Particle {
-    String name;
-    double x;
-    double y;
-    double vx;
-    double vy;
-    double ax;
-    double ay;
-    double mass;
-    double radius;
-    Color color;
-
-    Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
-        this.name = name;
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.ax = ax;
-        this.ay = ay;
-        this.mass = mass;
-        this.radius = radius;
-        this.color = color;
-    }
-
-    Particle copy() {
-        return new Particle(name, x, y, vx, vy, ax, ay, mass, radius, color);
-    }
-
-    double distance(Particle p) {
-        double dx = p.x - x;
-        double dy = p.y - y;
-        return Math.sqrt(dx*dx + dy*dy);
-    }
-
-    void rotate_velocity_abs(double degrees) {
-        double radians = Math.PI / 180 * degrees;
-        double velocity_scalar = Math.sqrt(vx*vx + vy*vy);
-        vx = velocity_scalar * Math.cos(radians);
-        vy = velocity_scalar * Math.sin(radians);
-    }
-}
