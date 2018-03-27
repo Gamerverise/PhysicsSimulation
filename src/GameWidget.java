@@ -2,6 +2,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.concurrent.Semaphore;
 
@@ -20,8 +21,8 @@ public class GameWidget {
     boolean is_playing;
 
     Canvas canvas;
+    GraphicsContextX gcx;
     GraphicsContext gc;
-    CameraView view;
 
     AnimationTimer anim_timer;
     Simulation simulation;
@@ -38,7 +39,11 @@ public class GameWidget {
 
         // FIXME
         canvas = new Canvas(canvas_width, canvas_height);
-        gc = new GraphicsContext(canvas);
+        gcx = new GraphicsContextX(canvas);
+        gc = gcx.gc;
+
+        gc.setFont(new Font(30));
+        gc.setFill(Color.rgb(255, 0, 0, 0.5));
 
         // FIXME
         double dist_earth_sun_px = canvas_width / 2 * 0.50;
@@ -99,24 +104,40 @@ public class GameWidget {
         set_view(sun, initial_zoom, canvas_height);
     }
 
-    public void redraw() {
-//        gc.clearRect(0, 0, canvas_width, canvas_height);
-        gc.clearRect(0, 0, 100, 100);
-        gc.setFill(Color.BLACK);
+    // view_particle
+    //     Change the current view (aka transform) so that:
+    //
+    //         (center_px, center_py) = (canvas_origin_x, canvas_origin_x)
+    //     and
+    //         diameter_px(p, q) = zoom * canvas_dim
 
-        particles_pos_lock.lock();
+    public void view_particle(Particle p, double zoom, Misc.Dimension dim) {
+        double scale;
 
-        for (Particle p : particles)
-            draw_particle(p, view.scale);
+        gc.translate(p.x, p.y);
 
-        particles_pos_lock.unlock();
-
-        gc.setFill(Color.rgb(255, 0, 0, 0.5));
-        gc.setFont(size_30_font);
-        if (is_playing)
-            gc.fillText("Playing", 5, 50);
+        if (dim == Misc.Dimension.WIDTH)
+            scale = canvas.getWidth() / 2 / p.radius * zoom;
         else
-            gc.fillText("Paused", 5, 50);
+            scale = canvas.getHeight() / 2 / p.radius * zoom;
+
+        gc.scale(scale, scale);
+    }
+
+    // view_particle
+    //     Scale the current view (aka transform) so that:
+    //
+    //         dist_px(p, q) = zoom * canvas_dim
+
+    public void view_particles(Particle p, Particle q, double zoom, Misc.Dimension dim) {
+        double scale;
+
+        if (dim == Misc.Dimension.WIDTH)
+            scale = canvas.getWidth() / p.distance(q) * zoom;
+        else
+            scale = canvas.getHeight() / p.distance(q) * zoom;
+
+        gc.scale(scale, scale);
     }
 
     void draw_particle(Particle p, double scale) {
@@ -124,12 +145,31 @@ public class GameWidget {
 
         gc.setFill(p.color);
 
-        if (p == earth) {
+        if (p == //earth) {
             gc.setFill(Color.rgb(0, 0, 255, 1));
             fill_circle((p.x - view.world_x) * scale + canvas_width / 2, (p.y - view.world_y) * scale + canvas_height / 2, 2);
             return;
         }
 
         fill_circle((p.x - view.world_x) * scale + canvas_width / 2, (p.y - view.world_y) * scale + canvas_height / 2, scaled_radius);
+    }
+
+    public void redraw() {
+//        gc.clearRect(0, 0, canvas_width, canvas_height);
+//        gc.setFill(Color.BLACK);
+
+        gc.clearRect(0, 0, 100, 100);
+
+        simulation.universe_rw_lock.lock();
+
+        for (Particle p : particles)
+            draw_particle(p, view.scale);
+
+        simulation.universe_rw_lock.unlock();
+
+        if (is_playing)
+            gc.fillText("Playing", 5, 50);
+        else
+            gc.fillText("Paused", 5, 50);
     }
 }

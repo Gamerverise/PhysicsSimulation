@@ -16,6 +16,4 @@ public class Main extends Application {
     public void start(Stage stage) throws InterruptedException {
         UI ui = new UI(stage);
     }
-
 }
-

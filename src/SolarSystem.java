@@ -43,7 +43,8 @@ public class SolarSystem {
     }
 
     static Simulation solar_system_sim = new Simulation(new Universe(stellar_objects),
-            1,      // dt_real = 1              (ms)
-            60*8    // double dt_sim = 60*8     (s) = 8 min
+            1,       // dt_real = 1              (ms)
+            60*8,    // double dt_sim = 60*8     (s) = 8 min
+            null
     );
 }

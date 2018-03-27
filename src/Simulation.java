@@ -1,33 +1,33 @@
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Simulation {
+    Thread thread;
+
+    ReentrantLock play_pause_lock;
+    ReentrantLock universe_rw_lock = new ReentrantLock();
+
     Universe init_universe;
     double init_dt_real;
     double init_dt_sim;
-    double init_time_step_counter;
-    boolean init_is_playing;
 
     Universe universe;
     double dt_real;
     double dt_sim;
+
     double time_step_counter;
 
-    Thread thread;
+    public Simulation(Universe universe, double dt_real, double dt_sim, ReentrantLock play_pause_lock) {
+        this.play_pause_lock = play_pause_lock;
+        this.universe_rw_lock = new ReentrantLock();
 
-    Semaphore play_permit;
-    ReentrantLock particles_pos_lock = new ReentrantLock();
-
-    public Simulation(Universe universe, double dt_real, double dt_sim, Semaphore semaphore) {
         init_universe = universe;
         init_dt_real = dt_real;
         init_dt_sim = dt_sim;
-        init_time_step_counter = 0;
 
         this.universe = new Universe(universe);
-
         this.dt_real = dt_real;
         this.dt_sim = dt_sim;
+
         time_step_counter = 0;
 
         thread = new Thread(this::time_step_wrapper);
@@ -37,11 +37,11 @@ public class Simulation {
         while (true) {
 //                    if (time_step_counter > 1)
 //                        continue;
-            play_permit.acquireUninterruptibly();
-            time_step();
-            play_permit.release();
-
             try {
+                play_pause_lock.lockInterruptibly();
+                time_step();
+                play_pause_lock.unlock();
+
                 Thread.sleep((long)dt_real);
             } catch (InterruptedException e) {
                 return;
@@ -57,8 +57,6 @@ public class Simulation {
         init_universe = s.init_universe;
         init_dt_real = s.init_dt_real;
         init_dt_sim = s.init_dt_sim;
-        init_time_step_counter = s.init_time_step_counter;
-        init_is_playing = s.init_is_playing;
 
         if (copy_type == Misc.CopyType.SHALLOW)
             universe = s.universe;
@@ -76,7 +74,7 @@ public class Simulation {
         universe = new Universe(init_universe);
         dt_real = init_dt_real;
         dt_sim = init_dt_sim;
-        time_step_counter = init_time_step_counter;
+        time_step_counter = 0;
 
         thread = new Thread(this::time_step_wrapper);
     }
@@ -115,7 +113,7 @@ public class Simulation {
             i++;
         }
 
-        particles_pos_lock.lock();
+        universe_rw_lock.lock();
 
         for (Particle p : universe.particles) {
             p.vx += p.ax * dt_sim;
@@ -132,7 +130,7 @@ public class Simulation {
             p.y += p.vy * dt_sim;
         }
 
-        particles_pos_lock.unlock();
+        universe_rw_lock.unlock();
 
         time_step_counter += 1;
     }

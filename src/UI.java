@@ -11,8 +11,6 @@ import static javafx.scene.input.KeyCode.R;
 import static javafx.scene.input.KeyCode.SPACE;
 
 public class UI {
-    Font size_30_font = new Font(30);
-
     double canvas_width = 1305;
     double canvas_height = 795;
     double canvas_aspect_ratio = canvas_width / canvas_height;
