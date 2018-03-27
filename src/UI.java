@@ -28,11 +28,11 @@ public class UI {
         this.stage = stage;
 
         Group root = new Group();
-        Canvas canvas = new Canvas(canvas_width, canvas_height);
 
-        gc = canvas.getGraphicsContext2D();
+        // FIXME
+        game_widget =
 
-        root.getChildren().add(canvas);
+        root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);
         stage.setScene(scene);
 
@@ -44,23 +44,12 @@ public class UI {
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case SPACE:
-                    try {
-                        is_playing = !is_playing;
-
-                        if (is_playing == true) {
-                            sim_permit.release();
-                            anim_timer.start();
-                        } else {
-                            sim_permit.acquire();
-                            anim_timer.stop();
-                            redraw();
-                        }
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    }
+                    game_widget.toggle_play_pause();
                     break;
                 case R:
-                    restart();
+                    game_widget.reset();
+                    break;
             }
         });
+    }
 }

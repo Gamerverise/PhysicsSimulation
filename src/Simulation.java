@@ -1,6 +1,3 @@
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -15,41 +12,41 @@ public class Simulation {
     double dt_real;
     double dt_sim;
     double time_step_counter;
-    boolean is_playing;
 
     Thread thread;
 
-    Semaphore sim_permit = new Semaphore(1, true);
+    Semaphore play_permit;
     ReentrantLock particles_pos_lock = new ReentrantLock();
 
-    public Simulation(Universe universe, double dt_real, double dt_sim) {
+    public Simulation(Universe universe, double dt_real, double dt_sim, Semaphore semaphore) {
         init_universe = universe;
         init_dt_real = dt_real;
         init_dt_sim = dt_sim;
         init_time_step_counter = 0;
-        init_is_playing = false;
 
         this.universe = new Universe(universe);
 
         this.dt_real = dt_real;
         this.dt_sim = dt_sim;
         time_step_counter = 0;
-        is_playing = false;
 
-        thread = new Thread(() -> {
-            while (true) {
-                try {
+        thread = new Thread(this::time_step_wrapper);
+    }
+
+    void time_step_wrapper() {
+        while (true) {
 //                    if (time_step_counter > 1)
 //                        continue;
-                    sim_permit.acquire();
-                    time_step();
-                    sim_permit.release();
-                    Thread.sleep((long)dt_real);
-                } catch (InterruptedException e) {
-                    System.out.println("SimulationThread.run: InterruptedException");
-                }
+            play_permit.acquireUninterruptibly();
+            time_step();
+            play_permit.release();
+
+            try {
+                Thread.sleep((long)dt_real);
+            } catch (InterruptedException e) {
+                return;
             }
-        });
+        }
     }
 
     public Simulation(Simulation s, Misc.CopyType copy_type) {
@@ -71,15 +68,17 @@ public class Simulation {
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;
         time_step_counter = s.time_step_counter;
-        is_playing = s.init_is_playing;
     }
 
     void reset() {
+        thread.interrupt();
+
         universe = new Universe(init_universe);
         dt_real = init_dt_real;
         dt_sim = init_dt_sim;
         time_step_counter = init_time_step_counter;
-        is_playing = init_is_playing;
+
+        thread = new Thread(this::time_step_wrapper);
     }
 
     public void time_step() {
