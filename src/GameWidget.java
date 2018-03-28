@@ -4,8 +4,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 // FIXME: Where does this comment go?
 // Register screen coordinates and simulation coordinates
 
@@ -13,7 +11,6 @@ public class GameWidget extends Canvas {
     GraphicsContextX gcx;
     GraphicsContext gc;
 
-    ReentrantLock play_pause_lock;
     AnimationTimer anim_timer;
 
     boolean init_is_playing;
@@ -70,54 +67,44 @@ public class GameWidget extends Canvas {
         // FIXME
         double dist_earth_sun_px = canvas_width / 2 * 0.50;
         double dist_inset_px = 20;      // So the earth won't be at the exact edge
-//    Show show = new Show(0, 0, view_scale, SolarSystem.stellar_objects, dt_real, dt_sim);
+//    Show show = new Show(0, 0, view_scale, SolarSystem.solar_sys_objects, dt_real, dt_sim);
 //        show.show();
 
 
 ///////////        ///////////////////////
 
-        play_pause_lock = new ReentrantLock();
-
         this.simulation = simulation;
-        this.simulation.play_pause_lock = play_pause_lock;
 
         reset();
     }
 
     void reset() {
-
-        play_pause_lock.lock();
-
         anim_timer.stop();
-
-        simulation.reset();
-        is_playing = init_is_playing;
-
-        // Draw the screen once to see the initial state
-        redraw();
-
         anim_timer = new AnimationTimer() {
             public void handle(long now) {
                 redraw();
             }
         };
 
-        if (is_playing)
-            toggle_play_pause();
+        simulation.reset();
+        is_playing = init_is_playing;
 
-        simulation.start_once(play_pause_lock);
+        if (is_playing)
+            toggle_run_suspend();
+        else
+            // Draw the screen once to see the initial state
+            redraw();
     }
 
-    void toggle_play_pause() {
+    void toggle_run_suspend() {
         is_playing = !is_playing;
 
         if (is_playing == true) {
             anim_timer.start();
-            play_pause_lock.unlock();
+            simulation.run();
         } else {
-            play_pause_lock.lock();
+            simulation.suspend();
             anim_timer.stop();
-            // redraw();       // FIXME: Why did we redraw here?
         }
     }
 
@@ -163,7 +150,6 @@ public class GameWidget extends Canvas {
 
     void draw_particle(Particle p) {
         gc.setFill(p.color);
-
         gcx.fill_circle(p.x, p.y, p.radius);
     }
 

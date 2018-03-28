@@ -1,16 +1,11 @@
-import com.sun.javaws.exceptions.ExitException;
-import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
-
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Simulation {
     Thread thread;
 
-    // FIXME
-    ReentrantLock play_pause_lock;
-    InterruptSignal interrupt_signal;
-
-    ReentrantLock xy_data_rw_lock = new ReentrantLock();
+    Semaphore run_suspend_permit;
+    ReentrantLock xy_data_rw_lock;
 
     Universe init_universe;
     double init_dt_real;
@@ -27,8 +22,9 @@ public class Simulation {
         init_dt_real = dt_real;
         init_dt_sim = dt_sim;
 
-        this.play_pause_lock = play_pause_lock;
-        this.xy_data_rw_lock = new ReentrantLock();
+        // FIXME: How many permits? 0 or -1?
+        run_suspend_permit = new Semaphore(0);
+        xy_data_rw_lock = new ReentrantLock();
 
         this.universe = new Universe(universe);
         this.dt_real = dt_real;
@@ -37,58 +33,6 @@ public class Simulation {
         time_step_counter = 0;
 
         thread = new Thread(this::time_step_wrapper);
-    }
-
-    void time_step_wrapper() {
-        try {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                handle_interrupt();
-            }
-
-            while (true) {
-                time_step();
-
-                try {
-                    if (thread.isInterrupted())
-                        wait();
-                    Thread.sleep((long) dt_real);
-                } catch (InterruptedException e) {
-                    handle_interrupt();
-                }
-            }
-        } catch (ExitThreadException e) {
-                return;
-        }
-    }
-
-    enum InterruptSignal {SUSPEND, EXIT};
-
-    class ExitThreadException extends Exception {}
-
-    void run() {
-        notify();
-    }
-
-    void suspend() {
-        interrupt(InterruptSignal.SUSPEND);
-    }
-
-    void exit() {
-        interrupt(InterruptSignal.EXIT);
-    }
-
-    void interrupt(InterruptSignal sig) {
-        interrupt_signal = sig;
-        thread.interrupt();
-    }
-
-    void handle_interrupt() throws ExitThreadException {
-        if (interrupt_signal == InterruptSignal.SUSPEND)
-            return;
-        if (interrupt_signal == InterruptSignal.EXIT)
-            throw new ExitThreadException();
     }
 
     public Simulation(Simulation s, Misc.CopyType copy_type) {
@@ -110,8 +54,40 @@ public class Simulation {
         time_step_counter = s.time_step_counter;
     }
 
-    public void reset() {
+    void time_step_wrapper() {
+
+        while (true) {
+            try {
+                run_suspend_permit.acquire();
+            } catch (InterruptedException e) {
+                return;
+            }
+
+            time_step();
+            try {
+                Thread.sleep((long) dt_real);
+            } catch (InterruptedException e) {
+                assert false : "Simulation.time_step_wrapper: " + Debug.BAD_CODE_PATH;
+            }
+            run_suspend_permit.release();
+        }
+    }
+
+    void run() {
+        run_suspend_permit.release();
+    }
+
+    void suspend() {
+        run_suspend_permit.acquireUninterruptibly();
+    }
+
+    void exit() {
+        run_suspend_permit.acquireUninterruptibly();
         thread.interrupt();
+    }
+
+    public void reset() {
+        exit();
 
         universe = new Universe(init_universe);
         dt_real = init_dt_real;

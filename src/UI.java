@@ -1,14 +1,9 @@
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import static javafx.scene.input.KeyCode.R;
-import static javafx.scene.input.KeyCode.SPACE;
 
 public class UI {
     double canvas_width = 1305;
@@ -46,7 +41,7 @@ public class UI {
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case SPACE:
-                    game_widget.toggle_play_pause();
+                    game_widget.toggle_run_suspend();
                     break;
                 case R:
                     game_widget.reset();
