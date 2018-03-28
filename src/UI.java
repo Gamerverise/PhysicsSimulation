@@ -27,8 +27,12 @@ public class UI {
 
         Group root = new Group();
 
-        // FIXME
-        game_widget =
+        // FIXME thread before ui?
+        game_widget = new GameWidget(
+                800, 800,
+                new Simulation(SolarSystem.solar_system_sim, Misc.CopyType.DEEP),
+                false
+                );
 
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);

@@ -1,10 +1,16 @@
+import com.sun.javaws.exceptions.ExitException;
+import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Simulation {
     Thread thread;
 
+    // FIXME
     ReentrantLock play_pause_lock;
-    ReentrantLock universe_rw_lock = new ReentrantLock();
+    InterruptSignal interrupt_signal;
+
+    ReentrantLock xy_data_rw_lock = new ReentrantLock();
 
     Universe init_universe;
     double init_dt_real;
@@ -16,13 +22,13 @@ public class Simulation {
 
     double time_step_counter;
 
-    public Simulation(Universe universe, double dt_real, double dt_sim, ReentrantLock play_pause_lock) {
-        this.play_pause_lock = play_pause_lock;
-        this.universe_rw_lock = new ReentrantLock();
-
+    public Simulation(Universe universe, double dt_real, double dt_sim) {
         init_universe = universe;
         init_dt_real = dt_real;
         init_dt_sim = dt_sim;
+
+        this.play_pause_lock = play_pause_lock;
+        this.xy_data_rw_lock = new ReentrantLock();
 
         this.universe = new Universe(universe);
         this.dt_real = dt_real;
@@ -34,19 +40,55 @@ public class Simulation {
     }
 
     void time_step_wrapper() {
-        while (true) {
-//                    if (time_step_counter > 1)
-//                        continue;
+        try {
             try {
-                play_pause_lock.lockInterruptibly();
-                time_step();
-                play_pause_lock.unlock();
-
-                Thread.sleep((long)dt_real);
+                wait();
             } catch (InterruptedException e) {
-                return;
+                handle_interrupt();
             }
+
+            while (true) {
+                time_step();
+
+                try {
+                    if (thread.isInterrupted())
+                        wait();
+                    Thread.sleep((long) dt_real);
+                } catch (InterruptedException e) {
+                    handle_interrupt();
+                }
+            }
+        } catch (ExitThreadException e) {
+                return;
         }
+    }
+
+    enum InterruptSignal {SUSPEND, EXIT};
+
+    class ExitThreadException extends Exception {}
+
+    void run() {
+        notify();
+    }
+
+    void suspend() {
+        interrupt(InterruptSignal.SUSPEND);
+    }
+
+    void exit() {
+        interrupt(InterruptSignal.EXIT);
+    }
+
+    void interrupt(InterruptSignal sig) {
+        interrupt_signal = sig;
+        thread.interrupt();
+    }
+
+    void handle_interrupt() throws ExitThreadException {
+        if (interrupt_signal == InterruptSignal.SUSPEND)
+            return;
+        if (interrupt_signal == InterruptSignal.EXIT)
+            throw new ExitThreadException();
     }
 
     public Simulation(Simulation s, Misc.CopyType copy_type) {
@@ -68,7 +110,7 @@ public class Simulation {
         time_step_counter = s.time_step_counter;
     }
 
-    void reset() {
+    public void reset() {
         thread.interrupt();
 
         universe = new Universe(init_universe);
@@ -113,7 +155,7 @@ public class Simulation {
             i++;
         }
 
-        universe_rw_lock.lock();
+        xy_data_rw_lock.lock();
 
         for (Particle p : universe.particles) {
             p.vx += p.ax * dt_sim;
@@ -130,7 +172,7 @@ public class Simulation {
             p.y += p.vy * dt_sim;
         }
 
-        universe_rw_lock.unlock();
+        xy_data_rw_lock.unlock();
 
         time_step_counter += 1;
     }
