@@ -22,12 +22,7 @@ public class UI {
 
         Group root = new Group();
 
-        // FIXME thread before ui?
-        game_widget = new GameWidget(
-                800, 800,
-                new Simulation(SolarSystem.solar_system_sim, Misc.CopyType.DEEP),
-                false
-                );
+        game_widget = new GameWidget(800, 800);
 
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);
@@ -48,5 +43,12 @@ public class UI {
                     break;
             }
         });
+
+        stage.show();
+
+        game_widget.finish_construction(
+                new Simulation(SolarSystem.solar_system_sim, Misc.CopyType.DEEP),
+                false,
+                SolarSystem.solar_sys_game_view_sun);
     }
 }

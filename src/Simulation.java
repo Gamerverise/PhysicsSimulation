@@ -7,10 +7,6 @@ public class Simulation {
     Semaphore run_suspend_permit;
     ReentrantLock xy_data_rw_lock;
 
-    Universe init_universe;
-    double init_dt_real;
-    double init_dt_sim;
-
     Universe universe;
     double dt_real;
     double dt_sim;
@@ -18,15 +14,12 @@ public class Simulation {
     double time_step_counter;
 
     public Simulation(Universe universe, double dt_real, double dt_sim) {
-        init_universe = universe;
-        init_dt_real = dt_real;
-        init_dt_sim = dt_sim;
 
         // FIXME: How many permits? 0 or -1?
         run_suspend_permit = new Semaphore(0);
         xy_data_rw_lock = new ReentrantLock();
 
-        this.universe = new Universe(universe);
+        this.universe = universe;
         this.dt_real = dt_real;
         this.dt_sim = dt_sim;
 
@@ -40,14 +33,10 @@ public class Simulation {
     }
 
     void copy(Simulation s, Misc.CopyType copy_type) {
-        init_universe = s.init_universe;
-        init_dt_real = s.init_dt_real;
-        init_dt_sim = s.init_dt_sim;
-
         if (copy_type == Misc.CopyType.SHALLOW)
             universe = s.universe;
         else
-            universe = new Universe(s.universe);
+            universe = new Universe(s.universe, Misc.CopyType.DEEP);
 
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;
@@ -64,11 +53,13 @@ public class Simulation {
             }
 
             time_step();
+
             try {
                 Thread.sleep((long) dt_real);
             } catch (InterruptedException e) {
                 assert false : "Simulation.time_step_wrapper: " + Debug.BAD_CODE_PATH;
             }
+
             run_suspend_permit.release();
         }
     }
@@ -86,12 +77,12 @@ public class Simulation {
         thread.interrupt();
     }
 
-    public void reset() {
+    public void reset(Simulation sim) {
         exit();
 
-        universe = new Universe(init_universe);
-        dt_real = init_dt_real;
-        dt_sim = init_dt_sim;
+        universe = new Universe(sim.universe, Misc.CopyType.DEEP);
+        dt_real = sim.dt_real;
+        dt_sim = sim.dt_sim;
         time_step_counter = 0;
 
         thread = new Thread(this::time_step_wrapper);

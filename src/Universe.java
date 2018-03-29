@@ -13,10 +13,14 @@ public class Universe {
         add_particles(particles);
     }
 
-    Universe(Universe u) {
+    Universe(Universe u, Misc.CopyType copy_type) {
         acceleration_constant = u.acceleration_constant;
         max_speed = u.max_speed;
-        add_particles(u.particles);
+
+        if (copy_type == Misc.CopyType.SHALLOW)
+            particles = u.particles;
+        else
+            add_particles(u.particles);
     }
 
     void add_particles(Particle... particles) {

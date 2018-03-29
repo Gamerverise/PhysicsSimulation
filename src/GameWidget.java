@@ -3,9 +3,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
-// FIXME: Where does this comment go?
-// Register screen coordinates and simulation coordinates
+import javafx.scene.transform.NonInvertibleTransformException;
 
 public class GameWidget extends Canvas {
     GraphicsContextX gcx;
@@ -13,31 +11,31 @@ public class GameWidget extends Canvas {
 
     AnimationTimer anim_timer;
 
+    Simulation init_simulation;
     boolean init_is_playing;
 
     Simulation simulation;
     boolean is_playing;
 
-    // FIXME
-    double min_particle_radius;
+    double min_drawing_radius;
 
-    public GameWidget(double width, double height,
-                      Universe universe,
-                      double dt_real,
-                      double dt_sim,
-                      boolean is_playing)
-    {
-        this(width, height,
-             new Simulation(universe, dt_real, dt_sim),
-             is_playing);
+    public GameWidget(double width, double height) {
+        super(width, height);
     }
 
-    public GameWidget(double width, double height,
-                      Simulation simulation,
-                      boolean is_playing)
+    public void finish_construction(Universe universe,
+                                    double dt_real,
+                                    double dt_sim,
+                                    boolean is_playing,
+                                    GameView gv)
     {
-        super(width, height);
+        Simulation sim = new Simulation(universe, dt_real, dt_sim);
+        finish_construction(sim, is_playing, gv);
+    }
 
+    public void finish_construction(Simulation simulation, boolean is_playing, GameView gv)
+    {
+        init_simulation = simulation;
         init_is_playing = is_playing;
 
         gc = getGraphicsContext2D();
@@ -46,54 +44,46 @@ public class GameWidget extends Canvas {
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
 
-        // Set origin is center of canvas, instead of top left
+        // Set origin to center of canvas, instead of top left
         gc.translate(getWidth() / 2, getHeight() / 2);
 
         // Change positive y direction from down to up
         gc.scale(1, -1);
 
-/////////////
+        if (gv != null)
+            gv.change_view(this);
 
-//        initial_zoom relative to the distance between the sun and earth (in units of px/m)
-//        double initial_zoom = 0.5 - 0.1;
-//        set_view_scale(sun, earth, initial_zoom, canvas_height);
+        shared_construction();
 
-        // initial_zoom relative to the diameter of the earth (in units of px/m)
-        double initial_zoom = 0.005;
-        set_view(sun, initial_zoom, canvas_height);
+        set_min_drawing_radius();
 
-
-//////////////////////////////////////
-        // FIXME
-        double dist_earth_sun_px = canvas_width / 2 * 0.50;
-        double dist_inset_px = 20;      // So the earth won't be at the exact edge
-//    Show show = new Show(0, 0, view_scale, SolarSystem.solar_sys_objects, dt_real, dt_sim);
-//        show.show();
-
-
-///////////        ///////////////////////
-
-        this.simulation = simulation;
-
-        reset();
+        run();
     }
 
-    void reset() {
-        anim_timer.stop();
+    void shared_construction() {
         anim_timer = new AnimationTimer() {
             public void handle(long now) {
                 redraw();
             }
         };
 
-        simulation.reset();
+        this.simulation = new Simulation(init_simulation, Misc.CopyType.DEEP);
         is_playing = init_is_playing;
 
+    }
+
+    void run() {
         if (is_playing)
             toggle_run_suspend();
         else
             // Draw the screen once to see the initial state
             redraw();
+    }
+
+    void reset() {
+        anim_timer.stop();
+        shared_construction();
+        run();
     }
 
     void toggle_run_suspend() {
@@ -108,6 +98,28 @@ public class GameWidget extends Canvas {
         }
     }
 
+    double get_dimension(Misc.Dimension dim) {
+        switch (dim) {
+            case WIDTH:
+                return getWidth();
+            case HEIGHT:
+                return getHeight();
+            case MAX:
+                if (getWidth() > getHeight())
+                    return getWidth();
+                else
+                    return getHeight();
+            default:
+                assert false : "GameWidget.get_dimension: " + Debug.BAD_CODE_PATH;
+                return 0;
+        }
+    }
+
+    public void set_view(double x, double y, double scale) {
+        gc.translate(x, y);
+        gc.scale(scale, scale);
+    }
+
     // view_particle
     //     Change the current view (aka transform) so that:
     //
@@ -116,16 +128,7 @@ public class GameWidget extends Canvas {
     //         diameter_px(p, q) = zoom * canvas_dim
 
     public void view_particle(Particle p, double zoom, Misc.Dimension dim) {
-        double scale;
-
-        gc.translate(p.x, p.y);
-
-        if (dim == Misc.Dimension.WIDTH)
-            scale = getWidth() / 2 / p.radius * zoom;
-        else
-            scale = getHeight() / 2 / p.radius * zoom;
-
-        gc.scale(scale, scale);
+        set_view(p.x, p.y, get_dimension(dim) / 2 / p.radius * zoom);
     }
 
     // view_particle
@@ -134,18 +137,16 @@ public class GameWidget extends Canvas {
     //         dist_px(p, q) = zoom * canvas_dim
 
     public void view_particles(Particle p, Particle q, double zoom, Misc.Dimension dim) {
-        double scale;
-
-        if (dim == Misc.Dimension.WIDTH)
-            scale = getWidth() / p.distance(q) * zoom;
-        else
-            scale = getHeight() / p.distance(q) * zoom;
-
+        double scale = get_dimension(dim) / p.distance(q) * zoom;
         gc.scale(scale, scale);
     }
 
-    public void set_min_radius() {
-
+    public void set_min_drawing_radius() {
+        try {
+            min_drawing_radius = gc.getTransform().inverseTransform(2.1, 0).getX();
+        } catch (NonInvertibleTransformException e) {
+            assert false : "GameWidget.set_min_radius: " + Debug.BAD_CODE_PATH;
+        }
     }
 
     void draw_particle(Particle p) {
