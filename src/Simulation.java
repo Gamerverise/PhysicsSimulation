@@ -15,17 +15,11 @@ public class Simulation {
 
     public Simulation(Universe universe, double dt_real, double dt_sim) {
 
-        // FIXME: How many permits? 0 or -1?
-        run_suspend_permit = new Semaphore(0);
-        xy_data_rw_lock = new ReentrantLock();
-
         this.universe = universe;
         this.dt_real = dt_real;
         this.dt_sim = dt_sim;
 
         time_step_counter = 0;
-
-        thread = new Thread(this::time_step_wrapper);
     }
 
     public Simulation(Simulation s, Misc.CopyType copy_type) {
@@ -41,6 +35,14 @@ public class Simulation {
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;
         time_step_counter = s.time_step_counter;
+    }
+
+    public void first_run() {
+        // FIXME: How many permits? 0 or -1?
+        run_suspend_permit = new Semaphore(0);
+        xy_data_rw_lock = new ReentrantLock();
+
+        thread = new Thread(this::time_step_wrapper);
     }
 
     void time_step_wrapper() {
@@ -84,6 +86,8 @@ public class Simulation {
         dt_real = sim.dt_real;
         dt_sim = sim.dt_sim;
         time_step_counter = 0;
+
+        // FIXME: Are the lock and semaphore in the correct state at this point?
 
         thread = new Thread(this::time_step_wrapper);
     }

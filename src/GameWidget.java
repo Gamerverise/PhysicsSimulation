@@ -57,7 +57,7 @@ public class GameWidget extends Canvas {
 
         set_min_drawing_radius();
 
-        run();
+        // FIXME: first_run() reorg
     }
 
     void shared_construction() {
@@ -69,7 +69,6 @@ public class GameWidget extends Canvas {
 
         this.simulation = new Simulation(init_simulation, Misc.CopyType.DEEP);
         is_playing = init_is_playing;
-
     }
 
     void run() {
