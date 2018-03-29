@@ -47,7 +47,7 @@ public class UI {
         stage.show();
 
         game_widget.finish_construction(
-                new Simulation(SolarSystem.solar_system_sim, Misc.CopyType.DEEP),
+                SolarSystem.solar_system_sim,
                 false,
                 SolarSystem.solar_sys_game_view_sun);
     }

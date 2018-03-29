@@ -25,24 +25,25 @@ public class SolarSystem {
     static Particle sun = new Particle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
     static Particle earth = new Particle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
 
-    static public Universe solar_sys_objects = new Universe(G, max_speed, sun, earth);
+    static public Universe solar_sys = new Universe(G, max_speed, sun, earth);
 
-    static public Universe solar_sys_objects_debug_1 = new Universe(solar_sys_objects);
-    static public Universe solar_sys_objects_debug_2 = new Universe(solar_sys_objects);
+    static public Universe solar_sys_debug_1 = new Universe(solar_sys, Misc.CopyType.DEEP);
+    static public Universe solar_sys_debug_2 = new Universe(solar_sys, Misc.CopyType.DEEP);
 
     {
         // Symmetry of original setup about x = y
-        Particle earth_2 = solar_sys_objects_debug_2.particles.get(0);
+        Particle earth_2 = solar_sys_debug_2.particles.get(0);
         earth_2.y = earth_sun_dist;
         earth_2.x = 0;
         earth_2.vy = earth_tangential_speed;
         earth_2.vx = 0;
 
         // Make an elliptical orbit
-        solar_sys_objects_debug_1.particles.get(0).rotate_velocity_abs(100);
+        solar_sys_debug_1.particles.get(0).rotate_velocity_abs(100);
     }
 
-    static Simulation solar_system_sim = new Simulation(new Universe(solar_sys_objects),
+    static Simulation solar_system_sim = new Simulation(
+            new Universe(solar_sys, Misc.CopyType.SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8     // double dt_sim = 60*8     (s) = 8 min
     );
