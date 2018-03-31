@@ -1,14 +1,11 @@
 package lib.gui.jfx_extensions;
 
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 
-import lib.gui.multi_class.*;
 import lib.java_lang_extensions.multi_class.*;
 
 public class LabelX extends Label implements Descendant
@@ -16,7 +13,7 @@ public class LabelX extends Label implements Descendant
     /***** Multi-class ****************************************/
 
     DescendantDispatcher dispatcher = new DescendantDispatcher(
-            new _AEMBOT_GUI_Ancestor(this)
+            new _GravityGameGUI_Ancestor(this)
     );
 
     /**********************************************************/

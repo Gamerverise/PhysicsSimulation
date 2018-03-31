@@ -1,0 +1,9 @@
+/*
+    Pane > Region
+*/
+
+ASSERT FALSE: Using Modena defaults
+
+.AEMBOT_Pane {
+    /* Pane has no properties of its own. */
+}

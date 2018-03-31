@@ -1,7 +1,7 @@
 package lib.gui.widgets.list_layout_options;
 
-import gui.layout_options.*;
-import gui.widgets.list_layout_options.wrappers.*;
+import lib.gui.layout_options.*;
+import lib.gui.widgets.list_layout_options.wrappers.*;
 
 abstract public class ListLayoutOption extends LayoutOption {
 

@@ -1,0 +1,10 @@
+/*
+    StackPane > Pane
+*/
+
+ASSERT FALSE: Using Modena defaults
+
+.AEMBOT_StackPane {
+    -fx-alignment:      top-left;
+}
+

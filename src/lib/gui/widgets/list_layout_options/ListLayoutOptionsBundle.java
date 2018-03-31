@@ -2,7 +2,7 @@ package lib.gui.widgets.list_layout_options;
 
 import javafx.scene.layout.Region;
 
-import gui.layout_options.*;
+import lib.gui.layout_options.*;
 
 public class ListLayoutOptionsBundle extends LayoutOptionsBundle {
 

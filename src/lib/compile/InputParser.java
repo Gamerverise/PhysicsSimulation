@@ -9,7 +9,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import lib.java_extensions.*;
+import lib.java_api_extensions.*;
 
 public class InputParser {
     static final String ASSIGNMENT_RE = "^[ \\t]*([A-Za-z_]+)[ \\t]*=(.*)";

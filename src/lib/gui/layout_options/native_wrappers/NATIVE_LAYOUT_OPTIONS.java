@@ -1,6 +1,6 @@
 package lib.gui.layout_options.native_wrappers;
 
-import gui.layout_options.*;
+import lib.gui.layout_options.*;
 
 public class NATIVE_LAYOUT_OPTIONS extends NativeLayoutOption {
     NativeLayoutOptions options;

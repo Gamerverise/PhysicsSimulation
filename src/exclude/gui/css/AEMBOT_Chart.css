@@ -1,0 +1,10 @@
+@import "AEMBOT_Region.css"
+/*
+    Chart > Region
+*/
+
+.AEMBOT_Chart {
+    -fx-legend-side:        bottom;
+    -fx-legend-visible:     true;
+    -fx-title-side:	    top;
+}

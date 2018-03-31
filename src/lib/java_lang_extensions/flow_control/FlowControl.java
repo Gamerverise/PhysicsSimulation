@@ -2,7 +2,7 @@ package lib.java_lang_extensions.flow_control;
 
 import java.util.function.IntConsumer;
 
-import java_lang_extensions.function_types.*;
+import lib.java_lang_extensions.function_types.*;
 
 public class FlowControl {
 

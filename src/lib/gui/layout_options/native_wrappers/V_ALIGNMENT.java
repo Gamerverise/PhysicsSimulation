@@ -2,7 +2,7 @@ package lib.gui.layout_options.native_wrappers;
 
 import javafx.geometry.VPos;
 
-import gui.layout_options.*;
+import lib.gui.layout_options.*;
 
 public class V_ALIGNMENT extends NativeLayoutOption {
 

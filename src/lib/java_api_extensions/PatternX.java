@@ -1,4 +1,4 @@
-package java_extensions;
+package lib.java_api_extensions;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

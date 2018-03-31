@@ -9,7 +9,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 
-import java_lang_extensions.multi_class._Ancestor;
+import lib.java_lang_extensions.multi_class._Ancestor;
 
 public class _Coin_GUI_Ancestor extends _Ancestor<Node> {
 
