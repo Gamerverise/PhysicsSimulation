@@ -8,7 +8,4 @@ public class GameViewParticle extends GameView {
         this.zoom = zoom;
         this.dim = dim;
     }
-    public void change_view(GameWidget gw) {
-        gw.view_particle(p, zoom, dim);
-    }
 }

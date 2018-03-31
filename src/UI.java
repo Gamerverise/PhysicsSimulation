@@ -6,8 +6,10 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class UI {
-    double canvas_width = 1305;
-    double canvas_height = 795;
+//    double canvas_width = 1305;
+//    double canvas_height = 795;
+    double canvas_width = 800;
+    double canvas_height = 800;
     double canvas_aspect_ratio = canvas_width / canvas_height;
 
     Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
@@ -22,8 +24,8 @@ public class UI {
 
         Group root = new Group();
 
-        game_widget = new GameWidget(800, 800,
-                                     SolarSystem.solar_sys_game_view_sun,
+        game_widget = new GameWidget(canvas_width, canvas_height,
+                                     SolarSystem.solar_sys_game_view_sun_earth,
                                      SolarSystem.solar_system_sim,
                                      false);
 
@@ -31,8 +33,8 @@ public class UI {
         Scene scene = new Scene(root, canvas_width, canvas_height);
         stage.setScene(scene);
 
-        stage.setTitle("Physics SimulationDynamic");
-        stage.setX(screen_bounds.getMaxX() - canvas_width);
+        stage.setTitle("Gravity Game");
+        stage.setX(screen_bounds.getMaxX() - canvas_width - 10);
         stage.setY(screen_bounds.getMinY());
         stage.setResizable(false);
 

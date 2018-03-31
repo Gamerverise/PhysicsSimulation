@@ -19,7 +19,7 @@ public class GameWidget extends Canvas {
     SimulationDynamic simulation;
     boolean is_running;
 
-    double min_drawing_radius;
+    double min_radius_px = 1.1;
 
     public GameWidget(double width, double height,
                       GameView init_gv,
@@ -74,9 +74,7 @@ public class GameWidget extends Canvas {
         gc.scale(1, -1);
 
         if (init_gv != null)
-            init_gv.change_view(this);
-
-        set_min_drawing_radius();
+            view(init_gv);
 
         anim_timer = new AnimationTimer() {
             public void handle(long now) {
@@ -119,26 +117,53 @@ public class GameWidget extends Canvas {
         }
     }
 
-    double get_dimension(Misc.Dimension dim) {
-        switch (dim) {
-            case WIDTH:
-                return getWidth();
-            case HEIGHT:
-                return getHeight();
-            case MAX:
-                if (getWidth() > getHeight())
-                    return getWidth();
-                else
-                    return getHeight();
-            default:
-                assert false : "GameWidget.get_dimension: " + Debug.BAD_CODE_PATH;
-                return 0;
+    void scale_x(double scale, double base_pixels) {
+        try {
+            gc.scale(scale, scale);
+            gcx.min_radius = Math.abs(gc.getTransform().inverseTransform(scale * min_radius_px / base_pixels, 0).getX());
+        } catch (NonInvertibleTransformException e) {
+            assert false : "GameWidget.scale_x: " + Debug.BAD_CODE_PATH;
         }
     }
 
-    public void set_view(double x, double y, double scale) {
-        gc.translate(x, y);
-        gc.scale(scale, scale);
+    void scale_y(double scale, double base_pixels) {
+        try {
+            gc.scale(scale, scale);
+            gcx.min_radius = Math.abs(gc.getTransform().inverseTransform(0, scale * min_radius_px / base_pixels).getY());
+        } catch (NonInvertibleTransformException e) {
+            assert false : "GameWidget.scale_y: " + Debug.BAD_CODE_PATH;
+        }
+    }
+
+    void scale(double scale, Misc.Dimension dim) {
+        switch (dim) {
+            case WIDTH:
+                scale_x(scale, getWidth());
+                break;
+            case HEIGHT:
+                scale_y(scale, getHeight());
+                break;
+            case MAX:
+                if (getWidth() > getHeight())
+                    scale_x(scale, getWidth());
+                else
+                    scale_y(scale, getHeight());
+                break;
+            case HALF_WIDTH:
+                scale_x(scale, getWidth()/2);
+                break;
+            case HALF_HEIGHT:
+                scale_y(scale, getHeight()/2);
+                break;
+            case HALF_MAX:
+                if (getWidth() > getHeight())
+                    scale_x(scale, getWidth()/2);
+                else
+                    scale_y(scale, getHeight()/2);
+                break;
+            default:
+                assert false : "GameWidget.scale: " + Debug.BAD_CODE_PATH;
+        }
     }
 
     // view_particle
@@ -149,25 +174,40 @@ public class GameWidget extends Canvas {
     //         diameter_px(p, q) = zoom * canvas_dim
 
     public void view_particle(Particle p, double zoom, Misc.Dimension dim) {
-        set_view(p.x, p.y, get_dimension(dim) / 2 / p.radius * zoom);
+        double scale = 1 / p.radius / 2 * zoom;
+        gc.translate(p.x, p.y);
+        scale(scale, dim);
     }
 
+    // FIXME: Old comment
     // view_particle
     //     Scale the current view (aka transform) so that:
     //
     //         dist_px(p, q) = zoom * canvas_dim
 
-    public void view_particles(Particle p, Particle q, double zoom, Misc.Dimension dim) {
-        double scale = get_dimension(dim) / p.distance(q) * zoom;
-        gc.scale(scale, scale);
+    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, Misc.Dimension dim) {
+        double scale = 1 / p.distance(q) * zoom;
+        gc.translate(center.x, center.y);
+        scale(scale, dim);
     }
 
-    public void set_min_drawing_radius() {
-        try {
-            min_drawing_radius = gc.getTransform().inverseTransform(2.1, 0).getX();
-        } catch (NonInvertibleTransformException e) {
-            assert false : "GameWidget.set_min_radius: " + Debug.BAD_CODE_PATH;
-        }
+    public void view(GameView gv) {
+        if (gv instanceof GameViewParticle) {
+            GameViewParticle v = (GameViewParticle) gv;
+            view_particle(v.p, v.zoom, v.dim);
+        } else if (gv instanceof GameViewTwoParticles) {
+            GameViewTwoParticles v = (GameViewTwoParticles) gv;
+            view_two_particles(v.center, v.p, v.q, v.zoom, v.dim);
+        } else
+            assert false : "GameWidget.view: " + Debug.BAD_CODE_PATH;
+    }
+
+    public void view(GameViewParticle gv) {
+        view_particle(gv.p, gv.zoom, gv.dim);
+    }
+
+    public void view(GameViewTwoParticles gv) {
+        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.dim);
     }
 
     void draw_particle(Particle p) {

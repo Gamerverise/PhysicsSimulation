@@ -48,7 +48,5 @@ public class SolarSystem {
             60*8     // double dt_sim = 60*8     (s) = 8 min
     );
 
-    static GameView solar_sys_game_view_sun = new GameViewParticle(sun, 0.01, Misc.Dimension.MAX);
-    static GameView solar_sys_game_view_earth = new GameViewParticle(earth, 0.1, Misc.Dimension.MAX);
-    static GameView solar_sys_game_view_sun_earth = new GameViewParticles(sun, earth, 0.45, Misc.Dimension.MAX);
+    static GameView solar_sys_game_view_sun_earth = new GameViewTwoParticles(sun, sun, earth, 0.95, Misc.Dimension.HALF_MAX);
 }
