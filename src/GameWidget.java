@@ -11,33 +11,56 @@ public class GameWidget extends Canvas {
 
     AnimationTimer anim_timer;
 
-    Simulation init_simulation;
-    boolean init_is_playing;
+    GameView init_gv;
 
-    Simulation simulation;
-    boolean is_playing;
+    SimulationStatic init_simulation;
+    boolean init_is_running;
+
+    SimulationDynamic simulation;
+    boolean is_running;
 
     double min_drawing_radius;
 
-    public GameWidget(double width, double height) {
+    public GameWidget(double width, double height,
+                      GameView init_gv,
+                      Universe universe,
+                      double dt_real,
+                      double dt_sim,
+                      boolean is_running)
+    {
         super(width, height);
+        finish_construction(init_gv, universe, dt_real, dt_sim, is_running);
     }
 
-    public void finish_construction(Universe universe,
+    public GameWidget(double width, double height,
+                      GameView init_gv,
+                      SimulationStatic sim,
+                      boolean is_running)
+    {
+        super(width, height);
+        finish_construction(init_gv, sim, is_running);
+    }
+
+    public void finish_construction(GameView init_gv,
+                                    Universe universe,
                                     double dt_real,
                                     double dt_sim,
-                                    boolean is_playing,
-                                    GameView gv)
+                                    boolean is_running)
     {
-        Simulation sim = new Simulation(universe, dt_real, dt_sim);
-        finish_construction(sim, is_playing, gv);
+        finish_construction(init_gv, new SimulationStatic(universe, dt_real, dt_sim), is_running);
     }
 
-    public void finish_construction(Simulation simulation, boolean is_playing, GameView gv)
-    {
-        init_simulation = simulation;
-        init_is_playing = is_playing;
+    public void finish_construction(GameView init_gv, SimulationStatic sim, boolean is_running) {
+        this.init_gv = init_gv;
 
+        init_simulation = sim;
+        init_is_running = is_running;
+
+        this.simulation = new SimulationDynamic(init_simulation, Misc.CopyType.DEEP);
+        this.is_running = init_is_running;
+    }
+
+    void init_graphics_context() {
         gc = getGraphicsContext2D();
         gcx = new GraphicsContextX(gc);
 
@@ -50,45 +73,44 @@ public class GameWidget extends Canvas {
         // Change positive y direction from down to up
         gc.scale(1, -1);
 
-        if (gv != null)
-            gv.change_view(this);
-
-        shared_construction();
+        if (init_gv != null)
+            init_gv.change_view(this);
 
         set_min_drawing_radius();
 
-        // FIXME: first_run() reorg
-    }
-
-    void shared_construction() {
         anim_timer = new AnimationTimer() {
             public void handle(long now) {
                 redraw();
             }
         };
+    }
 
-        this.simulation = new Simulation(init_simulation, Misc.CopyType.DEEP);
-        is_playing = init_is_playing;
+    void init_run() {
+        init_graphics_context();
+        run();
+    }
+    
+    void reset() {
+        anim_timer.stop();
+
+        simulation.reset(simulation);
+        is_running = init_is_running;
+        
+        init_run();
     }
 
     void run() {
-        if (is_playing)
+        if (is_running)
             toggle_run_suspend();
         else
             // Draw the screen once to see the initial state
             redraw();
     }
 
-    void reset() {
-        anim_timer.stop();
-        shared_construction();
-        run();
-    }
-
     void toggle_run_suspend() {
-        is_playing = !is_playing;
+        is_running = !is_running;
 
-        if (is_playing == true) {
+        if (is_running == true) {
             anim_timer.start();
             simulation.run();
         } else {
@@ -166,7 +188,7 @@ public class GameWidget extends Canvas {
 
         simulation.xy_data_rw_lock.unlock();
 
-        if (is_playing)
+        if (is_running)
             gc.fillText("Playing", 5, 50);
         else
             gc.fillText("Paused", 5, 50);

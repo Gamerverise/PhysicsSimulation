@@ -42,7 +42,7 @@ public class SolarSystem {
         solar_sys_debug_1.particles.get(0).rotate_velocity_abs(100);
     }
 
-    static Simulation solar_system_sim = new Simulation(
+    static SimulationStatic solar_system_sim = new SimulationStatic(
             new Universe(solar_sys, Misc.CopyType.SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8     // double dt_sim = 60*8     (s) = 8 min

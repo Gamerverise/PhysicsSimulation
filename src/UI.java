@@ -22,13 +22,16 @@ public class UI {
 
         Group root = new Group();
 
-        game_widget = new GameWidget(800, 800);
+        game_widget = new GameWidget(800, 800,
+                                     SolarSystem.solar_sys_game_view_sun,
+                                     SolarSystem.solar_system_sim,
+                                     false);
 
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);
         stage.setScene(scene);
 
-        stage.setTitle("Physics Simulation");
+        stage.setTitle("Physics SimulationDynamic");
         stage.setX(screen_bounds.getMaxX() - canvas_width);
         stage.setY(screen_bounds.getMinY());
         stage.setResizable(false);
@@ -46,9 +49,6 @@ public class UI {
 
         stage.show();
 
-        game_widget.finish_construction(
-                SolarSystem.solar_system_sim,
-                false,
-                SolarSystem.solar_sys_game_view_sun);
+        game_widget.init_run();
     }
 }
