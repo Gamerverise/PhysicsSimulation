@@ -1,0 +1,570 @@
+/**************************************************
+
+ /////// Node /////////
+
+ // ---- autosize ----
+
+ void 	autosize()
+        If the node is resizable, will set its layout bounds to its current preferred width and height.
+
+        Calls resize with arguments based on min/pref/max, but only if the node isResizable, and still
+        resize does nothing.
+
+ // --- min/pref/max ----
+
+ double 	minWidth(double height)
+        Returns the node's minimum width for use in layout calculations.
+
+        Just calls prefWidth.
+
+ double 	prefWidth(double height)
+        Returns the node's preferred width for use in layout calculations.
+
+        Just calls getLayoutBounds().getWidth().
+
+ double 	maxWidth(double height)
+        Returns the node's maximum width for use in layout calculations.
+
+        Just calls prefWidth.
+
+ // ---- re- ----
+
+ void 	relocate(double x, double y)
+        Sets the node's layoutX and layoutY translation properties in order to relocate this node to the x,y location in the parent.
+
+        Just calls setLayoutX and setLayoutY.
+
+ void 	resize(double width, double height)
+        If the node is resizable, will set its layout bounds to the specified width and height.
+
+        Does nothing. Function body is empty.
+
+ void 	resizeRelocate(double x, double y, double width, double height)
+        If the node is resizable, will set its layout bounds to the specified width and height.
+
+        Just calls relocate and resize.
+
+ // ---- set ----
+
+ void 	setLayoutX(double value)
+        Sets the value of the property layoutX.
+
+        Just that simple.
+
+ void 	setLayoutY(double value)
+        Sets the value of the property layoutY.
+
+        Just that simple.
+
+ /////// Parent ///////
+
+ // ---- compute ----
+
+ protected double 	computeMinWidth(double height)
+        Calculates the minimum width of this Parent.
+
+        Just calls prefWidth--yes prefWidth.
+
+ protected double 	computePrefWidth(double height)
+        Calculates the preferred width of this Parent.
+
+        Just adds up the preferred widths of the children.
+
+ // ---- minWidth ----
+
+ double 	minWidth(double height)
+        Returns the node's minimum width for use in layout calculations.
+
+        Just calls computeMinWidth.
+
+ // ---- pref ----
+
+ double 	prefWidth(double height)
+        Returns the node's preferred width for use in layout calculations.
+
+        Just calls computePrefWidth.
+
+ // ---- layout ----
+
+ void 	layout()
+        Executes a top-down layout pass on the scene graph under this parent.
+
+        Breadth-first traversal using layout and layoutChildren.
+
+ protected void 	layoutChildren()
+        Invoked during the layout pass to layout the children in this Parent.
+
+        Just calls autosize for each child. Intended to be overridden.
+
+ // ---- request ----
+ void 	requestLayout()
+        Requests a layout pass to be performed before the next scene is rendered.
+
+        Probably nothing tricky here.
+
+ protected void 	requestParentLayout()
+        Requests a layout pass of the parent to be performed before the next scene is rendered.
+
+        Essentially just calls getParent().requestLayout().
+
+ /////// Region ///////
+
+ // ---- compute ----
+
+ protected double 	computeMaxWidth(double height)
+        Computes the maximum width for this region.
+
+        Returns Double.MAX_VALUE.
+
+ protected double 	computeMinWidth(double height)
+        Computes the minimum height of this region.
+
+        Returns the sum of the left and right insets.
+
+ protected double 	computePrefWidth(double height)
+        Computes the preferred width of this region for the given height.
+
+        Returns the sum of the left inset, super.computePrefWidth, and the right inset.
+
+ // ---- minWidth & maxWidth ----
+
+ double 	minWidth(double height)
+        Called during layout to determine the minimum width for this node.
+
+        Returns either the previously set min width, computeMinWidth, or prefWidth.
+
+ double maxWidth(double height)
+        Called during layout to determine the maximum height for this node.
+
+        Returns either the previously set max width, computeMaxWidth, or prefWidth.
+
+ // ---- layoutInArea ----
+
+ protected void 	layoutInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, Insets margin, HPos halignment, VPos valignment)
+        Utility method which lays out the child within an area of this region defined by areaX, areaY, areaWidth x areaHeight, with a baseline offset relative to that area.
+
+        Ultimately calls resize and position. Except for the insets, the new size comes from boundedNodeSizeWithBias,
+        somewhere within which the real work happens.
+
+ // ---- positionInArea ----
+
+ protected void 	positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, HPos halignment, VPos valignment)
+        Utility method which positions the child within an area of this region defined by areaX, areaY, areaWidth x areaHeight, with a baseline offset relative to that area.
+
+        Just calls the static position in area.
+
+ static void 	positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, Insets margin, HPos halignment, VPos valignment, boolean isSnapToPixel)
+        Utility method which positions the child within an area of this region defined by areaX, areaY, areaWidth x areaHeight, with a baseline offset relative to that area.
+
+        Just calls position.
+
+ // ---- pref ----
+
+ double 	prefWidth(double height)
+        Called during layout to determine the preferred width for this node.
+
+        Returns either the previously set max width or computeMaxWidth.
+
+ // ---- re- ----
+
+ void 	resize(double width, double height)
+        Invoked by the region's parent during layout to set the region's width and height.
+
+        Just calls setWidth and setHeight.
+
+ // ---- setMin/Pref/Max ----
+
+ void 	setMinWidth(double value)
+        Sets the value of the property minWidth.
+
+        Just calls minWidth.
+
+ void 	setMaxWidth(double value)
+        Sets the value of the property maxWidth.
+
+        Just calls maxWidth.
+
+ void 	setMinSize(double minWidth, double minHeight)
+        Convenience method for overriding the region's computed minimum width and height.
+
+        Just calls setMinWidth and setMinHeight
+
+ void 	setMaxSize(double maxWidth, double maxHeight)
+        Convenience method for overriding the region's computed maximum width and height.
+
+        Just calls setMaxWidth and setMaxHeight
+
+ void 	setPrefWidth(double value)
+        Sets the value of the property prefWidth.
+
+        Just calls prefWidth.
+
+ void 	setPrefSize(double prefWidth, double prefHeight)
+        Convenience method for overriding the region's computed preferred width and height.
+
+        Just calls setPrefWidth and setPrefHeight.
+
+ // ---- set ----
+
+ protected void 	setWidth(double value)
+        Sets the value of the property width.
+
+        Just that simple.
+
+ // ---- private ---
+
+ private static void position(Node child, double areaX, double areaY, double areaWidth, double areaHeight,
+                           double areaBaselineOffset,
+                           double topMargin, double rightMargin, double bottomMargin, double leftMargin,
+                           HPos hpos, VPos vpos, boolean isSnapToPixel) {
+
+        Essentially just calls relocate. Includes adjustments for margins, baseline offset, and snapToPixel.
+
+ **************************************************
+
+ ============ Positioning ============
+
+    Node.resizeRelocate ->
+        Node.resize ->
+            [no-op]
+        -AND-
+        Node.relocate ->
+            Node.setLayoutX
+            -AND-
+            Node.setLayoutY
+
+    Node.relocate ->
+        Node.setLayoutX
+        -AND-
+        Node.setLayoutY
+
+    Node.setLayoutX
+
+    Node.setLayoutY
+
+    Region.layoutInArea ->
+       [ultimately calls resize and position; except for the insets, the new size comes from boundedNodeSizeWithBias,
+        somewhere within which the real work happens]
+        Region.resize ->
+            Region.setWidth
+            -AND-
+            Region.setHeight
+        -AND-
+        private static Region.position ->
+            [essentially just calls relocate; includes adjustments for margins, baseline offset, and snapToPixel]
+            Node.relocate ->
+                Node.setLayoutX
+                -AND-
+                Node.setLayoutY
+
+    Region.positionInArea ->
+        static Region.positionInArea ->
+            private static Region.position ->
+                [essentially just calls relocate; includes adjustments for margins, baseline offset, and snapToPixel]
+                Node.relocate ->
+                    Node.setLayoutX
+                    -AND-
+                    Node.setLayoutY
+
+    static Region.positionInArea ->
+        private static Region.position ->
+            [essentially just calls relocate; includes adjustments for margins, baseline offset, and snapToPixel]
+            Node.relocate ->
+                Node.setLayoutX
+                -AND-
+                Node.setLayoutY
+
+    private static Region.position ->
+        [essentially just calls relocate; includes adjustments for margins, baseline offset, and snapToPixel]
+        Node.relocate ->
+            Node.setLayoutX
+            -AND-
+            Node.setLayoutY
+
+ ============ Sizing ============
+
+    Node.autosize ->
+        Node.resize ->
+            [no-op]
+
+    Node.resize ->
+        [no-op]
+
+    Node.resizeRelocate ->
+        Node.resize ->
+            [no-op]
+
+    Region.setWidth
+
+    Region.resize ->
+        Region.setWidth
+        -AND-
+        Region.setHeight
+
+ ============ Size Constraints ============
+
+    Node.minWidth ->
+        Node.prefWidth ->
+            Node.getLayoutBounds().getWidth()
+
+    Node.prefWidth(double height)
+        Node.getLayoutBounds().getWidth();
+
+    Node.maxWidth ->
+        Node.prefWidth ->
+            Node.getLayoutBounds().getWidth()
+
+    Parent.computeMinWidth ->
+        Parent.prefWidth (yes prefWidth) ->
+            Parent.computePrefWidth ->
+                [adds up the preferred widths of the children]
+
+    Parent.computePrefWidth ->
+        [adds up the preferred widths of the children]
+
+    Parent.minWidth ->
+        Parent.computeMinWidth ->
+            Parent.prefWidth (yes prefWidth) ->
+                Parent.computePrefWidth ->
+                    [adds up the preferred widths of the children]
+
+    Parent.prefWidth ->
+        Parent.computePrefWidth ->
+            [adds up the preferred widths of the children]
+
+    Region.computeMaxWidth ->
+        [returns Double.MAX_VALUE]
+
+    Region.computeMinWidth ->
+        [returns the sum of the left and right insets]
+
+    Region.computePrefWidth ->
+        [returns the sum of the left inset, super.computePrefWidth, and the right inset]
+
+    Region.minWidth ->
+        [returns the previously set min width]
+        -OR-
+        Region.computeMinWidth ->
+            [returns the sum of the left and right insets]
+        -OR-
+        Region.prefWidth ->
+            [returns the previously set pref width]
+            -OR-
+            super.prefWidth ->
+                Parent.prefWidth ->
+                    Parent.computePrefWidth ->
+                        [adds up the preferred widths of the children]
+
+    Region.maxWidth ->
+        [returns the previously set max width]
+        -OR-
+        Region.computeMaxWidth ->
+            [returns Double.MAX_VALUE]
+        -OR-
+        Region.prefWidth ->
+            [returns the previously set pref width]
+            -OR-
+            super.prefWidth ->
+                Parent.prefWidth ->
+                    Parent.computePrefWidth ->
+                        [adds up the preferred widths of the children]
+
+    Region.prefWidth
+        [returns the previously set pref width]
+        -OR-
+        Region.computePrefWidth ->
+            [returns the sum of the left inset, super.computePrefWidth, and the right inset]
+
+    Region.setMinWidth ->
+        Region.minWidth.set
+
+    Region.setMaxWidth ->
+        Region.maxWidth.set
+
+    Region.setMinSize ->
+        Region.setMinWidth ->
+            minWidth.set
+        -AND-
+        Region.setMinHeight ...
+
+    Region.setMaxSize ->
+        Region.maxWidth.set
+        -AND-
+        Region.setMaxHeight ...
+
+    Region.setPrefWidth ->
+        Region.prefWidth.set
+
+    Region.setPrefSize ->
+        Region.setPrefWidth ->
+            Region.prefWidth.set
+        -AND-
+        Region.setPrefHeight ...
+
+ ============ Layout ============
+
+    Parent.layout ->
+        [does a breadth-first traversal using Parent.layout and Parent.layoutChildren]
+
+    Parent.layoutChildren ->
+        [calls Parent.autosize for each child; intended to be overridden]
+
+    Parent.requestLayout ->
+        [sets a flag to do a layout on the next frame]
+
+    Parent.requestParentLayout ->
+        Parent.getParent().requestLayout ->
+            [sets a flag to do a layout on the next frame]
+
+ **************************************************/
+
+ /*******************************************************************************
+ *
+ * NOTE
+ *      Right now, this file is only for notes about the JavaFX Region class and related aspects of
+ *      the JavaFX framework.
+ *
+ *******************************************************************************/
+
+/**
+ * Region is the base class for all JavaFX Node-based UI Controls, and all layout containers.
+ * It is a resizable Parent node which can be styled from CSS. It can have multiple backgrounds
+ * and borders. It is designed to support as much of the CSS3 specification for backgrounds
+ * and borders as is relevant to JavaFX.
+ *
+ * The full specification is available at "http://www.w3.org/TR/2012/CR-css3-background-20120724/".
+ *
+ * Every Region has its layout bounds, which are specified to be (0, 0, width, height). A Region might draw outside
+ * these bounds. The content area of a Region is the area which is occupied for the layout of its children.
+ * This area is, by default, the same as the layout bounds of the Region, but can be modified by either the
+ * properties of a border (either with BorderStrokes or BorderImages), and by padding. The padding can
+ * be negative, such that the content area of a Region might extend beyond the layout bounds of the Region,
+ * but does not affect the layout bounds.
+ *
+ * A Region has a Background, and a Border, although either or both of these might be empty. The Background
+ * of a Region is made up of zero or more BackgroundFills, and zero or more BackgroundImages. Likewise, the
+ * border of a Region is defined by its Border, which is made up of zero or more BorderStrokes and
+ * zero or more BorderImages. All BackgroundFills are drawn first, followed by BackgroundImages, BorderStrokes,
+ * and finally BorderImages. The content is drawn above all backgrounds and borders. If a BorderImage is
+ * present (and loaded all images properly), then no BorderStrokes are actually drawn, although they are
+ * considered for computing the position of the content area (see the stroke width property of a BorderStroke).
+ * These semantics are in line with the CSS 3 specification. The purpose of these semantics are to allow an
+ * application to specify a fallback BorderStroke to be displayed in the case that an ImageStroke fails to
+ * download or load.
+ *
+ * By default a Region appears as a Rectangle. A BackgroundFill radii might cause the Rectangle to appear rounded.
+ * This affects not only making the visuals look like a rounded rectangle, but it also causes the picking behavior
+ * of the Region to act like a rounded rectangle, such that locations outside the corner radii are ignored. A
+ * Region can be made to use any shape, however, by specifing the shape property. If a shape is specified,
+ * then all BackgroundFills, BackgroundImages, and BorderStrokes will be applied to the shape. BorderImages are
+ * not used for Regions which have a shape specified.
+ *
+ * Although the layout bounds of a Region are not influenced by any Border or Background, the content area
+ * insets and the picking area of the Region are. The insets of the Region define the distance
+ * between the edge of the layout bounds and the edge of the content area. For example, if the Region
+ * layout bounds are (x=0, y=0, width=200, height=100), and the insets are (top=10, right=20, bottom=30, left=40),
+ * then the content area bounds will be (x=40, y=10, width=140, height=60). A Region subclass which is laying
+ * out its children should compute and honor these content area bounds.
+ *
+ * By default a Region inherits the layout behavior of its superclass, Parent,
+ * which means that it will resize any resizable child nodes to their preferred
+ * size, but will not reposition them.  If an application needs more specific
+ * layout behavior, then it should use one of the Region subclasses:
+ *
+ *      StackPane, HBox, VBox, TilePane, FlowPane, BorderPane, GridPane, AnchorPane
+ *
+ * To implement a more custom layout, a Region subclass must override
+ *
+ *      computePrefWidth(double),
+ *      computePrefHeight(double), and
+ *      layoutChildren()
+ *
+ * Note that layoutChildren is called automatically by the scene graph while executing a top-down layout pass
+ * and it should not be invoked directly by the region subclass.
+ *
+ * Region subclasses which layout their children will position nodes by setting
+ *      setLayoutX(double)
+ *      setLayoutY(double)
+ * and do not alter
+ *      setTranslateX(double)/translateX
+ *      setTranslateY(double)/translateY
+ * which are reserved for adjustments and animation.
+ *
+ * (Since JavaFX 2.0)
+ */
+
+/**************************************************
+
+private ReadOnlyDoubleWrapper width
+private double _width
+
+protected void setWidth(double)
+public final double getWidth()
+
+public final ReadOnlyDoubleProperty widthProperty()
+
+***************************************************
+
+private DoubleProperty prefWidth
+private double _prefWidth
+
+public final void setPrefWidth(double value)
+public final double getPrefWidth()
+
+public final DoubleProperty prefWidthProperty()
+
+-------------
+
+public final double prefWidth(double height)
+    prefWidth returns the effective prefWidth. If the prefWidth was set to a value other than USE_COMPUTED_SIZE,
+    then that value is returned. Otherwise, prefWidth from base class Parent is called using super.prefWidth().
+    If the object does not have a vertical bias, then prefWidthCache is returned, but populated first by a call
+    to computePrefWidth if prefWidthCache is invalid.
+
+**************************************************
+
+ * Computes the preferred width of this region for the given height.
+ * Region subclasses should override this method to return an appropriate
+ * value based on their content and layout strategy.  If the subclass
+ * doesn't have a VERTICAL content bias, then the height parameter can be
+ * ignored.
+
+ protected double Region.computePrefWidth(double height) {
+    final double w = super.computePrefWidth(height);
+    return getInsets().getLeft() + w + getInsets().getRight();
+}
+
+**************************************************
+
+ * Calculates the preferred height of this Parent. The default
+ * implementation calculates this height as the height of the area occupied
+ * by its managed children when they are positioned at their current
+ * positions at their preferred heights.
+
+ protected double computePrefWidth(double height) {
+    double minX = 0;
+    double maxX = 0;
+    for (int i=0, max=children.size(); i<max; i++) {
+        Node node = children.get(i);
+        if (node.isManaged()) {
+            final double x = node.getLayoutBounds().getMinX() + node.getLayoutX();
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x + boundedSize(node.prefWidth(-1), node.minWidth(-1), node.maxWidth(-1)));
+        }
+    }
+    return maxX - minX;
+}
+
+**************************************************
+
+Node
+
+    public double prefWidth(double height) {
+        final double result = getLayoutBounds().getWidth();
+        return Double.isNaN(result) || result < 0 ? 0 : result;
+    }
+
+    public void resize(double width, double height) {
+    }
+
+***************************************************/

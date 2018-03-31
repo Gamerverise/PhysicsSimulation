@@ -1,0 +1,16 @@
+/*
+    LineChart > XYChart
+*/
+
+.AEMBOT_LineChart {
+    -fx-create-symbols:     true;
+}
+
+/*
+    FIXME
+
+"chart-series-line series<i> default-color<j>" 	Where <i> is the index of the series and <j> is the series’ color index 	Node
+"chart-line-symbol series<i> data<j> default-color<k>" 	Where <i> is the index of the series, <j> is the index of the data within the series, and <k> is the series’ color index 	Node
+"chart-line-symbol series<i> default-color<j>" 	Where <i> is the index of the series and <j> is the series’ color index 	LegendItem
+
+*/

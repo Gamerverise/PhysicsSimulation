@@ -1,0 +1,17 @@
+/*
+    Text > Shape
+*/
+
+ASSERT FALSE: Using Modena defaults
+
+.AEMBOT_Text {
+/*
+    -fx-font:                       Font.DEFAULT;       // Font.DEFAULT is not actually valid CSS. The default font comes from the Font class in Java, apparently.
+                                                        // Is this related to the "inherit" value.
+*/
+    -fx-font-smoothing-type:        gray;
+    -fx-strikethrough:              false;
+    -fx-text-alignment:             left;
+    -fx-text-origin:                baseline;
+    -fx-underline:                  false;
+}

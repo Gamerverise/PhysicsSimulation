@@ -1,0 +1,17 @@
+ASSERT FALSE: Using Modena defaults
+
+.AEMBOT_Node {
+    -fx-blend-mode:         null;
+    -fx-cursor:             null;
+    -fx-effect:             null;
+    -fx-focus-traversable: 	false;
+    -fx-opacity:            1.0;
+    -fx-rotate:             0;
+    -fx-scale-x:            1;
+    -fx-scale-y:            1;
+    -fx-scale-z:            1;
+    -fx-translate-x:        0;
+    -fx-translate-y:        0;
+    -fx-translate-z:        0;
+    visibility:             visible;
+}

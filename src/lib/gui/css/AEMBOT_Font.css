@@ -1,0 +1,13 @@
+/*
+    Font > Object
+*/
+
+ASSERT FALSE: Using Modena defaults
+
+.AEMBOT_Font {
+    -fx-font:           inherit;
+    -fx-font-family:    inherit;
+    -fx-font-size:      inherit;
+    -fx-font-style:     inherit;
+    -fx-font-weight:    inherit;
+}
