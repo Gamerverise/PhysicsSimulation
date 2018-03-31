@@ -1,4 +1,4 @@
-package gui.multi_class;
+package lib.gui.multi_class;
 
 import javafx.scene.layout.Region;
 

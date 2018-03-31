@@ -1,6 +1,6 @@
-package gui.layout_options.native_wrappers;
+package lib.gui.layout_options.native_wrappers;
 
-import gui.layout_options.*;
+import lib.gui.layout_options.*;
 
 public class AREA_BASELINE_OFFSET extends NativeLayoutOption {
 

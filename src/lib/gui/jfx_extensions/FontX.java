@@ -1,4 +1,4 @@
-package gui.jfx_extensions;
+package lib.gui.jfx_extensions;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;

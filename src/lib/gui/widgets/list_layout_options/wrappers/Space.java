@@ -1,4 +1,4 @@
-package gui.widgets.list_layout_options.wrappers;
+package lib.gui.widgets.list_layout_options.wrappers;
 
 import gui.layout_options.*;
 import gui.widgets.list_layout_options.*;

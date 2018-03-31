@@ -1,9 +1,0 @@
-/*
-    ValueAxis > Axis
-*/
-
-.AEMBOT_ValueAxis {
-    -fx-minor-tick-length:      5;
-    -fx-minor-tick-count:       5;
-    -fx-minor-tick-visible:     true;
-}

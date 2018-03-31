@@ -8,14 +8,12 @@ import javafx.geometry.Rectangle2D;
 
 import tuples.TopLeftBottomRight;
 import gui.GUI;
-import gui.widgets.window_widget_support.AEMBOT_Stylesheets;
 
-import static java.lang.Double.NaN;
 import static gui.widgets.WinDecorationInfo_px.Heuristic.HEURISTIC;
 import static gui.widgets.WindowWidget.SizeChangeFlag.*;
 
 public class WindowWidget {
-    AEMBOT_Stylesheets stylesheets = new AEMBOT_Stylesheets();
+    gui.widgets.window_widget_support.GravityGameStylesheets stylesheets = new gui.widgets.window_widget_support.GravityGameStylesheets();
 
     public GUI gui;
     public Stage stage;

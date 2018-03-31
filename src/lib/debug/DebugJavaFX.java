@@ -6,9 +6,9 @@ import javafx.scene.Parent;
 import static javafx.scene.text.FontPosture.REGULAR;
 import static javafx.scene.text.FontWeight.NORMAL;
 
-import text_io.*;
+import lib.text_io.*;
 
-public class Debug {
+public class DebugJavaFX {
 
     public static String JavaFX_node_tree_debug(Node node, int tree_level) {
         String node_info = FormattedText.spaces(tree_level) + "ID: " + node.getId() + " Classes: " + node.getStyleClass().toString() + "\n";

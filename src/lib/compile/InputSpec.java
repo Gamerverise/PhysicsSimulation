@@ -1,6 +1,6 @@
 package lib.compile;
 
-import java_lang_extensions.var_args.*;
+import lib.java_lang_extensions.var_args.*;
 
 public class InputSpec {
     public static class Atom {

@@ -1,4 +1,4 @@
-package jfx_extensions;
+package lib.jfx_extensions;
 
 class RegionX {
 

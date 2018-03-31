@@ -1,6 +1,6 @@
 package gui.widgets.window_widget_support;
 
-public class AEMBOT_Stylesheets {
+public class GravityGameStylesheets {
     static String URI_relative_prefix = ".idea/src/gui/css/AEMBOT";
 
     static public String URI_filenames[] = {

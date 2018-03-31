@@ -1,4 +1,4 @@
-package gui.layout_options;
+package lib.gui.layout_options;
 
 import javafx.scene.layout.Region;
 

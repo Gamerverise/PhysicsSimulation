@@ -18,29 +18,19 @@ import javafx.scene.image.Image;
 import javafx.scene.input.InputMethodRequests;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Transform;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.*;
 import javafx.stage.DirectoryChooser;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 
 import java_extensions.*;
 import gui.widgets.*;
-import gui.widgets.window_widget_support.AEMBOT_Stylesheets;
-
-import static javafx.geometry.Orientation.HORIZONTAL;
-import static javafx.geometry.Orientation.VERTICAL;
 
 public class GUI extends Application {
     public static Scene dummy_scene_to_load_and_hold_AEMBOT_stylesheet;
@@ -102,7 +92,7 @@ public class GUI extends Application {
                 dummy_scene_to_load_and_hold_AEMBOT_stylesheet = new Scene(new Group());
 
                 dummy_scene_to_load_and_hold_AEMBOT_stylesheet
-                        .getStylesheets().addAll(AEMBOT_Stylesheets.get_URIs(repo_path_URI_string));
+                        .getStylesheets().addAll(gui.widgets.window_widget_support.GravityGameStylesheets.get_URIs(repo_path_URI_string));
 
                 map_img = new Image(repo_path_URI_string + ".idea/data_files/Map/RealTimeMap_Test.png");
                 robot_img = new Image(repo_path_URI_string + ".idea/data_files/Map/Robot.png");

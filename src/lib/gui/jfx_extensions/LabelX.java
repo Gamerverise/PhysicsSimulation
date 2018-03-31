@@ -1,4 +1,4 @@
-package gui.jfx_extensions;
+package lib.gui.jfx_extensions;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
@@ -8,8 +8,8 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-import gui.multi_class.*;
-import java_lang_extensions.multi_class.*;
+import lib.gui.multi_class.*;
+import lib.java_lang_extensions.multi_class.*;
 
 public class LabelX extends Label implements Descendant
 {

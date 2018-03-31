@@ -1,9 +1,0 @@
-/*
-    Parent > Region
-*/
-
-ASSERT FALSE: Using Modena defaults
-
-.AEMBOT_Parent {
-    /* Parent has no properties of its own. */
-}

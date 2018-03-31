@@ -1,4 +1,4 @@
-package java_extensions;
+package lib.java_api_extensions;
 
 import java.io.BufferedReader;
 import java.io.File;
