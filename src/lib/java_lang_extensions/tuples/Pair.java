@@ -1,4 +1,4 @@
-package java_lang_extensions.tuples;
+package lib.java_lang_extensions.tuples;
 
 public class Pair<A, B> {
 

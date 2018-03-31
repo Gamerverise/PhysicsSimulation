@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class UI {
-//    double canvas_width = 1305;
+public class GravityGame exitends Application {
+    //    double canvas_width = 1305;
 //    double canvas_height = 795;
     double canvas_width = 800;
     double canvas_height = 800;
@@ -19,15 +19,26 @@ public class UI {
 
     GameWidget game_widget;
 
-    UI(Stage stage) {
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage stage) {
+        build_gui();
+        stage.show();
+        game_widget.init_run();
+    }
+
+    public void build_ui(Stage stage) {
         this.stage = stage;
 
         Group root = new Group();
 
         game_widget = new GameWidget(canvas_width, canvas_height,
-                                     SolarSystem.solar_sys_game_view_sun_earth,
-                                     SolarSystem.solar_system_sim,
-                                     false);
+                SolarSystem.solar_sys_game_view_sun_earth,
+                SolarSystem.solar_system_sim,
+                false);
 
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);
@@ -48,9 +59,5 @@ public class UI {
                     break;
             }
         });
-
-        stage.show();
-
-        game_widget.init_run();
     }
 }

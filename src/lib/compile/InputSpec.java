@@ -1,4 +1,4 @@
-package compile;
+package lib.compile;
 
 import java_lang_extensions.var_args.*;
 

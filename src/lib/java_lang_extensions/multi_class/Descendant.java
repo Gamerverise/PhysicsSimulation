@@ -1,4 +1,4 @@
-package java_lang_extensions.multi_class;
+package lib.java_lang_extensions.multi_class;
 
 import java.util.HashMap;
 

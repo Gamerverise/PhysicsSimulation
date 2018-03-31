@@ -1,4 +1,4 @@
-package tuples;
+package lib.tuples;
 
 public class TopLeftBottomRight<T extends Number> {
 

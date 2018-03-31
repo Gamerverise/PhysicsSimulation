@@ -1,4 +1,4 @@
-package compile;
+package lib.compile;
 
 import java.util.Scanner;
 

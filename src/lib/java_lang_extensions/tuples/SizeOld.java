@@ -1,4 +1,4 @@
-package tuples;
+package lib.tuples;
 
 public class SizeOld<T extends Number> {
 

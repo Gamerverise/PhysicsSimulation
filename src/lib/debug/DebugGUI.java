@@ -1,4 +1,4 @@
-package debug;
+package lib.debug;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;

@@ -1,4 +1,4 @@
-package debug;
+package lib.debug;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
