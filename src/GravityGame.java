@@ -1,9 +1,13 @@
+import gui.GameWidget;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import missions.SolarSystem;
+
+import static javafx.application.Application.launch;
 
 public class GravityGame exitends Application {
     //    double canvas_width = 1305;

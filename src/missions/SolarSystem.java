@@ -1,4 +1,9 @@
+package missions;
+
 import javafx.scene.paint.Color;
+import model.Particle;
+import model.Universe;
+import simulation.SimulationStatic;
 
 public class SolarSystem {
     // Units are meters (m) and seconds (s)
@@ -27,8 +32,8 @@ public class SolarSystem {
 
     static public Universe solar_sys = new Universe(G, max_speed, sun, earth);
 
-    static public Universe solar_sys_debug_1 = new Universe(solar_sys, Misc.CopyType.DEEP);
-    static public Universe solar_sys_debug_2 = new Universe(solar_sys, Misc.CopyType.DEEP);
+    static public Universe solar_sys_debug_1 = new Universe(solar_sys, Enum.CopyType.DEEP);
+    static public Universe solar_sys_debug_2 = new Universe(solar_sys, Enum.CopyType.DEEP);
 
     {
         // Symmetry of original setup about x = y
@@ -43,10 +48,10 @@ public class SolarSystem {
     }
 
     static SimulationStatic solar_system_sim = new SimulationStatic(
-            new Universe(solar_sys, Misc.CopyType.SHALLOW),
+            new Universe(solar_sys, Enum.CopyType.SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8     // double dt_sim = 60*8     (s) = 8 min
     );
 
-    static GameView solar_sys_game_view_sun_earth = new GameViewTwoParticles(sun, sun, earth, 0.95, Misc.Dimension.HALF_MAX);
+    static GameView solar_sys_game_view_sun_earth = new GameViewTwoParticles(sun, sun, earth, 0.95, Enum.Dimension.HALF_MAX);
 }

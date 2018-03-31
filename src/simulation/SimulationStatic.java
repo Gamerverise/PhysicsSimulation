@@ -1,3 +1,7 @@
+package simulation;
+
+import model.Universe;
+
 public class SimulationStatic {
     Universe universe;
     double dt_real;
@@ -10,15 +14,15 @@ public class SimulationStatic {
         this.dt_sim = dt_sim;
     }
 
-    public SimulationStatic(SimulationStatic s, Misc.CopyType copy_type) {
+    public SimulationStatic(SimulationStatic s, Enums.CopyType copy_type) {
         copy(s, copy_type);
     }
 
-    void copy(SimulationStatic s, Misc.CopyType copy_type) {
-        if (copy_type == Misc.CopyType.SHALLOW)
+    void copy(SimulationStatic s, Enums.CopyType copy_type) {
+        if (copy_type == Enums.CopyType.SHALLOW)
             universe = s.universe;
         else
-            universe = new Universe(s.universe, Misc.CopyType.DEEP);
+            universe = new Universe(s.universe, Enums.CopyType.DEEP);
 
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;

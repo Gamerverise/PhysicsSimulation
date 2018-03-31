@@ -1,9 +1,16 @@
+package gui;
+
+import java_api_extensions.GraphicsContextX;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.transform.NonInvertibleTransformException;
+import model.Particle;
+import model.Universe;
+import simulation.SimulationDynamic;
+import simulation.SimulationStatic;
 
 public class GameWidget extends Canvas {
     GraphicsContextX gcx;
@@ -56,7 +63,7 @@ public class GameWidget extends Canvas {
         init_simulation = sim;
         init_is_running = is_running;
 
-        this.simulation = new SimulationDynamic(init_simulation, Misc.CopyType.DEEP);
+        this.simulation = new SimulationDynamic(init_simulation, Enums.CopyType.DEEP);
         this.is_running = init_is_running;
     }
 
@@ -122,7 +129,7 @@ public class GameWidget extends Canvas {
             gc.scale(scale, scale);
             gcx.min_radius = Math.abs(gc.getTransform().inverseTransform(scale * min_radius_px / base_pixels, 0).getX());
         } catch (NonInvertibleTransformException e) {
-            assert false : "GameWidget.scale_x: " + Debug.BAD_CODE_PATH;
+            assert false : "GameWidget.scale_x: " + RuntimeErrors.BAD_CODE_PATH;
         }
     }
 
@@ -131,11 +138,11 @@ public class GameWidget extends Canvas {
             gc.scale(scale, scale);
             gcx.min_radius = Math.abs(gc.getTransform().inverseTransform(0, scale * min_radius_px / base_pixels).getY());
         } catch (NonInvertibleTransformException e) {
-            assert false : "GameWidget.scale_y: " + Debug.BAD_CODE_PATH;
+            assert false : "GameWidget.scale_y: " + RuntimeErrors.BAD_CODE_PATH;
         }
     }
 
-    void scale(double scale, Misc.Dimension dim) {
+    void scale(double scale, Enum.Dimension dim) {
         switch (dim) {
             case WIDTH:
                 scale_x(scale, getWidth());
@@ -162,7 +169,7 @@ public class GameWidget extends Canvas {
                     scale_y(scale, getHeight()/2);
                 break;
             default:
-                assert false : "GameWidget.scale: " + Debug.BAD_CODE_PATH;
+                assert false : "GameWidget.scale: " + RuntimeErrors.BAD_CODE_PATH;
         }
     }
 
@@ -173,7 +180,7 @@ public class GameWidget extends Canvas {
     //     and
     //         diameter_px(p, q) = zoom * canvas_dim
 
-    public void view_particle(Particle p, double zoom, Misc.Dimension dim) {
+    public void view_particle(Particle p, double zoom, Enum.Dimension dim) {
         double scale = 1 / p.radius / 2 * zoom;
         gc.translate(p.x, p.y);
         scale(scale, dim);
@@ -185,7 +192,7 @@ public class GameWidget extends Canvas {
     //
     //         dist_px(p, q) = zoom * canvas_dim
 
-    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, Misc.Dimension dim) {
+    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, Enum.Dimension dim) {
         double scale = 1 / p.distance(q) * zoom;
         gc.translate(center.x, center.y);
         scale(scale, dim);
@@ -199,7 +206,7 @@ public class GameWidget extends Canvas {
             GameViewTwoParticles v = (GameViewTwoParticles) gv;
             view_two_particles(v.center, v.p, v.q, v.zoom, v.dim);
         } else
-            assert false : "GameWidget.view: " + Debug.BAD_CODE_PATH;
+            assert false : "GameWidget.view: " + RuntimeErrors.BAD_CODE_PATH;
     }
 
     public void view(GameViewParticle gv) {

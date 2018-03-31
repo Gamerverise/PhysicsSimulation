@@ -1,3 +1,8 @@
+package simulation;
+
+import model.Particle;
+import model.Universe;
+
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,7 +19,7 @@ public class SimulationDynamic extends SimulationStatic {
         shared_construction();
     }
 
-    public SimulationDynamic(SimulationStatic s, Misc.CopyType copy_type) {
+    public SimulationDynamic(SimulationStatic s, Enums.CopyType copy_type) {
         super(s, copy_type);
         shared_construction();
     }
@@ -43,7 +48,7 @@ public class SimulationDynamic extends SimulationStatic {
             try {
                 Thread.sleep((long) dt_real);
             } catch (InterruptedException e) {
-                assert false : "SimulationDynamic.time_step_wrapper: " + Debug.BAD_CODE_PATH;
+                assert false : "SimulationDynamic.time_step_wrapper: " + RuntimeErrors.BAD_CODE_PATH;
             }
 
             run_suspend_permit.release();
@@ -66,7 +71,7 @@ public class SimulationDynamic extends SimulationStatic {
     public void reset(SimulationDynamic sim) {
         exit();
 
-        copy(sim, Misc.CopyType.DEEP);
+        copy(sim, Enums.CopyType.DEEP);
 
         time_step_counter = 0;
 

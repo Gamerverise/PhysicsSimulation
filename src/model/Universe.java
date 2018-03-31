@@ -1,3 +1,5 @@
+package model;
+
 import java.util.LinkedList;
 
 public class Universe {
@@ -13,11 +15,11 @@ public class Universe {
         add_particles(particles);
     }
 
-    Universe(Universe u, Misc.CopyType copy_type) {
+    Universe(Universe u, Enum.CopyType copy_type) {
         acceleration_constant = u.acceleration_constant;
         max_speed = u.max_speed;
 
-        if (copy_type == Misc.CopyType.SHALLOW)
+        if (copy_type == Enum.CopyType.SHALLOW)
             particles = u.particles;
         else
             add_particles(u.particles);
