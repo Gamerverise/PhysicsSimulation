@@ -1,4 +1,4 @@
-package java_lang_extensions.multi_class.TMP_EXCLUDE;
+package lib_2.java_lang_extensions.multi_class.TMP_EXCLUDE;
 
 public class _Delegate<T> {
     T delegator;

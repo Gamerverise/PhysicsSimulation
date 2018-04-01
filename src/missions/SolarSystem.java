@@ -56,5 +56,5 @@ public class SolarSystem {
             60*8     // double dt_sim = 60*8     (s) = 8 min
     );
 
-    public static GameWidgetView solar_sys_game_view_sun_earth = new GameWidgetViewTwoParticles(sun, sun, earth, 0.95, Enums.Dimension.HALF_MAX);
+    public static GameWidgetView solar_sys_game_view_sun_earth = new GameWidgetViewTwoParticles(sun, sun, earth, 0.95, Enums.ScaleOp2D.HALF_MAX);
 }

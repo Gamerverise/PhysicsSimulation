@@ -1,6 +1,6 @@
-package java_lang_extensions.var_args;
+package lib_2.java_lang_extensions.var_args;
 
-public class VarArgs<T> {
+public class VarArgsRaw extends VarArgs<Object> {
 
     // Use VarArgs like this:
     //
@@ -19,21 +19,19 @@ public class VarArgs<T> {
     //        }
     //    }
 
-    protected T[] args;                   // Yes, protected!
-
     @SafeVarargs
-    protected VarArgs(T... args) {        // Yes, protected!
-        this.args = args;
+    protected <T> VarArgsRaw(T... args) {        // Yes, private!
+        super(args);
     }
 
-
-    public <V> T[] args() {
-        return args;
+    @SuppressWarnings("unchecked")
+    public <T> T[] args() {
+        return (T[])args;
     }
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    static public <V> VarArgs<V> _vargs(V... args) {
-        return new VarArgs(args);
+    static public <T> VarArgs<T> _vargs(T... args) {
+        return (VarArgs<T>) new VarArgsRaw((Object[]) args);
     }
 }

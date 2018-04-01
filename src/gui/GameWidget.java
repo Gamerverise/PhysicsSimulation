@@ -6,7 +6,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.transform.NonInvertibleTransformException;
 
 import lib_2.Enums;
 import lib_2.RuntimeErrors;
@@ -17,9 +16,6 @@ import simulation.SimulationStatic;
 import gui.game_widget_support.GameWidgetView;
 import gui.game_widget_support.GameWidgetViewParticle;
 import gui.game_widget_support.GameWidgetViewTwoParticles;
-
-import static lib_2.Enums.AxisName2D.X;
-import static lib_2.Enums.AxisName2D.Y;
 
 public class GameWidget extends Canvas {
     GraphicsContextX gcx;
@@ -78,7 +74,7 @@ public class GameWidget extends Canvas {
 
     public void init_graphics_context() {
         gc = getGraphicsContext2D();
-        gcx = new GraphicsContextX(gc);
+        gcx = new GraphicsContextX(gc, min_radius_px);
 
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
@@ -161,20 +157,20 @@ public class GameWidget extends Canvas {
     public void view(GameWidgetView gv) {
         if (gv instanceof GameWidgetViewParticle) {
             GameWidgetViewParticle v = (GameWidgetViewParticle) gv;
-            view_particle(v.p, v.zoom, v.dim);
+            view_particle(v.p, v.zoom, v.scale_op);
         } else if (gv instanceof GameWidgetViewTwoParticles) {
             GameWidgetViewTwoParticles v = (GameWidgetViewTwoParticles) gv;
-            view_two_particles(v.center, v.p, v.q, v.zoom, v.dim);
+            view_two_particles(v.center, v.p, v.q, v.zoom, v.scale_op);
         } else
             assert false : "GameWidget.view: " + RuntimeErrors.BAD_CODE_PATH;
     }
 
     public void view(GameWidgetViewParticle gv) {
-        view_particle(gv.p, gv.zoom, gv.dim);
+        view_particle(gv.p, gv.zoom, gv.scale_op);
     }
 
     public void view(GameWidgetViewTwoParticles gv) {
-        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.dim);
+        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.scale_op);
     }
 
     void draw_particle(Particle p) {

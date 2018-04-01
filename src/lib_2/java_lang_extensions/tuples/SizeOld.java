@@ -1,4 +1,4 @@
-package lib.tuples;
+package lib_2.java_lang_extensions.tuples;
 
 public class SizeOld<T extends Number> {
 

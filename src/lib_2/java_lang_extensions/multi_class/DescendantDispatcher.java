@@ -1,8 +1,8 @@
-package lib.java_lang_extensions.multi_class;
+package lib_2.java_lang_extensions.multi_class;
 
 import java.util.HashMap;
 
-import static lib.java_lang_extensions.flow_control.FlowControl.*;
+import static lib_2.java_lang_extensions.flow_control.FlowControl.*;
 
 public class DescendantDispatcher {
 

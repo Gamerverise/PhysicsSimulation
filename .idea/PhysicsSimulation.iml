@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/output" />
       <excludeFolder url="file://$MODULE_DIR$/src/exclude" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lib_2/java_lang_extensions/multi_class" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

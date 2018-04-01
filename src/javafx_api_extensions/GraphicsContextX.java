@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib_2.Enums;
 import lib_2.RuntimeErrors;
+import lib_2.java_lang_extensions.function_types.Sig_double_double;
 
 import static lib_2.Enums.AxisName2D.X;
 import static lib_2.Enums.AxisName2D.Y;
@@ -47,9 +48,9 @@ public class GraphicsContextX {
         return Double.NaN;
     }
 
-    public void update_min_radius(((double) -> double) inverter) {
-        double inverted_radius = inverter(min_radius_px);
-        double inverted_origin = inverter(0);
+    public void update_min_radius(Sig_double_double inverter) {
+        double inverted_radius = inverter.call(min_radius_px);
+        double inverted_origin = inverter.call(0);
         min_radius = Math.abs(inverted_radius - inverted_origin);
     }
 
@@ -61,12 +62,12 @@ public class GraphicsContextX {
             case WIDTH:
                 scale = canvas.getWidth() * scale_rel;
                 gc.scale(scale, scale);
-                update_min_radius(invert_x);
+                update_min_radius(this::invert_x);
                 return Enums.Dimension2D.WIDTH;
             case HEIGHT:
                 scale = canvas.getHeight() * scale_rel;
                 gc.scale(scale, scale);
-                update_min_radius(invert_y);
+                update_min_radius(this::invert_y);
                 return Enums.Dimension2D.HEIGHT;
 
             case HALF_WIDTH:
