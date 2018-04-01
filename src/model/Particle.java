@@ -2,19 +2,19 @@ package model;
 
 import javafx.scene.paint.Color;
 
-class Particle {
-    String name;
-    double x;
-    double y;
-    double vx;
-    double vy;
-    double ax;
-    double ay;
-    double mass;
-    double radius;
-    Color color;
+public class Particle {
+    public String name;
+    public double x;
+    public double y;
+    public double vx;
+    public double vy;
+    public double ax;
+    public double ay;
+    public double mass;
+    public double radius;
+    public Color color;
 
-    Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
+    public Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -27,7 +27,7 @@ class Particle {
         this.color = color;
     }
 
-    Particle(Particle p) {
+    public Particle(Particle p) {
         this.name = p.name;
         this.x = p.x;
         this.y = p.y;
@@ -40,13 +40,13 @@ class Particle {
         this.color = p.color;
     }
 
-    double distance(Particle p) {
+    public double distance(Particle p) {
         double dx = p.x - x;
         double dy = p.y - y;
         return Math.sqrt(dx*dx + dy*dy);
     }
 
-    void rotate_velocity_abs(double degrees) {
+    public void rotate_velocity_abs(double degrees) {
         double radians = Math.PI / 180 * degrees;
         double velocity_scalar = Math.sqrt(vx*vx + vy*vy);
         vx = velocity_scalar * Math.cos(radians);

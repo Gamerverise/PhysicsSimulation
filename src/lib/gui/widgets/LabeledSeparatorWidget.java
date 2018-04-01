@@ -12,17 +12,17 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-import gui.jfx_extensions.*;
-import java_lang_extensions.multi_class.*;
-import gui.multi_class.*;
-import java_lang_extensions.multi_class.*;
+import lib.gui.jfx_extensions.*;
+import lib.java_lang_extensions.multi_class.*;
+import lib.gui.multi_class.*;
+import lib.java_lang_extensions.multi_class.*;
 
 public class LabeledSeparatorWidget extends Region implements Descendant
 {
     /***** Multi-class ****************************************/
 
     DescendantDispatcher dispatcher = new DescendantDispatcher(
-            new _AEMBOT_GUI_Ancestor(this)
+            new _GravityGameGUI_Ancestor(this)
     );
 
     public <T extends _Ancestor> T dispatch() {

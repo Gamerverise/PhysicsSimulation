@@ -1,15 +1,16 @@
 package gui.game_widget_support;
 
+import lib_2.Enums;
 import model.Particle;
 
 public class GameWidgetViewTwoParticles extends GameWidgetView {
-    Particle center;
-    Particle p;
-    Particle q;
-    double zoom;
-    Enum.Dimension dim;
+    public Particle center;
+    public Particle p;
+    public Particle q;
+    public double zoom;
+    public Enums.Dimension dim;
 
-    GameWidgetViewTwoParticles(Particle center, Particle p, Particle q, double zoom, Enum.Dimension dim) {
+    public GameWidgetViewTwoParticles(Particle center, Particle p, Particle q, double zoom, Enums.Dimension dim) {
         this.center = center;
         this.p = p;
         this.q = q;

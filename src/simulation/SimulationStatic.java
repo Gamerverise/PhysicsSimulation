@@ -1,11 +1,12 @@
 package simulation;
 
 import model.Universe;
+import lib_2.Enums;
 
 public class SimulationStatic {
-    Universe universe;
-    double dt_real;
-    double dt_sim;
+    public Universe universe;
+    public double dt_real;
+    public double dt_sim;
 
     public SimulationStatic(Universe universe, double dt_real, double dt_sim) {
 
@@ -18,7 +19,7 @@ public class SimulationStatic {
         copy(s, copy_type);
     }
 
-    void copy(SimulationStatic s, Enums.CopyType copy_type) {
+    public void copy(SimulationStatic s, Enums.CopyType copy_type) {
         if (copy_type == Enums.CopyType.SHALLOW)
             universe = s.universe;
         else

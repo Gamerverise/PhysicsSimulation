@@ -1,7 +1,9 @@
 package simulation;
 
+import lib_2.Enums;
 import model.Particle;
 import model.Universe;
+import lib_2.RuntimeErrors;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
@@ -9,8 +11,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class SimulationDynamic extends SimulationStatic {
     Thread thread;
 
-    Semaphore run_suspend_permit;
-    ReentrantLock xy_data_rw_lock;
+    public Semaphore run_suspend_permit;
+    public ReentrantLock xy_data_rw_lock;
 
     double time_step_counter;
 
@@ -34,7 +36,7 @@ public class SimulationDynamic extends SimulationStatic {
         thread = new Thread(this::time_step_wrapper);
     }
 
-    void time_step_wrapper() {
+    public void time_step_wrapper() {
 
         while (true) {
             try {
@@ -55,15 +57,15 @@ public class SimulationDynamic extends SimulationStatic {
         }
     }
 
-    void run() {
+    public void run() {
         run_suspend_permit.release();
     }
 
-    void suspend() {
+    public void suspend() {
         run_suspend_permit.acquireUninterruptibly();
     }
 
-    void exit() {
+    public void exit() {
         run_suspend_permit.acquireUninterruptibly();
         thread.interrupt();
     }
