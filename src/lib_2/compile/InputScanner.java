@@ -1,4 +1,4 @@
-package lib.compile;
+package lib_2.compile;
 
 import java.util.Scanner;
 

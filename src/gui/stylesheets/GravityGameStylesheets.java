@@ -1,4 +1,4 @@
-package gui.widgets.window_widget_support;
+package gui.stylesheets;
 
 public class GravityGameStylesheets {
     static String URI_relative_prefix = ".idea/src/gui/css/AEMBOT";
@@ -34,16 +34,16 @@ public class GravityGameStylesheets {
             ""      //  Special case for AEMBOT.css, because it does not follow the AEMBOT_ naming convention
     };
 
-    static String URI_suffix = ".css";
-
-    public static String[] get_URIs(String URI_absolute_prefix) {
-        String URIs[] = new String[URI_filenames.length];
-
-        int i;
-        for (i = 0; i < URI_filenames.length - 1; i++)
-            URIs[i] = URI_absolute_prefix + URI_relative_prefix + "_" + URI_filenames[i] + URI_suffix;
-        URIs[i] = URI_absolute_prefix + URI_relative_prefix + URI_suffix;
-
-        return URIs;
-    }
+//    static String URI_suffix = ".css";
+//
+//    public static String[] get_URIs(String URI_absolute_prefix) {
+//        String URIs[] = new String[URI_filenames.length];
+//
+//        int i;
+//        for (i = 0; i < URI_filenames.length - 1; i++)
+//            URIs[i] = URI_absolute_prefix + URI_relative_prefix + "_" + URI_filenames[i] + URI_suffix;
+//        URIs[i] = URI_absolute_prefix + URI_relative_prefix + URI_suffix;
+//
+//        return URIs;
+//    }
 }

@@ -1,26 +1,36 @@
 import gui.jfx_extensions.ApplicationX;
+import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GameWidget;
-import javafx.application.Application;
+import gui.widgets.WindowWidget;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
 import missions.SolarSystem;
+import gui.jfx_extensions.ApplicationX;
 
 public class GravityGame extends ApplicationX {
-    //    double canvas_width = 1305;
+
+    GravityGameStylesheets stylesheets = new gui.stylesheets.GravityGameStylesheets();
+    public static final double widget_spacing = 20;
+
+//    double canvas_width = 1305;
 //    double canvas_height = 795;
+
     double canvas_width = 800;
     double canvas_height = 800;
+
     double canvas_aspect_ratio = canvas_width / canvas_height;
 
     Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
 
-    Stage stage;
-    GraphicsContext gc;
+//    Stage stage;
+//    GraphicsContext gc;
 
+    WindowWidget window;
     GameWidget game_widget;
 
     public static void main(String[] args) {
@@ -35,7 +45,19 @@ public class GravityGame extends ApplicationX {
     }
 
     public void build_gui(Stage stage) {
+//        this.stage = stage;
+
         this.stage = stage;
+
+        public Stage stage;
+        public Scene scene;
+        public ConsoleWidget console;
+
+        console = new ConsoleWidget(this);
+        scene = new Scene(console);
+        stage.setScene(scene);
+
+        scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_AEMBOT_stylesheet.getStylesheets());
 
         Group root = new Group();
 

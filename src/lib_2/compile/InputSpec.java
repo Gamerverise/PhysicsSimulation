@@ -1,4 +1,4 @@
-package lib.compile;
+package lib_2.compile;
 
 import lib.java_lang_extensions.var_args.VarArgsRaw;
 

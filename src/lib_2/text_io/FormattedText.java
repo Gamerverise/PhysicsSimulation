@@ -1,4 +1,4 @@
-package lib.text_io;
+package lib_2.text_io;
 
 public class FormattedText {
     public static String spaces(int n) {

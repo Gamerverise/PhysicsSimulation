@@ -1,12 +1,9 @@
-package lib.debug;
+package gui.debug;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
 
-import static javafx.scene.text.FontPosture.REGULAR;
-import static javafx.scene.text.FontWeight.NORMAL;
-
-import lib.text_io.*;
+import lib_2.text_io.*;
 
 public class DebugJavaFX {
 

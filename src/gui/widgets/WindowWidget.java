@@ -7,34 +7,19 @@ import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
 
-import tuples.TopLeftBottomRight;
-import gui.GUI;
+import lib_2.java_lang_extensions.unnamed_types.Struct;
+import gui.widgets.widget_support.WinDecorationInfo_px;
 
 import static gui.widgets.widget_support.WinDecorationInfo_px.Heuristic.HEURISTIC;
 import static gui.widgets.WindowWidget.SizeChangeFlag.*;
 
 public class WindowWidget {
-    gui.widgets.window_widget_support.GravityGameStylesheets stylesheets = new gui.widgets.window_widget_support.GravityGameStylesheets();
-
-    public GUI gui;
-    public Stage stage;
-    public Scene scene;
-    public ConsoleWidget console;
 
     WinDecorationInfo_px win_decoration_info = new WinDecorationInfo_px(HEURISTIC);
 
     boolean first_show = true;
 
-    public WindowWidget(GUI gui, Stage stage) {
-        this.gui = gui;
-        this.stage = stage;
-
-        console = new ConsoleWidget(this);
-        scene = new Scene(console);
-        stage.setScene(scene);
-
-        scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_AEMBOT_stylesheet.getStylesheets());
-
+    public WindowWidget(Stage stage) {
         double stage_width_px = 0.9 * Screen.getPrimary().getVisualBounds().getWidth();
         double stage_height_px = 0.9 * Screen.getPrimary().getVisualBounds().getHeight();
 

@@ -1,16 +1,16 @@
 package gui.widgets.widget_support;
 
-class WinDecorationInfo_px {
+public class WinDecorationInfo_px {
 
-    enum Unknown {UNKNOWN};
-    enum Heuristic {HEURISTIC};
+    public enum Unknown {UNKNOWN};
+    public enum Heuristic {HEURISTIC};
 
     double top;
     double left;
     double bottom;
     double right;
 
-    WinDecorationInfo_px(WinDecorationInfo_px.Unknown unknown) {
+    public WinDecorationInfo_px(WinDecorationInfo_px.Unknown unknown) {
         // -1 represents that the thicknesses are unknown
 
         top = -1;
@@ -19,7 +19,7 @@ class WinDecorationInfo_px {
         right = -1;
     }
 
-    WinDecorationInfo_px(WinDecorationInfo_px.Heuristic heuristic) {
+    public WinDecorationInfo_px(WinDecorationInfo_px.Heuristic heuristic) {
         top = 15 * 5;   // Heuristic for top
         left = 15;      // Heuristic for left
         bottom = 15;    // Heuristic for bottom

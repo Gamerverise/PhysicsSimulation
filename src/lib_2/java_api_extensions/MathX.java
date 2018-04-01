@@ -1,4 +1,4 @@
-package lib.java_api_extensions;
+package lib_2.java_api_extensions;
 
 public class MathX {
 
