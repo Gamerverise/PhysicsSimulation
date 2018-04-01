@@ -1,16 +1,14 @@
 import gui.jfx_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GameWidget;
-import gui.widgets.WindowWidget;
+import gui.jfx_extensions.StageX;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import missions.SolarSystem;
-import gui.jfx_extensions.ApplicationX;
 
 public class GravityGame extends ApplicationX {
 
@@ -30,7 +28,7 @@ public class GravityGame extends ApplicationX {
 //    Stage stage;
 //    GraphicsContext gc;
 
-    WindowWidget window;
+    StageX window;
     GameWidget game_widget;
 
     public static void main(String[] args) {
@@ -41,6 +39,9 @@ public class GravityGame extends ApplicationX {
     public void start(Stage stage) {
         build_gui(stage);
         stage.show();
+
+//        System.out.print(Misc.JavaFX_node_tree_debug(stage, 0));
+
         game_widget.init_run();
     }
 

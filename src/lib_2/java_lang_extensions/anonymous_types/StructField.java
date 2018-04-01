@@ -1,4 +1,4 @@
-package lib_2.java_lang_extensions.unnamed_types;
+package lib_2.java_lang_extensions.anonymous_types;
 
 public enum StructField {
     A,

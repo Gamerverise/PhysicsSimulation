@@ -1,42 +1,27 @@
-package gui.widgets;
+package gui.jfx_extensions;
 
-import gui.widgets.widget_support.WinDecorationInfo_px;
+import gui.widgets.widget_support.WinDecorationInfo;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
 
-import lib_2.java_lang_extensions.unnamed_types.Struct;
-import gui.widgets.widget_support.WinDecorationInfo_px;
+import static gui.widgets.widget_support.WinDecorationInfo.Heuristic.HEURISTIC;
+import static gui.jfx_extensions.StageX.SizeChangeFlag.*;
 
-import static gui.widgets.widget_support.WinDecorationInfo_px.Heuristic.HEURISTIC;
-import static gui.widgets.WindowWidget.SizeChangeFlag.*;
+public class StageX {
 
-public class WindowWidget {
+    WinDecorationInfo win_decoration_info = new WinDecorationInfo(HEURISTIC);
 
-    WinDecorationInfo_px win_decoration_info = new WinDecorationInfo_px(HEURISTIC);
+    Stage stage;
+    Scene scene;
 
-    boolean first_show = true;
+    public StageX(Stage stage, Scene scene) {
+        this.stage = stage;
+        this.scene = scene;
 
-    public WindowWidget(Stage stage) {
-        double stage_width_px = 0.9 * Screen.getPrimary().getVisualBounds().getWidth();
-        double stage_height_px = 0.9 * Screen.getPrimary().getVisualBounds().getHeight();
-
-        stage.setTitle("AEMBOT Console -- ROBOTS DON'T QUIT!");
-        stage.setMinWidth(0.6 * stage_width_px);
-        stage.setMinHeight(0.6 * stage_height_px);
-
-        // The stage's width and height are initially NaN. If we don't set the width and height here, we get
-        // problems hereafter. To avoid this issue, we set the width and height to arbitrary-ish initial
-        // values. Actually, we use some hopefully decent values.
-
-        stage.setWidth(0.9 * stage_width_px);
-        stage.setHeight(0.9 * stage_height_px);
-        stage.centerOnScreen();
-
-        stage.setResizable(true);
-        stage.setFullScreen(true);
+        stage.setScene(scene);
 
         // FIXME (maybe fixed): What is the proper/best order of operations for initialing a window? We may have the best/proper order
         // FIXME (maybe fixed): Does stage have to be showing when centerOnScreen is called? Apparently not
@@ -68,10 +53,6 @@ public class WindowWidget {
 
 //      On my current system, there is a slight visual effect of flickering/jumping of the window as it
 //      appears when it is shown for the first time. Not sure why that is.
-
-        stage.show();
-
-//        System.out.print(Misc.JavaFX_node_tree_debug(console, 0));
     }
 
     enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED};
@@ -117,7 +98,7 @@ public class WindowWidget {
             top = scene.getY();
             left = scene.getX();
             bottom = win_height_px - top - scene_height_px;
-            right = win_width_px - left - scene_height_px;
+            right = win_width_px - left - scene_width_px;
         }
 
         return new TopLeftBottomRight<Double>(top, left, bottom, right);
