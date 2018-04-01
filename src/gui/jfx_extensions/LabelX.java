@@ -1,4 +1,4 @@
-package lib.gui.jfx_extensions;
+package gui.jfx_extensions;
 
 import javafx.scene.control.Label;
 

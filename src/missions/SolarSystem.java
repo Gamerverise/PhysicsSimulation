@@ -1,7 +1,7 @@
 package missions;
 
-import gui.game_widget_support.GameWidgetView;
-import gui.game_widget_support.GameWidgetViewTwoParticles;
+import gui.widgets.widget_support.GameWidgetView;
+import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 import javafx.scene.paint.Color;
 import lib_2.Enums;
 import model.Particle;

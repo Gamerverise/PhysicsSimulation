@@ -34,6 +34,8 @@ public class SimulationDynamic extends SimulationStatic {
         xy_data_rw_lock = new ReentrantLock();
 
         thread = new Thread(this::time_step_wrapper);
+
+        thread.start();
     }
 
     public void time_step_wrapper() {
@@ -72,14 +74,11 @@ public class SimulationDynamic extends SimulationStatic {
 
     public void reset(SimulationDynamic sim) {
         exit();
-
         copy(sim, Enums.CopyType.DEEP);
-
         time_step_counter = 0;
-
         // FIXME: Are the lock and semaphore in the correct state at this point?
-
         thread = new Thread(this::time_step_wrapper);
+        thread.start();
     }
 
     public void time_step() {

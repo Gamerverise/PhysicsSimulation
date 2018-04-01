@@ -1,4 +1,4 @@
-package gui.game_widget_support;
+package gui.widgets.widget_support;
 
 public abstract class GameWidgetView {
 }

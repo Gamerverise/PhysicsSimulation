@@ -1,4 +1,5 @@
-import gui.GameWidget;
+import gui.jfx_extensions.ApplicationX;
+import gui.widgets.GameWidget;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -8,7 +9,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import missions.SolarSystem;
 
-public class GravityGame extends Application {
+public class GravityGame extends ApplicationX {
     //    double canvas_width = 1305;
 //    double canvas_height = 795;
     double canvas_width = 800;
@@ -58,6 +59,18 @@ public class GravityGame extends Application {
                     game_widget.toggle_run_suspend();
                     break;
                 case R:
+                    game_widget.reset();
+                    break;
+                case LEFT:
+                    game_widget.reset();
+                    break;
+                case RIGHT:
+                    game_widget.reset();
+                    break;
+                case UP:
+                    game_widget.reset();
+                    break;
+                case DOWN:
                     game_widget.reset();
                     break;
             }

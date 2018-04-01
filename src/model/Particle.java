@@ -13,6 +13,7 @@ public class Particle {
     public double mass;
     public double radius;
     public Color color;
+    
 
     public Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
         this.name = name;

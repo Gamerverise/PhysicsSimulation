@@ -1,4 +1,4 @@
-package gui;
+package gui.widgets;
 
 import javafx_api_extensions.GraphicsContextX;
 import javafx.animation.AnimationTimer;
@@ -13,9 +13,9 @@ import model.Particle;
 import model.Universe;
 import simulation.SimulationDynamic;
 import simulation.SimulationStatic;
-import gui.game_widget_support.GameWidgetView;
-import gui.game_widget_support.GameWidgetViewParticle;
-import gui.game_widget_support.GameWidgetViewTwoParticles;
+import gui.widgets.widget_support.GameWidgetView;
+import gui.widgets.widget_support.GameWidgetViewParticle;
+import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 
 public class GameWidget extends Canvas {
     GraphicsContextX gcx;

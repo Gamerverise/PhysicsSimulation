@@ -1,4 +1,4 @@
-package gui.game_widget_support;
+package gui.widgets.widget_support;
 
 import lib_2.Enums;
 import model.Particle;
