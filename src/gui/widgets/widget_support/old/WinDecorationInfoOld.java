@@ -1,4 +1,4 @@
-package gui.widgets.widget_support;
+package gui.widgets.widget_support.old;
 
 public class WinDecorationInfoOld {
 

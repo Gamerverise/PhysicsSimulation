@@ -2,24 +2,25 @@ package lib_2.java_lang_extensions.anonymous_types;
 
 import java.util.HashMap;
 
-public class Struct<T> {
-    HashMap<StructField, T> hash_map;
+public class Struct<N extends Enum, V> {
+    HashMap<N, V> hash_map;
 
-    public Struct(Object... entries) {
+    public Struct(StructField<N, V>... fields) {
         hash_map = new HashMap<>();
-        put(entries);
+        put(fields);
     }
 
-    public <K extends T> K get(StructField field) {
-        return (K) hash_map.get(field);
+    // FIXME
+    public <K extends V> K get(N name) {
+        return (K) hash_map.get(name);
     }
 
-    public void put(StructField field, T elem) {
-        hash_map.put(field, elem);
+    public void put(N name, V value) {
+        hash_map.put(name, value);
     }
 
-    public void put(Object... entries) {
-        for (int i = 0; i < entries.length; i += 2)
-            hash_map.put((StructField) entries[i], (T) entries[i+1]);
+    public void put(StructField<N, V>... fields) {
+        for (StructField<N, V> f : fields)
+            hash_map.put(f.name, f.value);
     }
 }

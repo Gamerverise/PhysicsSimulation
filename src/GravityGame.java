@@ -1,7 +1,8 @@
-import gui.jfx_extensions.ApplicationX;
+import gui.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GameWidget;
-import gui.jfx_extensions.StageX;
+import gui.javafx_api_extensions.StageX;
+import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -28,7 +29,8 @@ public class GravityGame extends ApplicationX {
 //    Stage stage;
 //    GraphicsContext gc;
 
-    StageX window;
+    GravityGameStage stage;
+    Scene scene;
     GameWidget game_widget;
 
     public static void main(String[] args) {
@@ -36,7 +38,7 @@ public class GravityGame extends ApplicationX {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage _stage) {
         build_gui(stage);
         stage.show();
 
@@ -45,27 +47,21 @@ public class GravityGame extends ApplicationX {
         game_widget.init_run();
     }
 
-    public void build_gui(Stage stage) {
-//        this.stage = stage;
-
-        this.stage = stage;
-
-        public Stage stage;
-        public Scene scene;
-        public ConsoleWidget console;
-
-        console = new ConsoleWidget(this);
-        scene = new Scene(console);
-        stage.setScene(scene);
-
-        scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_AEMBOT_stylesheet.getStylesheets());
-
-        Group root = new Group();
+    public void build_gui(Stage _stage) {
 
         game_widget = new GameWidget(canvas_width, canvas_height,
                 SolarSystem.solar_sys_game_view_sun_earth,
                 SolarSystem.solar_system_sim,
                 false);
+
+        scene = new Scene(game_widget);
+
+        stage = new StageX(_stage, scene);
+
+        scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_stylesheet.getStylesheets());
+
+        Group root = new Group();
+
 
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);

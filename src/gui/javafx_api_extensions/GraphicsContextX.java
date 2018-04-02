@@ -1,14 +1,11 @@
-package javafx_api_extensions;
+package gui.javafx_api_extensions;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib_2.Enums;
 import lib_2.RuntimeErrors;
-import lib_2.java_lang_extensions.function_types.Sig_double_double;
-
-import static lib_2.Enums.AxisName2D.X;
-import static lib_2.Enums.AxisName2D.Y;
+import lib_2.java_lang_extensions.function_types.FunctionR1;
 
 public class GraphicsContextX {
     public GraphicsContext gc;
@@ -48,9 +45,9 @@ public class GraphicsContextX {
         return Double.NaN;
     }
 
-    public void update_min_radius(Sig_double_double inverter) {
+    public void update_min_radius(FunctionR1<Double, Double> inverter) {
         double inverted_radius = inverter.call(min_radius_px);
-        double inverted_origin = inverter.call(0);
+        double inverted_origin = inverter.call(0d);
         min_radius = Math.abs(inverted_radius - inverted_origin);
     }
 

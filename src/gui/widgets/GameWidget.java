@@ -1,6 +1,6 @@
 package gui.widgets;
 
-import javafx_api_extensions.GraphicsContextX;
+import gui.javafx_api_extensions.GraphicsContextX;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

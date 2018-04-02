@@ -1,7 +1,5 @@
-package gui.jfx_extensions;
+package gui.javafx_api_extensions;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;

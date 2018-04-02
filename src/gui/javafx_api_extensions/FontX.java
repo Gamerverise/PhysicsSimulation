@@ -1,8 +1,6 @@
-package gui.jfx_extensions;
+package gui.javafx_api_extensions;
 
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 
 import static javafx.scene.text.FontPosture.REGULAR;
 import static javafx.scene.text.FontWeight.NORMAL;

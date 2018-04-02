@@ -7,6 +7,8 @@
       <excludeFolder url="file://$MODULE_DIR$/output" />
       <excludeFolder url="file://$MODULE_DIR$/src/exclude" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/jfx_extensions/unfinished" />
+      <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_2/java_lang_extensions/multi_class" />
     </content>

@@ -1,4 +1,4 @@
-package gui.jfx_extensions;
+package gui.javafx_api_extensions;
 
 import javafx.stage.DirectoryChooser;
 
