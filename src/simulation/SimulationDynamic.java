@@ -1,9 +1,8 @@
 package simulation;
 
-import lib_2.Enums;
 import model.Particle;
 import model.Universe;
-import lib_2.RuntimeErrors;
+import lib.Assert.RuntimeErrors;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;

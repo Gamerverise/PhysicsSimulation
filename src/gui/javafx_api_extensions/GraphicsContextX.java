@@ -3,9 +3,8 @@ package gui.javafx_api_extensions;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
-import lib_2.Enums;
-import lib_2.RuntimeErrors;
-import lib_2.java_lang_extensions.function_types.FunctionR1;
+import lib.Assert.RuntimeErrors;
+import lib.java_lang_extensions.function_types.FunctionR1;
 
 public class GraphicsContextX {
     public GraphicsContext gc;

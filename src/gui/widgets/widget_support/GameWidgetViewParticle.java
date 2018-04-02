@@ -1,7 +1,6 @@
 package gui.widgets.widget_support;
 
 import model.Particle;
-import lib_2.Enums;
 
 public class GameWidgetViewParticle extends GameWidgetView {
     public Particle p;

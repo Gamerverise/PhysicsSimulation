@@ -1,7 +1,6 @@
 package model;
 
 import java.util.LinkedList;
-import lib_2.Enums;
 
 public class Universe {
 

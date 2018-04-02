@@ -1,16 +1,18 @@
 package gui.javafx_api_extensions;
 
+import gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-import lib_2.java_lang_extensions.anonymous_types.Struct;
+import lib.java_lang_extensions.anonymous_types.Struct;
 
 import static gui.javafx_api_extensions.StageX.SizeChangeFlag.*;
 import static gui.javafx_api_extensions.StageX.WinBorder.*;
-import static lib_2.java_lang_extensions.anonymous_types.StructField._;
-import static gui.javafx_api_extensions.WinBorderStructOverloadConstants.*;
+import static lib.java_lang_extensions.anonymous_types.StructField._;
+import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+import static gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
 
 public class StageX {
 
@@ -137,9 +139,19 @@ public class StageX {
         );
     }
 
-    enum WinSizeFlag {FULL_SCREEN, ORIGINAL_SIZE, MAXIMIZED_FIXED_ASPECT_RATIO, MAXIMIZED};
+    void set_size(FULL_SCREEN overload_constant) {
+        // Not finished yet
+    }
 
-    void set_size(WinSizeFlag size_flag, double aspect_ratio, boolean decorated) {
+    void set_size(ORIGINAL_SIZE overload_constant) {
+        // Not finished yet
+    }
+
+    void set_size(MAXIMIZED overload_constant) {
+        // Not finished yet
+    }
+
+    void set_size(MAXIMIZED_FIXED_ASPECT_RATIO overload_constant, double aspect_ratio, boolean decorated) {
         Rectangle2D primary_screen_bounds = Screen.getPrimary().getVisualBounds();
 
         double primary_screen_width_px = primary_screen_bounds.getWidth();
@@ -173,50 +185,13 @@ public class StageX {
         double stage_width_px;
         double stage_height_px;
 
-        if (console.aspect_ratio >= max_scene_aspect_ratio) {
+        if (aspect_ratio >= max_scene_aspect_ratio) {
             stage_width_px = primary_screen_width_px;
-            double scene_width_px = stage_width_px - win_decoration_info.left - win_decoration_info.right;
-            stage_height_px = win_decoration_info.top + scene_width_px / console.aspect_ratio + win_decoration_info.bottom;
+            double scene_width_px = stage_width_px - borders_px.get(LEFT) - borders_px.get(RIGHT);
+            stage_height_px = borders_px.get(TOP) + scene_width_px / aspect_ratio + borders_px.get(BOTTOM);
         } else {
-            stage_width_px = win_decoration_info.left + max_scene_height_px * console.aspect_ratio + win_decoration_info.right;
+            stage_width_px = borders_px.get(LEFT) + max_scene_height_px * aspect_ratio + borders_px.get(RIGHT);
             stage_height_px = primary_screen_height_px;
         }
     }
-}
-
-class WinBorderStructOverloadConstants {
-
-    public static class UNKNOWN_BORDER_SIZES {
-        private UNKNOWN_BORDER_SIZES() {
-        }
-    }
-
-    public static class HEURISTIC_BORDER_SIZES {
-        private HEURISTIC_BORDER_SIZES() {
-        }
-    }
-
-    public static final UNKNOWN_BORDER_SIZES UNKNOWN_BORDER_SIZES = null;
-    public static final HEURISTIC_BORDER_SIZES HEURISTIC_BORDER_SIZES = null;
-}
-
-class WinSizeFlagOverloadConstants {
-
-    public static class FULL_SCREEN {
-        private FULL_SCREEN() {}
-    }
-    public static class ORIGINAL_SIZE {
-        private ORIGINAL_SIZE() {}
-    }
-    public static class MAXIMIZED_FIXED_ASPECT_RATIO {
-        private MAXIMIZED_FIXED_ASPECT_RATIO() {}
-    }
-    public static class MAXIMIZED {
-        private MAXIMIZED() {}
-    }
-
-    public static final FULL_SCREEN FULL_SCREEN = null;
-    public static final ORIGINAL_SIZE ORIGINAL_SIZE = null;
-    public static final MAXIMIZED_FIXED_ASPECT_RATIO MAXIMIZED_FIXED_ASPECT_RATIO = null;
-    public static final MAXIMIZED MAXIMIZED = null;
 }

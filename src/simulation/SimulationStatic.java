@@ -1,7 +1,6 @@
 package simulation;
 
 import model.Universe;
-import lib_2.Enums;
 
 public class SimulationStatic {
     public Universe universe;

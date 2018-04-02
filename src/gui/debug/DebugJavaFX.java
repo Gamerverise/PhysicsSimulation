@@ -3,7 +3,7 @@ package gui.debug;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 
-import lib_2.text_io.*;
+import lib.text_io.*;
 
 public class DebugJavaFX {
 

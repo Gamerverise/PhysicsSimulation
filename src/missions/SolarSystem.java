@@ -3,7 +3,6 @@ package missions;
 import gui.widgets.widget_support.GameWidgetView;
 import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 import javafx.scene.paint.Color;
-import lib_2.Enums;
 import model.Particle;
 import model.Universe;
 import simulation.SimulationStatic;

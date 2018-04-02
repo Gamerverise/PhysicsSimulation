@@ -7,8 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import lib_2.Enums;
-import lib_2.RuntimeErrors;
+import lib.Assert.RuntimeErrors;
 import model.Particle;
 import model.Universe;
 import simulation.SimulationDynamic;
