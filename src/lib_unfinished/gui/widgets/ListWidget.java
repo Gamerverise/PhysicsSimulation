@@ -10,6 +10,7 @@ import gui.multi_class.*;
 import gui.layout_options.*;
 import gui.widgets.list_layout_options.*;
 import gui.widgets.list_layout_options.wrappers.*;
+import lib.debug.MethodNameHack;
 
 import static java_lang_extensions.flow_control.FlowControl.*;
 import static gui.widgets.list_layout_options.ListLayoutOption.*;
@@ -193,8 +194,10 @@ abstract public class ListWidget extends Region implements Descendant
 
                 double entry_distance;
 
-                assert (options.space == -1 || options.flex_weight == -1)
-                        : "ListWidget: layoutChildren: space and flex_weight are mutually exclusive.";
+                assert (options.space == -1 || options.flex_weight == -1) : dbg_msg(
+                        this.getClass(),
+                        new MethodNameHack(){}.method_name(),
+                        "space and flex_weight are mutually exclusive.");
 
                 if (options.space > 0)
                     entry_distance = options.space;
@@ -208,7 +211,10 @@ abstract public class ListWidget extends Region implements Descendant
                 cur_distance_coord += entry_distance;
 
             } else
-                assert false : "ListWidget: layoutChildren: Invalid type of entry.";
+                assert false : dbg_msg(
+                        this.getClass(),
+                        new MethodNameHack(){}.method_name(),
+                        "Invalid type of entry.");
         }
     }
 

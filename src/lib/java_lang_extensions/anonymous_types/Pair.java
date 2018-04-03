@@ -1,33 +1,15 @@
 package lib.java_lang_extensions.anonymous_types;
 
 public class Pair<A, B> {
-    A a;
-    B b;
+    A _1;
+    B _2;
 
-    Pair() {}
-
-    Pair(A a, B b) {
-        this.a = a;
-        this.b = b;
+    Pair(A _1, B _2) {
+        this._1 = _1;
+        this._2 = _2;
     }
 
-    static <A, B> Pair<A, B> _(A a, B b) {
-        return new Pair(a, b);
-    }
-}
-
-public class Pair2<E extends Enum> {
-    A a;
-    B b;
-
-    Pair() {}
-
-    Pair(A a, B b) {
-        this.a = a;
-        this.b = b;
-    }
-
-    static <A, B> Pair<A, B> _(A a, B b) {
-        return new Pair(a, b);
+    static <A, B> Pair<A, B> _(A _1, B _2) {
+        return new Pair(_1, _2);
     }
 }

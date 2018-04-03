@@ -1,5 +1,9 @@
 package lib_2.java_lang_extensions.multi_class;
 
+import lib.debug.MethodNameHack;
+
+import static lib.debug.Debug.assert_msg;
+
 public class _Ancestor<T> {
 
     public T descendant;
@@ -15,7 +19,10 @@ public class _Ancestor<T> {
     // loaded.
 
     static public Class get_class() {
-        assert false : "_Ancestor: get_class: Each sub-class of _Ancestor must provide its own version of get_class().";
+        assert false : assert_msg(
+                _Ancestor.class,
+                new MethodNameHack(){}.method_name(),
+                "Each sub-class of _Ancestor must provide its own version of get_class().");
         return null;
     }
 }

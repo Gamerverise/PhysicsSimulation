@@ -1,11 +1,15 @@
 package simulation;
 
+import lib.debug.MethodNameHack;
 import model.Particle;
 import model.Universe;
 import lib.Assert.RuntimeErrors;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
+
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.debug.Debug.assert_msg;
 
 public class SimulationDynamic extends SimulationStatic {
     Thread thread;
@@ -51,7 +55,10 @@ public class SimulationDynamic extends SimulationStatic {
             try {
                 Thread.sleep((long) dt_real);
             } catch (InterruptedException e) {
-                assert false : "SimulationDynamic.time_step_wrapper: " + RuntimeErrors.BAD_CODE_PATH;
+                assert false : assert_msg(
+                        this.getClass(),
+                        new MethodNameHack(){}.method_name(),
+                        BAD_CODE_PATH);
             }
 
             run_suspend_permit.release();

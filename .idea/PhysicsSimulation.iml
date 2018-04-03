@@ -9,8 +9,10 @@
       <excludeFolder url="file://$MODULE_DIR$/src/gui/jfx_extensions/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/unfinished" />
-      <excludeFolder url="file://$MODULE_DIR$/src/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lib/java_lang_extensions/anonymous_types/old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lib/java_lang_extensions/multi_class/TMP_EXCLUDE" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_2/java_lang_extensions/multi_class" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lib_unfinished" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

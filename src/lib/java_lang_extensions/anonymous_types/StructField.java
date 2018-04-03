@@ -4,8 +4,6 @@ public class StructField<N extends Enum, V> {
     N name;
     V value;
 
-    StructField() {}
-
     StructField(N name, V value) {
         this.name = name;
         this.value = value;

@@ -7,7 +7,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import lib.Assert.RuntimeErrors;
+import lib.debug.MethodNameHack;
 import model.Particle;
 import model.Universe;
 import simulation.SimulationDynamic;
@@ -15,6 +15,9 @@ import simulation.SimulationStatic;
 import gui.widgets.widget_support.GameWidgetView;
 import gui.widgets.widget_support.GameWidgetViewParticle;
 import gui.widgets.widget_support.GameWidgetViewTwoParticles;
+
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.debug.Debug.assert_msg;
 
 public class GameWidget extends Canvas {
     GraphicsContextX gcx;
@@ -161,7 +164,10 @@ public class GameWidget extends Canvas {
             GameWidgetViewTwoParticles v = (GameWidgetViewTwoParticles) gv;
             view_two_particles(v.center, v.p, v.q, v.zoom, v.scale_op);
         } else
-            assert false : "GameWidget.view: " + RuntimeErrors.BAD_CODE_PATH;
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack(){}.method_name(),
+                    BAD_CODE_PATH);
     }
 
     public void view(GameWidgetViewParticle gv) {

@@ -4,7 +4,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib.Assert.RuntimeErrors;
+import lib.debug.MethodNameHack;
 import lib.java_lang_extensions.function_types.FunctionR1;
+
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.debug.Debug.assert_msg;
 
 public class GraphicsContextX {
     public GraphicsContext gc;
@@ -31,7 +35,10 @@ public class GraphicsContextX {
             return gc.getTransform().inverseTransform(x, 0).getX();
         } catch (NonInvertibleTransformException e) {}
 
-        assert false : "GraphicsContextX.invert_x: " + RuntimeErrors.BAD_CODE_PATH;
+        assert false : assert_msg(
+                this.getClass(),
+                new MethodNameHack(){}.method_name(),
+                BAD_CODE_PATH);
         return Double.NaN;
     }
 
@@ -40,7 +47,10 @@ public class GraphicsContextX {
             return gc.getTransform().inverseTransform(0, y).getY();
         } catch (NonInvertibleTransformException e) {}
 
-        assert false : "GraphicsContextX.invert_y: " + RuntimeErrors.BAD_CODE_PATH;
+        assert false : assert_msg(
+                this.getClass(),
+                new MethodNameHack(){}.method_name(),
+                BAD_CODE_PATH);
         return Double.NaN;
     }
 
@@ -94,7 +104,10 @@ public class GraphicsContextX {
                     return scale(scale_rel/2, Enums.ScaleOp2D.HEIGHT);
         }
 
-        assert false : "GraphicsContextX.scale: " + RuntimeErrors.BAD_CODE_PATH;
+        assert false : assert_msg(
+                this.getClass(),
+                new MethodNameHack(){}.method_name(),
+                BAD_CODE_PATH);
         return null;
     }
 }
