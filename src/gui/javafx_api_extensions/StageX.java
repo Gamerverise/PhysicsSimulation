@@ -7,6 +7,8 @@ import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
 import lib.java_lang_extensions.anonymous_types.Struct;
+import lib.java_lang_extensions.anonymous_types.StructField;
+import lib.java_lang_extensions.builtin_classes.EnumX;
 
 import static gui.javafx_api_extensions.StageX.SizeChangeFlag.*;
 import static gui.javafx_api_extensions.StageX.WinBorder.*;
@@ -16,7 +18,13 @@ import static gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConsta
 
 public class StageX {
 
-    enum WinBorder {TOP, LEFT, BOTTOM, RIGHT}
+    enum WinBorder implements EnumX<WinBorder, Double> {
+        TOP, LEFT, BOTTOM, RIGHT;
+
+        StructField<WinBorder, Double> _(Double value) {
+            return new StructField<>(this, value);
+        }
+    }
 
     Struct<WinBorder, Double> win_borders_px;
 
@@ -27,12 +35,7 @@ public class StageX {
         this.StageX(
                 stage,
                 scene,
-                new Struct<WinBorder, Double>(
-                        _(TOP, -1d),
-                        _(LEFT, -1d),
-                        _(BOTTOM, -1d),
-                        _(RIGHT, -1d)
-                )
+                new Struct<WinBorder, Double>(TOP._(-1d), LEFT._(-1d), BOTTOM._(-1d), RIGHT._(-1d))
         );
     }
 
