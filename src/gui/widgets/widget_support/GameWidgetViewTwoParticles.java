@@ -2,7 +2,7 @@ package gui.widgets.widget_support;
 
 import model.Particle;
 
-import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
 
 public class GameWidgetViewTwoParticles extends GameWidgetView {
     public Particle center;

@@ -1,34 +1,29 @@
-import gui.javafx_api_extensions.ApplicationX;
+import gui.debug.DebugJavaFX;
+import lib.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GravityGameWidget;
 import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import lib.debug.*;
+import lib.javafx_api_extensions.ScreenX;
 import missions.SolarSystem;
 
-import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.UNKNOWN_BORDER_SIZES;
 import static lib.data_structures.RunCommand.*;
 
 public class GravityGame extends ApplicationX {
-    Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
+    String user_dir = System.getProperty("user.dir");
 
     GravityGameStylesheets stylesheets = new gui.stylesheets.GravityGameStylesheets();
     public static final double widget_spacing = 20;
 
-//    double canvas_width = 1305;
-//    double canvas_height = 795;
-
-    double canvas_width = 800;
-    double canvas_height = 800;
-
-    double canvas_aspect_ratio = canvas_width / canvas_height;
-
     GravityGameStage stage;
     Scene scene;
+    Group root;
     GravityGameWidget game_widget;
 
     public static void main(String[] args) {
@@ -39,30 +34,36 @@ public class GravityGame extends ApplicationX {
     public void start(Stage stage) {
         build_gui(stage);
 
-        //        System.out.print(Misc.JavaFX_node_tree_debug(stage, 0));
+        Debug.<Node, Integer>print(false, DebugJavaFX::JavaFX_node_tree_debug, scene.getRoot(), 0);
 
         stage.show();
-        game_widget.init_run();
     }
 
     public void build_gui(Stage stage) {
 
-        this.game_widget = new GravityGameWidget(canvas_width, canvas_height,
+        //    double canvas_width = 1305;
+        //    double canvas_height = 795;
+
+        double game_widget_width = 800;
+        double game_widget_height = 800;
+
+        this.game_widget = new GravityGameWidget(game_widget_width, game_widget_height,
                 SolarSystem.solar_sys_game_view_sun_earth,
-                SolarSystem.solar_system_sim);
-
+                SolarSystem.solar_system_sim,
+                SUSPEND);
+        this.root = new Group(game_widget);
         this.scene = new Scene(game_widget);
+        this.stage = new GravityGameStage(stage);
 
-        this.stage = new GravityGameStage(stage, scene);
+        this.scene.getStylesheets().addAll(user_dir + "hmm.css");  // FIXME
+        this.stage.set_scene(scene);
 
-        scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_stylesheet.getStylesheets());
+        Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();
 
-        Group root = new Group();
+        stage.setX(screen_bounds.getMaxX() - game_widget_width - 10);
+        stage.setY(screen_bounds.getMinY());
 
-
-        root.getChildren().add(game_widget);
-        Scene scene = new Scene(root, canvas_width, canvas_height);
-        stage.setScene(scene);
+        // stage.centerOnScreen();
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
@@ -72,18 +73,18 @@ public class GravityGame extends ApplicationX {
                 case R:
                     game_widget.reset();
                     break;
-                case LEFT:
-                    game_widget.reset();
-                    break;
-                case RIGHT:
-                    game_widget.reset();
-                    break;
-                case UP:
-                    game_widget.reset();
-                    break;
-                case DOWN:
-                    game_widget.reset();
-                    break;
+//                case LEFT:
+//                    game_widget.reset();
+//                    break;
+//                case RIGHT:
+//                    game_widget.reset();
+//                    break;
+//                case UP:
+//                    game_widget.reset();
+//                    break;
+//                case DOWN:
+//                    game_widget.reset();
+//                    break;
             }
         });
     }

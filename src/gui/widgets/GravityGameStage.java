@@ -1,29 +1,28 @@
 package gui.widgets;
 
-import gui.javafx_api_extensions.StageX;
-import gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
-import javafx.scene.Scene;
+import lib.javafx_api_extensions.StageX;
+import lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
 
 public class GravityGameStage extends StageX {
 
-    public GravityGameStage(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {
-        super(stage, scene, UNKNOWN_BORDER_SIZES);
+    public GravityGameStage(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
+        super(stage, UNKNOWN_BORDER_SIZES);
     }
 
-    public GravityGameStage(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES overload_constant) {
-        super(stage, scene, HEURISTIC_BORDER_SIZES);
+    public GravityGameStage(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
+        super(stage, HEURISTIC_BORDER_SIZES);
     }
 
-    public GravityGameStage(Stage stage, Scene scene, double top, double left, double bottom, double right) {
-        super(stage, scene, top, left, bottom, right);
+    public GravityGameStage(Stage stage, double top, double left, double bottom, double right) {
+        super(stage, top, left, bottom, right);
     }
 
-    public GravityGameStage(Stage stage, Scene scene) {
-        this(stage, scene, UNKNOWN_BORDER_SIZES);
+    public GravityGameStage(Stage stage) {
+        this(stage, UNKNOWN_BORDER_SIZES);
     }
 
     void finish_construction() {
@@ -51,9 +50,5 @@ public class GravityGameStage extends StageX {
 
         stage.setFullScreen(true);
         stage.setFullScreen(false);
-
-        // stage.centerOnScreen();
-        stage.setX(screen_bounds.getMaxX() - canvas_width - 10);
-        stage.setY(screen_bounds.getMinY());
     }
 }

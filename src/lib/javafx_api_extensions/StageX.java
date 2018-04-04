@@ -1,4 +1,4 @@
-package gui.javafx_api_extensions;
+package lib.javafx_api_extensions;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
@@ -7,10 +7,10 @@ import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
 import lib.java_lang_extensions.anonymous_types.TypedStruct;
 
-import static gui.javafx_api_extensions.StageX.SizeChangeFlag.*;
-import static gui.javafx_api_extensions.StageX.WinBorder.*;
-import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
-import static gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
+import static lib.javafx_api_extensions.StageX.SizeChangeFlag.*;
+import static lib.javafx_api_extensions.StageX.WinBorder.*;
+import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
 import static lib.java_lang_extensions.anonymous_types.StructField.F;
 
 public class StageX {
@@ -24,9 +24,8 @@ public class StageX {
     public Stage stage;
     public Scene scene;
 
-    public StageX(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {
-        this(stage, scene,
-                new TypedStruct<WinBorder, Double>(
+    public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
+        this(stage, new TypedStruct<WinBorder, Double>(
                         F(TOP, -1d),
                         F(LEFT, -1d),
                         F(BOTTOM, -1d),
@@ -35,9 +34,8 @@ public class StageX {
         );
     }
 
-    public StageX(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES overload_constant) {
-        this(stage, scene,
-                new TypedStruct<WinBorder, Double>(
+    public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
+        this(stage, new TypedStruct<WinBorder, Double>(
                         F(TOP, 15 * 5d),    // Heuristic for top
                         F(LEFT, 15d),       // Heuristic for left
                         F(BOTTOM, 15d),     // Heuristic for bottom
@@ -46,9 +44,8 @@ public class StageX {
         );
     }
 
-    public StageX(Stage stage, Scene scene, double top, double left, double bottom, double right) {
-        this(stage, scene,
-                new TypedStruct<WinBorder, Double>(
+    public StageX(Stage stage, double top, double left, double bottom, double right) {
+        this(stage, new TypedStruct<WinBorder, Double>(
                         F(TOP, top),
                         F(LEFT, left),
                         F(BOTTOM, bottom),
@@ -58,13 +55,9 @@ public class StageX {
     }
 
     public StageX(Stage stage,
-                  Scene scene,
                   TypedStruct<WinBorder, Double> win_bordersFpx)
     {
         this.stage = stage;
-        this.scene = scene;
-
-        stage.setScene(scene);
 
         this.win_borders_px = win_borders_px;
 
@@ -80,6 +73,11 @@ public class StageX {
 
 //      On my current system, there is a slight visual effect of flickering/jumping of the window as it
 //      appears when it is shown for the first time. Not sure why that is.
+    }
+
+    public void set_scene(Scene scene) {
+        this.scene = scene;
+        stage.setScene(scene);
     }
 
     enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED};

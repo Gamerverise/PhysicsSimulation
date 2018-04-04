@@ -1,4 +1,4 @@
-package gui.javafx_api_extensions;
+package lib.javafx_api_extensions;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -9,8 +9,8 @@ import lib.java_lang_extensions.function_types.FunctionR1;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
-import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
-import static gui.javafx_api_extensions.javafx_support.Enums.Dimension2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.Dimension2D;
 
 public class GraphicsContextX {
     public GraphicsContext gc;

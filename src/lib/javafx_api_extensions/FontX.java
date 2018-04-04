@@ -1,4 +1,4 @@
-package gui.javafx_api_extensions;
+package lib.javafx_api_extensions;
 
 import javafx.scene.text.Font;
 

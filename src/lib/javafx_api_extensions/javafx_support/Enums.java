@@ -1,4 +1,4 @@
-package gui.javafx_api_extensions.javafx_support;
+package lib.javafx_api_extensions.javafx_support;
 
 public class Enums {
 

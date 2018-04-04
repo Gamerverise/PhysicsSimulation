@@ -30,7 +30,10 @@ public class SimulationDynamic extends SimulationStatic {
 
     public SimulationDynamic(SimulationStatic s, CopyType copy_type, RunCommand init_run_command) {
         super(s, copy_type);
-        this.init_run_command = init_run_command;
+
+        if (init_run_command != null)
+            this.init_run_command = init_run_command;
+
         shared_construction();
     }
 

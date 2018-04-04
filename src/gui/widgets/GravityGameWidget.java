@@ -1,6 +1,6 @@
 package gui.widgets;
 
-import gui.javafx_api_extensions.GraphicsContextX;
+import lib.javafx_api_extensions.GraphicsContextX;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,7 +20,7 @@ import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 
 import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
 import static lib.data_structures.CopyType.COPY_DEEP;
 import static lib.data_structures.RunCommand.*;
 
@@ -57,7 +57,7 @@ public class GravityGameWidget extends Region {
         this.init_simulation = init_simulation;
 
         canvas = new Canvas(width, height);
-        simulation = new SimulationDynamic(init_simulation, COPY_DEEP);
+        simulation = new SimulationDynamic(init_simulation, COPY_DEEP, null);
         init_graphics_context();
     }
 
