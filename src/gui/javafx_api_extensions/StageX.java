@@ -1,32 +1,27 @@
 package gui.javafx_api_extensions;
 
-import gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
+import lib.java_lang_extensions.anonymous_types.Struc;
 import lib.java_lang_extensions.anonymous_types.Struct;
 import lib.java_lang_extensions.anonymous_types.StructField;
-import lib.java_lang_extensions.builtin_classes.EnumX;
 
 import static gui.javafx_api_extensions.StageX.SizeChangeFlag.*;
 import static gui.javafx_api_extensions.StageX.WinBorder.*;
-import static lib.java_lang_extensions.anonymous_types.StructField._;
 import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
 import static gui.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
+import static lib.java_lang_extensions.anonymous_types.StructField.F;
 
 public class StageX {
 
-    enum WinBorder implements EnumX<WinBorder, Double> {
-        TOP, LEFT, BOTTOM, RIGHT;
-
-        StructField<WinBorder, Double> _(Double value) {
-            return new StructField<>(this, value);
-        }
+    enum WinBorder {
+        TOP, LEFT, BOTTOM, RIGHT
     }
 
-    Struct<WinBorder, Double> win_borders_px;
+    Struc<WinBorder, Double> win_borders_px;
 
     Stage stage;
     Scene scene;
@@ -35,7 +30,12 @@ public class StageX {
         this.StageX(
                 stage,
                 scene,
-                new Struct<WinBorder, Double>(TOP._(-1d), LEFT._(-1d), BOTTOM._(-1d), RIGHT._(-1d))
+                new Struc<WinBorder, Double>(
+                        F(TOP, -1d),
+                        F(LEFT, -1d),
+                        F(BOTTOM, -1d),
+                        F(RIGHT, -1d)
+                )
         );
     }
 
@@ -43,11 +43,11 @@ public class StageX {
         this.StageX(
                 stage,
                 scene,
-                new Struct<WinBorder, Double>(
-                        _(TOP, 15 * 5d),    // Heuristic for top
-                        _(LEFT, 15d),       // Heuristic for left
-                        _(BOTTOM, 15d),     // Heuristic for bottom
-                        _(RIGHT, 15d)       // Heuristic for right
+                new Struc<WinBorder, Double>(
+                        F(TOP, 15 * 5d),    // Heuristic for top
+                        F(LEFT, 15d),       // Heuristic for left
+                        F(BOTTOM, 15d),     // Heuristic for bottom
+                        F(RIGHT, 15d)       // Heuristic for right
                 )
         );
     }
@@ -56,18 +56,18 @@ public class StageX {
         this.StageX(
                 stage,
                 scene,
-                new Struct<WinBorder, Double>(
-                        _(TOP, top),
-                        _(LEFT, left),
-                        _(BOTTOM, bottom),
-                        _(RIGHT, right)
+                new Struc<WinBorder, Double>(
+                        F(TOP, top),
+                        F(LEFT, left),
+                        F(BOTTOM, bottom),
+                        F(RIGHT, right)
                 )
         );
     }
 
     public StageX(Stage stage,
                   Scene scene,
-                  Struct<WinBorder, Double> win_borders_px)
+                  Struc<WinBorder, Double> win_bordersFpx)
     {
         this.stage = stage;
         this.scene = scene;
@@ -99,7 +99,7 @@ public class StageX {
         // Intentionally empty
     }
 
-    Struct<WinBorder, Double> calc_win_borders_px() {
+    Struc<WinBorder, Double> calc_win_borders_px() {
         double top;
         double left;
         double bottom;
@@ -134,11 +134,11 @@ public class StageX {
             right = win_width_px - left - scene_width_px;
         }
 
-        return new Struct<WinBorder, Double>(
-                _(TOP, top),
-                _(LEFT, left),
-                _(BOTTOM, bottom),
-                _(RIGHT, right)
+        return new Struc<WinBorder, Double>(
+                F(TOP, top),
+                F(LEFT, left),
+                F(BOTTOM, bottom),
+                F(RIGHT, right)
         );
     }
 

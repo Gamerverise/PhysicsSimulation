@@ -9,7 +9,7 @@ public class StructField<N extends Enum, V> {
         this.value = value;
     }
 
-    public static <N extends Enum, V> StructField<N, V> _(N name, V value) {
+    public static <N extends Enum, V> StructField<N, V> F(N name, V value) {
         return new StructField<>(name, value);
     }
 }

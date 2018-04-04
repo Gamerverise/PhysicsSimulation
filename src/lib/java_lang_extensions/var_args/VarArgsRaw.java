@@ -7,15 +7,15 @@ public class VarArgsRaw extends VarArgs<Object> {
     //    class Foo {
     //
     //        Foo(VarArgsRaw... vargs) {
-    //            Integer[] local_ints = vargs[0].args<Integer>();
-    //            Double[] local_doubles = vargs[1].args<Double>();
-    //            String[] local_strings = vargs[2].args<String();
+    //            Integer[] local_ints = vargs[0].<Integer>args();
+    //            Double[] local_doubles = vargs[1].<Double>args();
+    //            String[] local_strings = vargs[2].<String>args();
     //        }
     //
     //        void test() {
-    //            Foo foo = new Foo(_vargs<Integer>(i_1, i_2, i_3),
-    //                              _vargs<Double>(d_1, d_2, d_3)
-    //                              _vargs<String>(s_1, s_2, s_3));
+    //            Foo foo = new Foo(<Integer>_vargs(i_1, i_2, i_3),
+    //                              <Double>_vargs(d_1, d_2, d_3)
+    //                              <String>_vargs(s_1, s_2, s_3));
     //        }
     //    }
 

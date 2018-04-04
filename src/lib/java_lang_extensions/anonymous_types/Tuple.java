@@ -19,7 +19,7 @@ public class Tuple<T> {
         data[i] = elem;
     }
 
-    public static <T> Tuple _(T... values) {
+    public static <T> Tuple T(T... values) {
         return new Tuple(values);
     }
 }
