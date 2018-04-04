@@ -1,13 +1,30 @@
 package gui.widgets;
 
 import gui.javafx_api_extensions.StageX;
+import gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class GravityGameStage extends StageX {
 
-    GravityGameStage(Stage stage) {
-        super(stage);
+    public GravityGameStage(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {
+        super(stage, scene, UNKNOWN_BORDER_SIZES);
+    }
+
+    public GravityGameStage(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES overload_constant) {
+        super(stage, scene, HEURISTIC_BORDER_SIZES);
+    }
+
+    public GravityGameStage(Stage stage, Scene scene, double top, double left, double bottom, double right) {
+        super(stage, scene, top, left, bottom, right);
+    }
+
+    public GravityGameStage(Stage stage, Scene scene) {
+        this(stage, scene, UNKNOWN_BORDER_SIZES);
+    }
+
+    void finish_construction() {
 
         // FIXME (maybe fixed): What is the proper/best order of operations for initialing a window? We may have the best/proper order
         // FIXME (maybe fixed): Does stage have to be showing when centerOnScreen is called? Apparently not

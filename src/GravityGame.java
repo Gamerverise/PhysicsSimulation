@@ -1,7 +1,6 @@
 import gui.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GameWidget;
-import gui.javafx_api_extensions.StageX;
 import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -11,7 +10,10 @@ import javafx.stage.Stage;
 
 import missions.SolarSystem;
 
+import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.UNKNOWN_BORDER_SIZES;
+
 public class GravityGame extends ApplicationX {
+    Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
 
     GravityGameStylesheets stylesheets = new gui.stylesheets.GravityGameStylesheets();
     public static final double widget_spacing = 20;
@@ -24,11 +26,6 @@ public class GravityGame extends ApplicationX {
 
     double canvas_aspect_ratio = canvas_width / canvas_height;
 
-    Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
-
-//    Stage stage;
-//    GraphicsContext gc;
-
     GravityGameStage stage;
     Scene scene;
     GameWidget game_widget;
@@ -38,25 +35,25 @@ public class GravityGame extends ApplicationX {
     }
 
     @Override
-    public void start(Stage _stage) {
+    public void start(Stage stage) {
         build_gui(stage);
+
+        //        System.out.print(Misc.JavaFX_node_tree_debug(stage, 0));
+
         stage.show();
-
-//        System.out.print(Misc.JavaFX_node_tree_debug(stage, 0));
-
         game_widget.init_run();
     }
 
-    public void build_gui(Stage _stage) {
+    public void build_gui(Stage stage) {
 
-        game_widget = new GameWidget(canvas_width, canvas_height,
+        this.game_widget = new GameWidget(canvas_width, canvas_height,
                 SolarSystem.solar_sys_game_view_sun_earth,
                 SolarSystem.solar_system_sim,
                 false);
 
-        scene = new Scene(game_widget);
+        this.scene = new Scene(game_widget);
 
-        stage = new StageX(_stage, scene);
+        this.stage = new GravityGameStage(stage, scene);
 
         scene.getStylesheets().addAll(gui.dummy_scene_to_load_and_hold_stylesheet.getStylesheets());
 
@@ -66,11 +63,6 @@ public class GravityGame extends ApplicationX {
         root.getChildren().add(game_widget);
         Scene scene = new Scene(root, canvas_width, canvas_height);
         stage.setScene(scene);
-
-        stage.setTitle("Gravity Game");
-        stage.setX(screen_bounds.getMaxX() - canvas_width - 10);
-        stage.setY(screen_bounds.getMinY());
-        stage.setResizable(false);
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {

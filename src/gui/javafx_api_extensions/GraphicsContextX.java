@@ -3,12 +3,14 @@ package gui.javafx_api_extensions;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
-import lib.Assert.RuntimeErrors;
+
 import lib.debug.MethodNameHack;
 import lib.java_lang_extensions.function_types.FunctionR1;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
+import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static gui.javafx_api_extensions.javafx_support.Enums.Dimension2D;
 
 public class GraphicsContextX {
     public GraphicsContext gc;
@@ -60,7 +62,7 @@ public class GraphicsContextX {
         min_radius = Math.abs(inverted_radius - inverted_origin);
     }
 
-    public Enums.Dimension2D scale(double scale_rel, Enums.ScaleOp2D scale_op) {
+    public Dimension2D scale(double scale_rel, ScaleOp2D scale_op) {
         Canvas canvas = gc.getCanvas();
         double scale;
 
@@ -69,39 +71,39 @@ public class GraphicsContextX {
                 scale = canvas.getWidth() * scale_rel;
                 gc.scale(scale, scale);
                 update_min_radius(this::invert_x);
-                return Enums.Dimension2D.WIDTH;
+                return Dimension2D.WIDTH;
             case HEIGHT:
                 scale = canvas.getHeight() * scale_rel;
                 gc.scale(scale, scale);
                 update_min_radius(this::invert_y);
-                return Enums.Dimension2D.HEIGHT;
+                return Dimension2D.HEIGHT;
 
             case HALF_WIDTH:
-                return scale(scale_rel/2, Enums.ScaleOp2D.WIDTH);
+                return scale(scale_rel/2, ScaleOp2D.WIDTH);
             case HALF_HEIGHT:
-                return scale(scale_rel/2, Enums.ScaleOp2D.HEIGHT);
+                return scale(scale_rel/2, ScaleOp2D.HEIGHT);
 
             case MAX:
                 if (canvas.getWidth() > canvas.getHeight())
-                    return scale(scale_rel, Enums.ScaleOp2D.WIDTH);
+                    return scale(scale_rel, ScaleOp2D.WIDTH);
                 else
-                    return scale(scale_rel, Enums.ScaleOp2D.HEIGHT);
+                    return scale(scale_rel, ScaleOp2D.HEIGHT);
             case MIN:
                 if (canvas.getWidth() < canvas.getHeight())
-                    return scale(scale_rel, Enums.ScaleOp2D.WIDTH);
+                    return scale(scale_rel, ScaleOp2D.WIDTH);
                 else
-                    return scale(scale_rel, Enums.ScaleOp2D.HEIGHT);
+                    return scale(scale_rel, ScaleOp2D.HEIGHT);
 
             case HALF_MAX:
                 if (canvas.getWidth() > canvas.getHeight())
-                    return scale(scale_rel/2, Enums.ScaleOp2D.WIDTH);
+                    return scale(scale_rel/2, ScaleOp2D.WIDTH);
                 else
-                    return scale(scale_rel/2, Enums.ScaleOp2D.HEIGHT);
+                    return scale(scale_rel/2, ScaleOp2D.HEIGHT);
             case HALF_MIN:
                 if (canvas.getWidth() < canvas.getHeight())
-                    return scale(scale_rel/2, Enums.ScaleOp2D.WIDTH);
+                    return scale(scale_rel/2, ScaleOp2D.WIDTH);
                 else
-                    return scale(scale_rel/2, Enums.ScaleOp2D.HEIGHT);
+                    return scale(scale_rel/2, ScaleOp2D.HEIGHT);
         }
 
         assert false : assert_msg(

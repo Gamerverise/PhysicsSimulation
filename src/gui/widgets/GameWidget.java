@@ -4,9 +4,11 @@ import gui.javafx_api_extensions.GraphicsContextX;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import lib.data_structures.RunCommand;
 import lib.debug.MethodNameHack;
 import model.Particle;
 import model.Universe;
@@ -16,73 +18,57 @@ import gui.widgets.widget_support.GameWidgetView;
 import gui.widgets.widget_support.GameWidgetViewParticle;
 import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 
-import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.data_structures.CopyType.DEEP;
+import static lib.data_structures.RunCommand.*;
 
-public class GameWidget extends Canvas {
-    GraphicsContextX gcx;
-    GraphicsContext gc;
-
-    AnimationTimer anim_timer;
+public class GameWidget extends Region {
+    double min_radius_px = 1.1;
 
     GameWidgetView init_gv;
-
     SimulationStatic init_simulation;
-    boolean init_is_running;
+
+    Canvas canvas;
+
+    GraphicsContextX gcx;
+    GraphicsContext gc;
+    AnimationTimer anim_timer;
 
     SimulationDynamic simulation;
-    boolean is_running;
-
-    double min_radius_px = 1.1;
 
     public GameWidget(double width, double height,
                       GameWidgetView init_gv,
                       Universe universe,
                       double dt_real,
                       double dt_sim,
-                      boolean is_running)
+                      RunCommand init_run_command)
     {
-        super(width, height);
-        finish_construction(init_gv, universe, dt_real, dt_sim, is_running);
+        this(width, height, init_gv, new SimulationStatic(universe, dt_real, dt_sim, init_run_command));
     }
 
     public GameWidget(double width, double height,
                       GameWidgetView init_gv,
-                      SimulationStatic sim,
-                      boolean is_running)
+                      SimulationStatic init_simulation)
     {
-        super(width, height);
-        finish_construction(init_gv, sim, is_running);
-    }
-
-    public void finish_construction(GameWidgetView init_gv,
-                                    Universe universe,
-                                    double dt_real,
-                                    double dt_sim,
-                                    boolean is_running)
-    {
-        finish_construction(init_gv, new SimulationStatic(universe, dt_real, dt_sim), is_running);
-    }
-
-    void finish_construction(GameWidgetView init_gv, SimulationStatic sim, boolean is_running) {
         this.init_gv = init_gv;
+        this.init_simulation = init_simulation;
 
-        init_simulation = sim;
-        init_is_running = is_running;
-
-        this.simulation = new SimulationDynamic(init_simulation, Enums.CopyType.DEEP);
-        this.is_running = init_is_running;
+        canvas = new Canvas(width, height);
+        simulation = new SimulationDynamic(init_simulation, DEEP);
+        init_graphics_context();
     }
 
     public void init_graphics_context() {
-        gc = getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
         gcx = new GraphicsContextX(gc, min_radius_px);
 
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
 
         // Set origin to center of canvas, instead of top left
-        gc.translate(getWidth() / 2, getHeight() / 2);
+        gc.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
 
         // Change positive y direction from down to up
         gc.scale(1, -1);
@@ -95,40 +81,28 @@ public class GameWidget extends Canvas {
                 redraw();
             }
         };
+
+        redraw();
     }
 
-    public void init_run() {
-        init_graphics_context();
-        run();
-    }
-    
     public void reset() {
         anim_timer.stop();
-
-        simulation.reset(simulation);
-        is_running = init_is_running;
-        
-        init_run();
-    }
-
-    public void run() {
-        if (is_running)
-            toggle_run_suspend();
-        else
-            // Draw the screen once to see the initial state
-            redraw();
+        simulation.reset(init_simulation);
+        init_graphics_context();
     }
 
     public void toggle_run_suspend() {
-        is_running = !is_running;
-
-        if (is_running == true) {
-            anim_timer.start();
-            simulation.run();
-        } else {
+        if (simulation.atomic_run_command.get() == RUN) {
             simulation.suspend();
             anim_timer.stop();
-        }
+        } else if (simulation.atomic_run_command.get() == SUSPEND){
+            anim_timer.start();
+            simulation.run();
+        } else
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack(){}.method_name(),
+                    BAD_CODE_PATH);
     }
 
     // view_particle
@@ -138,7 +112,7 @@ public class GameWidget extends Canvas {
     //     and
     //         diameter_px(p, q) = zoom * canvas_dim
 
-    public void view_particle(Particle p, double zoom, Enums.ScaleOp2D scale_op) {
+    public void view_particle(Particle p, double zoom, ScaleOp2D scale_op) {
         double scale_rel = 1 / p.radius / 2 * zoom;
         gc.translate(p.x, p.y);
         gcx.scale(scale_rel, scale_op);
@@ -150,7 +124,7 @@ public class GameWidget extends Canvas {
     //
     //         dist_px(p, q) = zoom * canvas_dim
 
-    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, Enums.ScaleOp2D scale_op) {
+    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, ScaleOp2D scale_op) {
         double scale_rel = 1 / p.distance(q) * zoom;
         gc.translate(center.x, center.y);
         gcx.scale(scale_rel, scale_op);
@@ -196,9 +170,16 @@ public class GameWidget extends Canvas {
 
         simulation.xy_data_rw_lock.unlock();
 
-        if (is_running)
-            gc.fillText("Playing", 5, 50);
-        else
-            gc.fillText("Paused", 5, 50);
+        switch (simulation.atomic_run_command.get()) {
+            case RUN:
+                gc.fillText("Playing", 5, 50);
+                break;
+            case SUSPEND:
+                gc.fillText("Paused", 5, 50);
+                break;
+            case EXIT:
+                gc.fillText("Exited", 5, 50);
+                break;
+        }
     }
 }

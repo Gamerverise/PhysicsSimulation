@@ -15,19 +15,17 @@ import static lib.java_lang_extensions.anonymous_types.StructField.F;
 
 public class StageX {
 
-    enum WinBorder {
+    public enum WinBorder {
         TOP, LEFT, BOTTOM, RIGHT
     }
 
     TypedStruct<WinBorder, Double> win_borders_px;
 
-    Stage stage;
-    Scene scene;
+    public Stage stage;
+    public Scene scene;
 
     public StageX(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {
-        this.StageX(
-                stage,
-                scene,
+        this(stage, scene,
                 new TypedStruct<WinBorder, Double>(
                         F(TOP, -1d),
                         F(LEFT, -1d),
@@ -38,9 +36,7 @@ public class StageX {
     }
 
     public StageX(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES overload_constant) {
-        this.StageX(
-                stage,
-                scene,
+        this(stage, scene,
                 new TypedStruct<WinBorder, Double>(
                         F(TOP, 15 * 5d),    // Heuristic for top
                         F(LEFT, 15d),       // Heuristic for left
@@ -51,9 +47,7 @@ public class StageX {
     }
 
     public StageX(Stage stage, Scene scene, double top, double left, double bottom, double right) {
-        this.StageX(
-                stage,
-                scene,
+        this(stage, scene,
                 new TypedStruct<WinBorder, Double>(
                         F(TOP, top),
                         F(LEFT, left),
@@ -73,6 +67,8 @@ public class StageX {
         stage.setScene(scene);
 
         this.win_borders_px = win_borders_px;
+
+        // FIXME: Do we still need these listeners?
 
         stage.widthProperty().addListener((observable, old_value, new_value) -> {
             size_changed_event_handler(WIDTH_CHANGED, observable, old_value, new_value);

@@ -1,30 +1,35 @@
 package simulation;
 
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
+
+import lib.data_structures.CopyType;
+import lib.data_structures.RunCommand;
 import lib.debug.MethodNameHack;
 import model.Particle;
 import model.Universe;
-import lib.Assert.RuntimeErrors;
 
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.data_structures.CopyType.DEEP;
+import static lib.debug.AssertMessages.BROKEN_ASSERTION;
 import static lib.debug.Debug.assert_msg;
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.data_structures.RunCommand.*;
 
 public class SimulationDynamic extends SimulationStatic {
     Thread thread;
 
-    public Semaphore run_suspend_permit;
+    public AtomicReference<RunCommand> atomic_run_command;
+    public ReentrantLock suspend_lock;
     public ReentrantLock xy_data_rw_lock;
 
     double time_step_counter;
 
-    public SimulationDynamic(Universe universe, double dt_real, double dt_sim) {
-        super(universe, dt_real, dt_sim);
+    public SimulationDynamic(Universe universe, double dt_real, double dt_sim, RunCommand init_run_command) {
+        super(universe, dt_real, dt_sim, init_run_command);
         shared_construction();
     }
 
-    public SimulationDynamic(SimulationStatic s, Enums.CopyType copy_type) {
+    public SimulationDynamic(SimulationStatic s, CopyType copy_type) {
         super(s, copy_type);
         shared_construction();
     }
@@ -32,22 +37,25 @@ public class SimulationDynamic extends SimulationStatic {
     public void shared_construction() {
         time_step_counter = 0;
 
-        // FIXME: How many permits? 0 or -1?
-        run_suspend_permit = new Semaphore(0);
+        atomic_run_command = new AtomicReference<>(init_run_command);
+        suspend_lock = new ReentrantLock();
         xy_data_rw_lock = new ReentrantLock();
 
-        thread = new Thread(this::time_step_wrapper);
-
-        thread.start();
+        birth_thread();
     }
 
     public void time_step_wrapper() {
 
         while (true) {
-            try {
-                run_suspend_permit.acquire();
-            } catch (InterruptedException e) {
-                return;
+            RunCommand cur_command = atomic_run_command.get();
+
+            switch (cur_command) {
+                case SUSPEND:
+                    suspend_lock.lock();
+                    suspend_lock.unlock();
+                    break;
+                case EXIT:
+                    return;
             }
 
             time_step();
@@ -60,31 +68,63 @@ public class SimulationDynamic extends SimulationStatic {
                         new MethodNameHack(){}.method_name(),
                         BAD_CODE_PATH);
             }
+        }
+    }
 
-            run_suspend_permit.release();
+    public void birth_thread() {
+        do_run_command(init_run_command);
+        thread = new Thread(this::time_step_wrapper);
+        thread.start();
+    }
+
+    public void do_run_command(RunCommand run_command) {
+        switch (run_command) {
+            case RUN:
+                run();
+                break;
+            case SUSPEND:
+                suspend();
+                break;
+            case EXIT:
+                exit();
+                break;
         }
     }
 
     public void run() {
-        run_suspend_permit.release();
+        atomic_run_command.set(RUN);
+        suspend_lock.unlock();
     }
 
     public void suspend() {
-        run_suspend_permit.acquireUninterruptibly();
+        suspend_lock.lock();
+        atomic_run_command.set(SUSPEND);
     }
 
     public void exit() {
-        run_suspend_permit.acquireUninterruptibly();
-        thread.interrupt();
+        if (atomic_run_command.get() == EXIT)
+            return;
+
+        atomic_run_command.set(EXIT);
+        suspend_lock.unlock();
+
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack(){}.method_name(),
+                    BAD_CODE_PATH);
+        }
     }
 
-    public void reset(SimulationDynamic sim) {
+    public void reset(SimulationStatic init_sim) {
         exit();
-        copy(sim, Enums.CopyType.DEEP);
+
+        copy(init_sim, DEEP);
         time_step_counter = 0;
-        // FIXME: Are the lock and semaphore in the correct state at this point?
-        thread = new Thread(this::time_step_wrapper);
-        thread.start();
+
+        birth_thread();
     }
 
     public void time_step() {

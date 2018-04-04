@@ -2,6 +2,10 @@ package model;
 
 import java.util.LinkedList;
 
+import lib.data_structures.CopyType;
+
+import static lib.data_structures.CopyType.SHALLOW;
+
 public class Universe {
 
     public double acceleration_constant;
@@ -15,11 +19,11 @@ public class Universe {
         add_particles(particles);
     }
 
-    public Universe(Universe u, Enums.CopyType copy_type) {
+    public Universe(Universe u, CopyType copy_type) {
         acceleration_constant = u.acceleration_constant;
         max_speed = u.max_speed;
 
-        if (copy_type == Enums.CopyType.SHALLOW)
+        if (copy_type == SHALLOW)
             particles = u.particles;
         else
             add_particles(u.particles);
