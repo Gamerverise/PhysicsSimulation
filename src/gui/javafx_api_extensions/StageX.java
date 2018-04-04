@@ -5,9 +5,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-import lib.java_lang_extensions.anonymous_types.Struc;
-import lib.java_lang_extensions.anonymous_types.Struct;
-import lib.java_lang_extensions.anonymous_types.StructField;
+import lib.java_lang_extensions.anonymous_types.TypedStruct;
 
 import static gui.javafx_api_extensions.StageX.SizeChangeFlag.*;
 import static gui.javafx_api_extensions.StageX.WinBorder.*;
@@ -21,16 +19,16 @@ public class StageX {
         TOP, LEFT, BOTTOM, RIGHT
     }
 
-    Struc<WinBorder, Double> win_borders_px;
+    TypedStruct<WinBorder, Double> win_borders_px;
 
     Stage stage;
     Scene scene;
 
-    public StageX(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES constant_overload) {
+    public StageX(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {
         this.StageX(
                 stage,
                 scene,
-                new Struc<WinBorder, Double>(
+                new TypedStruct<WinBorder, Double>(
                         F(TOP, -1d),
                         F(LEFT, -1d),
                         F(BOTTOM, -1d),
@@ -39,11 +37,11 @@ public class StageX {
         );
     }
 
-    public StageX(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES constant_overload) {
+    public StageX(Stage stage, Scene scene, HEURISTIC_BORDER_SIZES overload_constant) {
         this.StageX(
                 stage,
                 scene,
-                new Struc<WinBorder, Double>(
+                new TypedStruct<WinBorder, Double>(
                         F(TOP, 15 * 5d),    // Heuristic for top
                         F(LEFT, 15d),       // Heuristic for left
                         F(BOTTOM, 15d),     // Heuristic for bottom
@@ -56,7 +54,7 @@ public class StageX {
         this.StageX(
                 stage,
                 scene,
-                new Struc<WinBorder, Double>(
+                new TypedStruct<WinBorder, Double>(
                         F(TOP, top),
                         F(LEFT, left),
                         F(BOTTOM, bottom),
@@ -67,7 +65,7 @@ public class StageX {
 
     public StageX(Stage stage,
                   Scene scene,
-                  Struc<WinBorder, Double> win_bordersFpx)
+                  TypedStruct<WinBorder, Double> win_bordersFpx)
     {
         this.stage = stage;
         this.scene = scene;
@@ -99,7 +97,7 @@ public class StageX {
         // Intentionally empty
     }
 
-    Struc<WinBorder, Double> calc_win_borders_px() {
+    TypedStruct<WinBorder, Double> calc_win_borders_px() {
         double top;
         double left;
         double bottom;
@@ -134,7 +132,7 @@ public class StageX {
             right = win_width_px - left - scene_width_px;
         }
 
-        return new Struc<WinBorder, Double>(
+        return new TypedStruct<WinBorder, Double>(
                 F(TOP, top),
                 F(LEFT, left),
                 F(BOTTOM, bottom),
@@ -160,7 +158,7 @@ public class StageX {
         double primary_screen_width_px = primary_screen_bounds.getWidth();
         double primary_screen_height_px = primary_screen_bounds.getHeight();
 
-        Struct<WinBorder, Double> borders_px = calc_win_borders_px();
+        TypedStruct<WinBorder, Double> borders_px = calc_win_borders_px();
 
         double max_scene_width_px = primary_screen_width_px - borders_px.get(LEFT) - borders_px.get(RIGHT);
         double max_scene_height_px = primary_screen_height_px - borders_px.get(TOP) - borders_px.get(BOTTOM);

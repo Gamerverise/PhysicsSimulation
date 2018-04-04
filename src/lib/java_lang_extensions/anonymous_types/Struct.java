@@ -1,6 +1,6 @@
 package lib.java_lang_extensions.anonymous_types;
 
-public class Struct<N extends Enum<N>> extends Struc<N, Object> {
+public class Struct<N extends Enum<N>> extends TypedStruct<N, Object> {
 
     public Struct(Class<N> clazz) {
         super(clazz);
