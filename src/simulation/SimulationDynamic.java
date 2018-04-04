@@ -9,8 +9,7 @@ import lib.debug.MethodNameHack;
 import model.Particle;
 import model.Universe;
 
-import static lib.data_structures.CopyType.DEEP;
-import static lib.debug.AssertMessages.BROKEN_ASSERTION;
+import static lib.data_structures.CopyType.COPY_DEEP;
 import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.data_structures.RunCommand.*;
@@ -29,8 +28,9 @@ public class SimulationDynamic extends SimulationStatic {
         shared_construction();
     }
 
-    public SimulationDynamic(SimulationStatic s, CopyType copy_type) {
+    public SimulationDynamic(SimulationStatic s, CopyType copy_type, RunCommand init_run_command) {
         super(s, copy_type);
+        this.init_run_command = init_run_command;
         shared_construction();
     }
 
@@ -121,7 +121,7 @@ public class SimulationDynamic extends SimulationStatic {
     public void reset(SimulationStatic init_sim) {
         exit();
 
-        copy(init_sim, DEEP);
+        copy(init_sim, COPY_DEEP);
         time_step_counter = 0;
 
         birth_thread();

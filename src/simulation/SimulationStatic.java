@@ -4,7 +4,7 @@ import lib.data_structures.CopyType;
 import lib.data_structures.RunCommand;
 import model.Universe;
 
-import static lib.data_structures.CopyType.DEEP;
+import static lib.data_structures.CopyType.COPY_DEEP;
 
 public class SimulationStatic {
     public Universe universe;
@@ -25,10 +25,10 @@ public class SimulationStatic {
     }
 
     public void copy(SimulationStatic s, CopyType copy_type) {
-        if (copy_type == CopyType.SHALLOW)
+        if (copy_type == CopyType.COPY_SHALLOW)
             universe = s.universe;
         else
-            universe = new Universe(s.universe, DEEP);
+            universe = new Universe(s.universe, COPY_DEEP);
 
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;

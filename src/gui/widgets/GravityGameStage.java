@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+
 public class GravityGameStage extends StageX {
 
     public GravityGameStage(Stage stage, Scene scene, UNKNOWN_BORDER_SIZES overload_constant) {

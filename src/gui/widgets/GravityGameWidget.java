@@ -21,10 +21,10 @@ import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static gui.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
-import static lib.data_structures.CopyType.DEEP;
+import static lib.data_structures.CopyType.COPY_DEEP;
 import static lib.data_structures.RunCommand.*;
 
-public class GameWidget extends Region {
+public class GravityGameWidget extends Region {
     double min_radius_px = 1.1;
 
     GameWidgetView init_gv;
@@ -38,25 +38,26 @@ public class GameWidget extends Region {
 
     SimulationDynamic simulation;
 
-    public GameWidget(double width, double height,
-                      GameWidgetView init_gv,
-                      Universe universe,
-                      double dt_real,
-                      double dt_sim,
-                      RunCommand init_run_command)
+    public GravityGameWidget(double width, double height,
+                             GameWidgetView init_gv,
+                             Universe universe,
+                             double dt_real,
+                             double dt_sim,
+                             RunCommand init_run_command)
     {
-        this(width, height, init_gv, new SimulationStatic(universe, dt_real, dt_sim, init_run_command));
+        this(width, height, init_gv, new SimulationStatic(universe, dt_real, dt_sim, init_run_command), init_run_command);
     }
 
-    public GameWidget(double width, double height,
-                      GameWidgetView init_gv,
-                      SimulationStatic init_simulation)
+    public GravityGameWidget(double width, double height,
+                             GameWidgetView init_gv,
+                             SimulationStatic init_simulation,
+                             RunCommand init_run_command)
     {
         this.init_gv = init_gv;
         this.init_simulation = init_simulation;
 
         canvas = new Canvas(width, height);
-        simulation = new SimulationDynamic(init_simulation, DEEP);
+        simulation = new SimulationDynamic(init_simulation, COPY_DEEP);
         init_graphics_context();
     }
 

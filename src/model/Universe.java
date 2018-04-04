@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import lib.data_structures.CopyType;
 
-import static lib.data_structures.CopyType.SHALLOW;
+import static lib.data_structures.CopyType.COPY_SHALLOW;
 
 public class Universe {
 
@@ -23,7 +23,7 @@ public class Universe {
         acceleration_constant = u.acceleration_constant;
         max_speed = u.max_speed;
 
-        if (copy_type == SHALLOW)
+        if (copy_type == COPY_SHALLOW)
             particles = u.particles;
         else
             add_particles(u.particles);

@@ -1,6 +1,6 @@
 import gui.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
-import gui.widgets.GameWidget;
+import gui.widgets.GravityGameWidget;
 import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import missions.SolarSystem;
 
 import static gui.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.UNKNOWN_BORDER_SIZES;
+import static lib.data_structures.RunCommand.*;
 
 public class GravityGame extends ApplicationX {
     Rectangle2D screen_bounds = Screen.getPrimary().getVisualBounds();
@@ -28,7 +29,7 @@ public class GravityGame extends ApplicationX {
 
     GravityGameStage stage;
     Scene scene;
-    GameWidget game_widget;
+    GravityGameWidget game_widget;
 
     public static void main(String[] args) {
         launch(args);
@@ -46,10 +47,9 @@ public class GravityGame extends ApplicationX {
 
     public void build_gui(Stage stage) {
 
-        this.game_widget = new GameWidget(canvas_width, canvas_height,
+        this.game_widget = new GravityGameWidget(canvas_width, canvas_height,
                 SolarSystem.solar_sys_game_view_sun_earth,
-                SolarSystem.solar_system_sim,
-                false);
+                SolarSystem.solar_system_sim);
 
         this.scene = new Scene(game_widget);
 
