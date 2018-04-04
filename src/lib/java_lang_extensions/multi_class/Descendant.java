@@ -1,6 +1,4 @@
-package lib_2.java_lang_extensions.multi_class;
-
-import java.util.HashMap;
+package lib.java_lang_extensions.multi_class;
 
 public interface Descendant {
 

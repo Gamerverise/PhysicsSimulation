@@ -1,4 +1,4 @@
-package lib_2.java_lang_extensions.multi_class;
+package lib.java_lang_extensions.multi_class;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -17,6 +17,7 @@ public class _GravityGameGUI_Ancestor extends _Ancestor<Node> {
     public _GravityGameGUI_Ancestor(Node n) {
         super(n);
 
+        // FIXME: Remove AEMBOT stylesheets, and add Gravity Game stylesheets
 
         n.getStyleClass().add("AEMBOT_Node");
 

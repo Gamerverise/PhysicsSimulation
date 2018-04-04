@@ -4,13 +4,13 @@ import lib.java_lang_extensions.function_types.*;
 
 public class FlowControl {
 
-    public static void repeat(int count, FunctionV0 p) {
+    public static void repeat(int count, FunctionV0 f) {
         for (int i = 0; i < count; i++)
-            p.call();
+            f.call();
     }
 
-    public static void repeat(int count, FunctionV1<Integer> r) {
+    public static void repeat(int count, FunctionV1<Integer> f) {
         for (int i = 0; i < count; i++)
-            r.call(i);
+            f.call(i);
     }
 }

@@ -1,4 +1,4 @@
-package lib_2.java_lang_extensions.multi_class;
+package lib.java_lang_extensions.multi_class;
 
 import lib.debug.MethodNameHack;
 
@@ -14,7 +14,7 @@ public class _Ancestor<T> {
 
     /******************************************************/
 
-    // Instead of requiring each sub-class of _Ancestor to provide its own version of get_clas(), we
+    // Instead of requiring each sub-class of _Ancestor to provide its own version of get_class(), we
     // could write a class loader to do a bit of initialization each time a sub-class of _Ancestor is
     // loaded.
 

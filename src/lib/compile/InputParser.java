@@ -21,10 +21,10 @@ public class InputParser {
     public static void parse_lines(BufferedReader lines, InputSpec[] specs)
         throws IOException
     {
-        HashMap<String, InputSpec> spec_table = new HashMap<String, InputSpec>();
+        HashMap<String, InputSpec> spec_table = new HashMap<>();
 
-        for (int i = 0; i < specs.length; i++)
-            spec_table.put(specs[i].parse_name, specs[i]);
+        for (InputSpec spec : specs)
+            spec_table.put(spec.parse_name, spec);
 
         String line;
         for (int i = 0; (line = lines.readLine()) != null; i++) {

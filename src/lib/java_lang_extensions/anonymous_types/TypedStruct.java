@@ -3,11 +3,14 @@ package lib.java_lang_extensions.anonymous_types;
 public class TypedStruct<N extends Enum<N>, V> {
     V[] values;
 
+    @SuppressWarnings("unchecked")
     public TypedStruct(Class<N> clazz) {
         int num_fields = clazz.getClass().getEnumConstants().length;
         values = (V[]) new Object[num_fields];
     }
 
+    @SafeVarargs
+    @SuppressWarnings("unchecked")
     public TypedStruct(StructField<N, V> field, StructField<N, V>... fields) {
         int num_fields = field.name.getClass().getEnumConstants().length;
 
@@ -25,16 +28,20 @@ public class TypedStruct<N extends Enum<N>, V> {
         values[name.ordinal()] = value;
     }
 
+
+    @SuppressWarnings("unchecked")
     public void put(StructField<N, V>... fields) {
         for (StructField<N, V> f : fields)
             values[f.name.ordinal()] = f.value;
     }
 
-    static <N extends Enum<N>, V> TypedStruct<N, V> S(Class<N> clazz) {
+    @SuppressWarnings("unchecked")
+    public static <N extends Enum<N>, V> TypedStruct<N, V> TS(Class<N> clazz) {
         return new Struct(clazz);
     }
 
-    static <N extends Enum<N>, V> TypedStruct<N, V> S(StructField<N, V> field, StructField<N, V>... fields) {
+    @SuppressWarnings("unchecked")
+    public static <N extends Enum<N>, V> TypedStruct<N, V> TS(StructField<N, V> field, StructField<N, V>... fields) {
         return new Struct(field, fields);
     }
 }

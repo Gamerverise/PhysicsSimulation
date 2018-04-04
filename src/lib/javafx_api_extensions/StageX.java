@@ -12,6 +12,7 @@ import static lib.javafx_api_extensions.StageX.WinBorder.*;
 import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
 import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
 import static lib.java_lang_extensions.anonymous_types.StructField.F;
+import static lib.java_lang_extensions.anonymous_types.TypedStruct.*;
 
 public class StageX {
 
@@ -24,18 +25,14 @@ public class StageX {
     public Stage stage;
     public Scene scene;
 
+    @SuppressWarnings("unchecked")
     public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
-        this(stage, new TypedStruct<WinBorder, Double>(
-                        F(TOP, -1d),
-                        F(LEFT, -1d),
-                        F(BOTTOM, -1d),
-                        F(RIGHT, -1d)
-                )
-        );
+        this(stage, TS(F(TOP, -1d), F(LEFT, -1d), F(BOTTOM, -1d), F(RIGHT, -1d)));
     }
 
+    @SuppressWarnings("unchecked")
     public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
-        this(stage, new TypedStruct<WinBorder, Double>(
+        this(stage, TS(
                         F(TOP, 15 * 5d),    // Heuristic for top
                         F(LEFT, 15d),       // Heuristic for left
                         F(BOTTOM, 15d),     // Heuristic for bottom
@@ -44,18 +41,13 @@ public class StageX {
         );
     }
 
+    @SuppressWarnings("unchecked")
     public StageX(Stage stage, double top, double left, double bottom, double right) {
-        this(stage, new TypedStruct<WinBorder, Double>(
-                        F(TOP, top),
-                        F(LEFT, left),
-                        F(BOTTOM, bottom),
-                        F(RIGHT, right)
-                )
-        );
+        this(stage, TS(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right)));
     }
 
     public StageX(Stage stage,
-                  TypedStruct<WinBorder, Double> win_bordersFpx)
+                  TypedStruct<WinBorder, Double> win_borders_px)
     {
         this.stage = stage;
 
@@ -63,13 +55,15 @@ public class StageX {
 
         // FIXME: Do we still need these listeners?
 
-        stage.widthProperty().addListener((observable, old_value, new_value) -> {
-            size_changed_event_handler(WIDTH_CHANGED, observable, old_value, new_value);
-        });
+        stage.widthProperty().addListener(
+                (observable, old_value, new_value) ->
+                        size_changed_event_handler(WIDTH_CHANGED, observable, old_value, new_value)
+        );
 
-        stage.heightProperty().addListener((observable, old_value, new_value) -> {
-            size_changed_event_handler(HEIGHT_CHANGED, observable, old_value, new_value);
-        });
+        stage.heightProperty().addListener(
+                (observable, old_value, new_value) ->
+                        size_changed_event_handler(HEIGHT_CHANGED, observable, old_value, new_value)
+        );
 
 //      On my current system, there is a slight visual effect of flickering/jumping of the window as it
 //      appears when it is shown for the first time. Not sure why that is.
@@ -80,7 +74,7 @@ public class StageX {
         stage.setScene(scene);
     }
 
-    enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED};
+    enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED}
 
     public void size_changed_event_handler(
             SizeChangeFlag flag,
@@ -91,6 +85,7 @@ public class StageX {
         // Intentionally empty
     }
 
+    @SuppressWarnings("unchecked")
     TypedStruct<WinBorder, Double> calc_win_borders_px() {
         double top;
         double left;
@@ -126,12 +121,7 @@ public class StageX {
             right = win_width_px - left - scene_width_px;
         }
 
-        return new TypedStruct<WinBorder, Double>(
-                F(TOP, top),
-                F(LEFT, left),
-                F(BOTTOM, bottom),
-                F(RIGHT, right)
-        );
+        return TS(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right));
     }
 
     void set_size(FULL_SCREEN overload_constant) {
@@ -146,6 +136,7 @@ public class StageX {
         // Not finished yet
     }
 
+    @SuppressWarnings("unused")
     void set_size(MAXIMIZED_FIXED_ASPECT_RATIO overload_constant, double aspect_ratio, boolean decorated) {
         Rectangle2D primary_screen_bounds = Screen.getPrimary().getVisualBounds();
 
@@ -188,5 +179,7 @@ public class StageX {
             stage_width_px = borders_px.get(LEFT) + max_scene_height_px * aspect_ratio + borders_px.get(RIGHT);
             stage_height_px = primary_screen_height_px;
         }
+
+        // FIXME: What effect does this function have?
     }
 }

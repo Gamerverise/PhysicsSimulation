@@ -1,7 +1,6 @@
 package gui.widgets;
 
 import lib.javafx_api_extensions.StageX;
-import lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 

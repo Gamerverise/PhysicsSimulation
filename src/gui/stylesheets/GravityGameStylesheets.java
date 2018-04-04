@@ -4,7 +4,7 @@ public class GravityGameStylesheets {
     static String URI_relative_prefix = ".idea/src/gui/css/AEMBOT";
 
     static public String URI_filenames[] = {
-            /****
+            /*
              **** IMPORTANT! These stylesheets must be listed in order of preference desired, from
              ****            lowest precedence to highest! (Lowest precedence is most generic stylesheet, and
              ****            highest precedence is most specific stylesheet.)

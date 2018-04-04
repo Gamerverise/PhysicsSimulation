@@ -44,8 +44,7 @@ public class InputSpec {
     /***************************************************************************/
 
     public InputSpec(String parse_name, String prompt, VarArgsRaw... parsed_values) {
-        for (int i = 0; i < parsed_values.length; i++) {
-            VarArgsRaw values = parsed_values[i];
+        for (VarArgsRaw values : parsed_values) {
 
             if (values.args().length == 0)
                 continue;
@@ -95,16 +94,16 @@ public class InputSpec {
 
     /***************************************************************************/
 
-    void init(String parse_name, String prompt, int num_vals) {
+    void init(String parse_name, String prompt, int num_values) {
         this.parse_name = parse_name;
         this.prompt = prompt;
-        this.parsed_values = new Atom[num_vals];
+        this.parsed_values = new Atom[num_values];
     }
 
     /***************************************************************************/
 
     public String sprint() {
-        String out = new String(parse_name + " = ");
+        String out = parse_name + " = ";
 
         int i = 0;
         for (; i < parsed_values.length - 1; i++)
@@ -116,7 +115,7 @@ public class InputSpec {
     }
 
     public static String array_sprint(InputSpec[] specs) {
-        String out = new String();
+        String out = "";
 
         int i = 0;
         for (; i < specs.length - 1; i++)

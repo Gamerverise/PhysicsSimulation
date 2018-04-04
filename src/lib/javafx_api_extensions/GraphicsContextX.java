@@ -35,24 +35,28 @@ public class GraphicsContextX {
     public double invert_x(double x) {
         try {
             return gc.getTransform().inverseTransform(x, 0).getX();
-        } catch (NonInvertibleTransformException e) {}
+        } catch (NonInvertibleTransformException e) {
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack() {
+                    }.method_name(),
+                    BAD_CODE_PATH);
+        }
 
-        assert false : assert_msg(
-                this.getClass(),
-                new MethodNameHack(){}.method_name(),
-                BAD_CODE_PATH);
         return Double.NaN;
     }
 
     public double invert_y(double y) {
         try {
             return gc.getTransform().inverseTransform(0, y).getY();
-        } catch (NonInvertibleTransformException e) {}
+        } catch (NonInvertibleTransformException e) {
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack() {
+                    }.method_name(),
+                    BAD_CODE_PATH);
+        }
 
-        assert false : assert_msg(
-                this.getClass(),
-                new MethodNameHack(){}.method_name(),
-                BAD_CODE_PATH);
         return Double.NaN;
     }
 

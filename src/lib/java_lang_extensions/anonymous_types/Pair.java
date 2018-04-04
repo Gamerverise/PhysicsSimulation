@@ -9,6 +9,7 @@ public class Pair<A, B> {
         this._2 = _2;
     }
 
+    @SuppressWarnings("unchecked")
     static <A, B> Pair<A, B> P(A _1, B _2) {
         return new Pair(_1, _2);
     }
