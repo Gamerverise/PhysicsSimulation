@@ -14,7 +14,7 @@ public class LogoWidget extends Group {
     Text logo_subtext = new Text("Liberty Highschool, Hillsboro, Oregon");
 
     protected void layout(double width, double height) {
-        // FIXME: The logo may not look good in certain situations. Additional programming required at least
+        // FIXME: LOW PRIORITY: The logo may not look good in certain situations. Additional programming required at least
         // for very thin bottom logos and thin right-side logos.
 
         double text_percent = 0.6;

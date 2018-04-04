@@ -119,7 +119,7 @@ public class GravityGameWidget extends Region {
         gcx.scale(scale_rel, scale_op);
     }
 
-    // FIXME: Old comment
+    // FIXME: LOW PRIORITY: Old comment
     // view_particle
     //     Scale the current view (aka transform) so that:
     //

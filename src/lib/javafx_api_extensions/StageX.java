@@ -180,6 +180,6 @@ public class StageX {
             stage_height_px = primary_screen_height_px;
         }
 
-        // FIXME: What effect does this function have?
+        // FIXME: HIGH PRIORITY: What effect does this function have?
     }
 }

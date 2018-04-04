@@ -114,7 +114,7 @@ abstract public class ListWidget extends Region implements Descendant
             return this;
 
         if (entry instanceof FlexSize) {
-// FIXME            handle_flex_weight_info((FlexSize)entry);
+// FIXME: HIGH PRIORITY         handle_flex_weight_info((FlexSize)entry);
             return this;
 
         } else if (entry instanceof Region) {
@@ -165,7 +165,7 @@ abstract public class ListWidget extends Region implements Descendant
         double pref_distance = compute_pref_list_distance(ortho_distance);
         double flex_distance = list_distance - pref_distance;
 
-        // FIXME: Do we need this? What is it for?
+        // FIXME: HIGH PRIORITY: Do we need this? What is it for?
         // set_list_distance(get_list_distance() - 50);
 
         double cur_distance_coord = 0;

@@ -131,8 +131,8 @@ public class SimulationDynamic extends SimulationStatic {
     }
 
     public void time_step() {
-        // FIXME: Using subList instead of directly accessing the internal list references may cause unnecessary iteration,
-        // FIXME: inflating the O(n^2) to 2*O(n^2)
+        // FIXME: LOW PRIORITY: Using subList instead of directly accessing the internal list references may
+        // FIXME: LOW PRIORITY: cause unnecessary iteration, inflating the O(n^2) to 2*O(n^2)
 
         int i = 1;
         for (Particle pi : universe.particles) {

@@ -17,7 +17,7 @@ public class _GravityGameGUI_Ancestor extends _Ancestor<Node> {
     public _GravityGameGUI_Ancestor(Node n) {
         super(n);
 
-        // FIXME: Remove AEMBOT stylesheets, and add Gravity Game stylesheets
+        // FIXME: HIGH PRIORITY: Remove AEMBOT stylesheets, and add Gravity Game stylesheets
 
         n.getStyleClass().add("AEMBOT_Node");
 

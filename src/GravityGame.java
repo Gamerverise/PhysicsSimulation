@@ -55,7 +55,7 @@ public class GravityGame extends ApplicationX {
         this.scene = new Scene(game_widget);
         this.stage = new GravityGameStage(stage);
 
-        this.scene.getStylesheets().addAll(user_dir + "hmm.css");  // FIXME
+        this.scene.getStylesheets().addAll(user_dir + "hmm.css");  // FIXME: HIGH PRIORITY
         this.stage.set_scene(scene);
 
         Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();

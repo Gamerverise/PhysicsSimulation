@@ -28,7 +28,7 @@ public class GraphicsContextX {
         if (radius < min_radius)
             radius = min_radius;
 
-        // FIXME: Not quite centered when radius scaled to canvas width
+        // FIXME: HIGH PRIORITY: Not quite centered when radius scaled to canvas width
         gc.fillOval(x - radius, y - radius, 2*radius, 2*radius);
     }
 
