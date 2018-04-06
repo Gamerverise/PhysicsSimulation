@@ -1,0 +1,176 @@
+/* FIXME: LOW PRIORITY: Font sizes should be relative. */
+
+/*
+    Modified CSS
+        Axis
+        Chart
+        LineChart
+        NumberAxis
+        TilePane
+        TitledPane
+        ValueAxis
+        XYChart
+*/
+
+.AEMBOT {
+/*
+    Reverting to Modena
+    -AEMBOT_base_blue_color:            cornflowerblue;
+    -AEMBOT_dark_border_color:          derive(-AEMBOT_base_blue_color, -20%);
+    -AEMBOT_light_border_color:         derive(-AEMBOT_base_blue_color, 10%);
+
+    -AEMBOT_base_gradient:              linear-gradient(to bottom,
+                                                        -AEMBOT_dark_border_color,
+                                                        -AEMBOT_light_border_color);
+
+    -AEMBOT_dark_border_gradient:       linear-gradient(to bottom,
+                                                        -AEMBOT_dark_border_color,
+                                                        -AEMBOT_light_border_color);
+
+    -AEMBOT_light_border_gradient:      linear-gradient(to bottom,
+                                                        -AEMBOT_light_border_color,
+                                                        -AEMBOT_dark_border_color);
+
+    -AEMBOT_title_bar_color:            derive(-AEMBOT_base_blue_color, -10%);
+
+    -AEMBOT_blue_background_color:      derive(-AEMBOT_base_blue_color, 20%);
+
+    -AEMBOT_gray_background_color:      rgb(128, 128, 128);
+*/
+
+    -fx-snap-to-pixel:                  false;
+}
+
+/*******************************************************************************
+*   Widget Hierarchry
+*
+*   GUI                                                                 extends Application
+*       WindowWidget
+*           Stage
+*               Scene
+*                   Console                                             extends Pane
+*                       RealTimeModelWidget                             extends Pane
+*                       CameraFeedWidget                                extends Pane
+*                       ControlPanelWidget                              extends TitledPane
+*                           TilePane
+*                               ModeToggleWidget                        ?
+*                               Button("Bark!")
+*                               Button("Water Challenge!")
+*                       DataPanelWidget                                 extends TitledPane
+*                           TilePane
+*                               CoordinatesWidget                       extends GridPane
+*                                   Text
+*                                   ...
+*                               BatteryVoltageGraphWidget               extends LineChart
+*                               SpeedometerWidget                       ?
+*
+********************************************************************************/
+
+.AEMBOT_ListWidget {
+    /**** Node ****/
+    /* Using defaults.*/
+
+    /**** Region ****/
+    /* Using defaults.*/
+}
+
+/******************************************
+ ****
+ **** ConsoleWidget
+ ****
+ ******************************************/
+
+.AEMBOT_ConsoleWidget {
+    /**** Node ****/
+    /* Using defaults.*/
+
+    /**** Region ****/
+    -fx-background-color:       rgb(130, 130, 130);
+}
+
+/******************************************
+ ****
+ **** RealTimeModelWidget
+ ****
+ ******************************************/
+
+.AEMBOT_RealTimeModelWidget {
+    -fx-background-color:       rgb(100, 100, 100);
+    -fx-border-width:           10px;
+    -fx-border-color:           black;
+}
+
+/******************************************
+ ****
+ **** CameraFeedWidget
+ ****
+ ******************************************/
+
+.AEMBOT_CameraFeedWidget {
+    -fx-background-color:       rgb(100, 100, 100);
+    -fx-border-width:           10px;
+    -fx-border-color:           black;
+}
+
+/******************************************
+ ****
+ **** ControlPanelWidget
+ ****
+ ******************************************/
+
+.AEMBOT_ControlPanelWidget {
+    /* Intentionally blank. Not used yet. No special properties here. */
+}
+
+.AEMBOT_ControlPanelWidget > .content > .AEMBOT_TilePane {
+    /**** Node ****/
+    /* Using defaults.*/
+
+    /**** Region ****/
+    /* Using defaults.*/
+
+    /**** TilePane ****/
+    -fx-orientation:            vertical;
+    -fx-pref-rows:              2;
+    -fx-pref-columns:           1;
+}
+
+/******************************************
+ ****
+ **** DataPanelWidget
+ ****
+ ******************************************/
+
+.AEMBOT_DataPanelWidget {
+    /* Intentionally blank. Not used yet. No special properties here. */
+}
+
+.AEMBOT_DataPanelWidget > .content > .AEMBOT_TilePane {
+    /**** Node ****/
+    /* Using defaults.*/
+
+    /**** Region ****/
+    /* Using defaults.*/
+
+    /**** TilePane ****/
+    -fx-orientation:            horizontal;
+    -fx-pref-rows:              1;
+    -fx-pref-columns:           5;
+/*    -fx-hgap:                   50;*/
+}
+
+/*******************************************************************************
+*
+*   Data Panel Widgets
+*
+*       CoordinatesWidget
+*       BatteryGraphWidget
+*
+********************************************************************************/
+
+.AEMBOT_CoordinatesWidget {
+    -fx-hgap:               0;
+    -fx-vgap:               0;
+    -fx-alignment:          top-left;
+    -fx-grid-lines-visible: true;
+}

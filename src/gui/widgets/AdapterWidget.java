@@ -1,6 +1,17 @@
-package lib.javafx_api_extensions;
+package gui.widgets;
 
-class RegionX {
+import javafx.scene.layout.Region;
+
+class AdapterWidget extends Region {
+
+    // AdapterWidget is the base class for all our widgets, thus acting as an interface
+    // between JavaFX and our widgets
+
+    AdapterWidget[] children;
+
+//    public void layout() {
+//
+//    }
 
 // FIXME: Gotta think about the uses for this code
 

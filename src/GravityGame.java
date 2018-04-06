@@ -52,15 +52,17 @@ public class GravityGame extends ApplicationX {
                 SolarSystem.solar_system_sim,
                 SUSPEND);
         this.root = new Group(game_widget);
-        this.scene = new Scene(game_widget);
+        this.scene = new Scene(root);
         this.stage = new GravityGameStage(stage);
 
-        this.scene.getStylesheets().addAll(user_dir + "hmm.css");  // FIXME: HIGH PRIORITY
+        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
         this.stage.set_scene(scene);
 
-        Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();
+//        Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();
+        Rectangle2D screen_bounds = ScreenX.get_screen(0).getBounds();
 
-        stage.setX(screen_bounds.getMaxX() - game_widget_width - 10);
+        // FIXME: Window starting with incorrect x position
+        stage.setX(screen_bounds.getMaxX() - game_widget_width - 0);
         stage.setY(screen_bounds.getMinY());
 
         // stage.centerOnScreen();
