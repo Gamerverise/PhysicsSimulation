@@ -1,10 +1,8 @@
 package gui.widgets;
 
 import lib.javafx_api_extensions.GraphicsContextX;
-import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -24,8 +22,10 @@ import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
 import static lib.data_structures.CopyType.COPY_DEEP;
 import static lib.data_structures.RunCommand.*;
 
-public class GravityGameWidget extends Region {
+public class GravityGameWidget extends Widget implements AnimatedWidget {
     double min_radius_px = 1.1;
+
+    AnimatedWidgetState anim_state;
 
     GameWidgetView init_gv;
     SimulationStatic init_simulation;
@@ -34,7 +34,6 @@ public class GravityGameWidget extends Region {
 
     GraphicsContextX gcx;
     GraphicsContext gc;
-    AnimationTimer anim_timer;
 
     SimulationDynamic simulation;
 
@@ -45,7 +44,8 @@ public class GravityGameWidget extends Region {
                              double dt_sim,
                              RunCommand init_run_command)
     {
-        this(width, height, init_gv, new SimulationStatic(universe, dt_real, dt_sim, init_run_command), init_run_command);
+        this(width, height, init_gv,
+                new SimulationStatic(universe, dt_real, dt_sim, init_run_command), init_run_command);
     }
 
     public GravityGameWidget(double width, double height,
@@ -57,7 +57,13 @@ public class GravityGameWidget extends Region {
         this.init_simulation = init_simulation;
 
         canvas = new Canvas(width, height);
-        simulation = new SimulationDynamic(init_simulation, COPY_DEEP, null);
+        simulation = new SimulationDynamic(init_simulation, COPY_DEEP, init_run_command);
+
+        anim_state = new AnimatedWidgetState(this);
+
+        if (simulation.atomic_run_command.get() == RUN)
+            anim_state.anim_timer.start();
+
         init_graphics_context();
     }
 
@@ -77,17 +83,10 @@ public class GravityGameWidget extends Region {
         if (init_gv != null)
             view(init_gv);
 
-        anim_timer = new AnimationTimer() {
-            public void handle(long now) {
-                redraw();
-            }
-        };
-
-        redraw();
+        draw_frame();
     }
 
     public void reset() {
-        anim_timer.stop();
         simulation.reset(init_simulation);
         init_graphics_context();
     }
@@ -95,9 +94,9 @@ public class GravityGameWidget extends Region {
     public void toggle_run_suspend() {
         if (simulation.atomic_run_command.get() == RUN) {
             simulation.suspend();
-            anim_timer.stop();
+            anim_state.anim_timer.stop();
         } else if (simulation.atomic_run_command.get() == SUSPEND){
-            anim_timer.start();
+            anim_state.anim_timer.start();
             simulation.run();
         } else
             assert false : assert_msg(
@@ -158,7 +157,11 @@ public class GravityGameWidget extends Region {
         gcx.fill_circle(p.x, p.y, p.radius);
     }
 
-    public void redraw() {
+    public void draw_frame() {
+        draw_frame(0);
+    }
+
+    public void draw_frame(long now) {
 //        gc.clearRect(0, 0, canvas_width, canvas_height);
 //        gc.setFill(Color.BLACK);
 

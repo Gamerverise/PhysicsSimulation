@@ -1,6 +1,6 @@
 package lib.compile;
 
-import lib.java_lang_extensions.var_args.VarArgsRaw;
+import lib.java_lang_extensions.var_var_args.SubVarArgs;
 
 public class InputSpec {
     public static class Atom {
@@ -43,25 +43,43 @@ public class InputSpec {
 
     /***************************************************************************/
 
-    public InputSpec(String parse_name, String prompt, VarArgsRaw... parsed_values) {
-        for (VarArgsRaw values : parsed_values) {
+    public InputSpec(String parse_name, String prompt, Atom[] atoms, int[] ints, float[] floats, double[] doubles) {
 
-            if (values.args().length == 0)
-                continue;
+        // FIXME: HIGH PRIORITY: What will happen if the array value to the right of the : is null?
+        for (Atom atom : atoms)
+            init(parse_name, prompt, atom);
 
-            Object first_value = values.args()[0];
+        for (int intejer : ints)
+            init(parse_name, prompt, intejer);
 
-            if (first_value instanceof Atom)
-                init(parse_name, prompt, values.<Atom>args());
+        for (Float flote : floats)
+            init(parse_name, prompt, flote);
 
-            else if (first_value instanceof Integer)
-                init(parse_name, prompt, values.<Integer>args());
+        for (Double dubble : doubles)
+            init(parse_name, prompt, dubble);
+    }
 
-            else if (first_value instanceof Float)
-                init(parse_name, prompt, values.<Float>args());
+    public InputSpec(String parse_name, String prompt, SubVarArgs... parsed_values) {
 
-            else if (first_value instanceof Double)
-                init(parse_name, prompt, values.<Double>args());
+        // SubVarArgs should be a typedef, if that were possible
+
+        for (SubVarArgs sub_var_args : parsed_values) {
+
+            if (sub_var_args.type_ish() == Atom.class)
+                for (Atom atom : (Atom[]) sub_var_args.array)
+                    init(parse_name, prompt, atom);
+
+            if (sub_var_args.type_ish() == Integer.class)
+                for (Integer intejer : (Integer[]) sub_var_args.array)
+                    init(parse_name, prompt, intejer);
+
+            if (sub_var_args.type_ish() == Float.class)
+                for (Float flote : (Float[]) sub_var_args.array)
+                    init(parse_name, prompt, flote);
+
+            if (sub_var_args.type_ish() == Double.class)
+                for (Double dubble : (Double[]) sub_var_args.array)
+                    init(parse_name, prompt, dubble);
         }
     }
 
