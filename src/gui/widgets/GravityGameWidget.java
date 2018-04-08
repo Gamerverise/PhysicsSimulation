@@ -64,7 +64,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         if (simulation.atomic_run_command.get() == RUN)
             anim_state.anim_timer.start();
 
-        init_graphics_context();
+//        init_graphics_context();
     }
 
     public void init_graphics_context() {

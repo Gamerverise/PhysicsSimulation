@@ -1,20 +1,32 @@
 package gui.widgets.adapters;
 
-import gui.widgets.ParentWidget;
 import gui.widgets.Widget;
 import javafx.scene.layout.Region;
 
-public class SceneAdapter extends ParentWidget {
+public class SceneAdapter extends Region {
 
-    Region scene_root;
+    public Widget root_widget;
 
-    public SceneAdapter(Widget... children) {
-        super(children);
+    public SceneAdapter(Widget root_widget) {
+        this.root_widget = root_widget;
     }
 
-    public void layout_children() {
+    protected double computeMinWidth(double height) {
+        return 0;
     }
 
-    public void draw_self() {
+    protected double computeMinHeight(double width) {
+        return 0;
+    }
+
+    protected double computePrefWidth(double height) {
+        return 0;
+    }
+
+    protected double computePrefHeight(double width) {
+        return 0;
+    }
+
+    protected void layoutChildren() {
     }
 }

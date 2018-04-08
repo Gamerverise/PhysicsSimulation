@@ -1,4 +1,7 @@
 import gui.debug.DebugJavaFX;
+import gui.widgets.adapters.SceneAdapter;
+import javafx.scene.Parent;
+import javafx.scene.layout.Region;
 import lib.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GravityGameWidget;
@@ -23,7 +26,7 @@ public class GravityGame extends ApplicationX {
 
     GravityGameStage stage;
     Scene scene;
-    Group root;
+    SceneAdapter root;
     GravityGameWidget game_widget;
 
     public static void main(String[] args) {
@@ -37,6 +40,8 @@ public class GravityGame extends ApplicationX {
         Debug.<Node, Integer>print(false, DebugJavaFX::JavaFX_node_tree_debug, scene.getRoot(), 0);
 
         stage.show();
+
+        game_widget.init_graphics_context();
     }
 
     public void build_gui(Stage stage) {
@@ -44,26 +49,29 @@ public class GravityGame extends ApplicationX {
         //    double canvas_width = 1305;
         //    double canvas_height = 795;
 
-        double game_widget_width = 800;
-        double game_widget_height = 800;
+        double root_width = 600;
+        double root_height = 600;
 
-        this.game_widget = new GravityGameWidget(game_widget_width, game_widget_height,
+        this.game_widget = new GravityGameWidget(root_width, root_height,
                 SolarSystem.solar_sys_game_view_sun_earth,
                 SolarSystem.solar_system_sim,
                 SUSPEND);
-        this.root = new Group(game_widget);
+        this.root = new SceneAdapter(game_widget);
         this.scene = new Scene(root);
         this.stage = new GravityGameStage(stage);
 
-        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
+        // FIXME: How will stylesheets interact with our JavaFX_Widget mechanism?
+//        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
         this.stage.set_scene(scene);
 
 //        Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();
         Rectangle2D screen_bounds = ScreenX.get_screen(0).getBounds();
 
-        // FIXME: Window starting with incorrect x position
-        stage.setX(screen_bounds.getMaxX() - game_widget_width - 0);
+        stage.setX(screen_bounds.getMaxX() - root_width - 0);
         stage.setY(screen_bounds.getMinY());
+
+        stage.setWidth(root_width);
+        stage.setHeight(root_height);
 
         // stage.centerOnScreen();
 
