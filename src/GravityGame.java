@@ -1,13 +1,12 @@
 import gui.debug.DebugJavaFX;
 import gui.widgets.adapters.SceneAdapter;
-import javafx.scene.Parent;
-import javafx.scene.layout.Region;
+import javafx.collections.ObservableList;
+import javafx.stage.Screen;
 import lib.javafx_api_extensions.ApplicationX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widgets.GravityGameWidget;
 import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -44,15 +43,48 @@ public class GravityGame extends ApplicationX {
         game_widget.init_graphics_context();
     }
 
+    void set_window_geometry(Stage stage) {
+        ObservableList<Screen> screen_list = (Screen.getScreens());
+
+        int screen_to_use;
+
+        // If we have more than one screen, we will use the second screen
+
+        if (screen_list.size() >= 2)
+            screen_to_use = 1;
+        else
+            screen_to_use = 0;
+
+        Rectangle2D screen_bounds = ScreenX.get_screen(screen_to_use).getBounds();
+
+        double screen_width = screen_bounds.getWidth();
+        double screen_height = screen_bounds.getHeight();
+        double aspect_ratio = screen_width / screen_height;
+
+        if (screen_to_use == 1) {
+            stage.setX(0);
+            stage.setY(0);
+
+            stage.setWidth(screen_width);
+            stage.setHeight(screen_height);
+        } else if (aspect_ratio < 1) {
+            stage.setX(screen_width - (screen_height / 3));
+            stage.setY(0);
+
+            stage.setWidth(screen_height / 3);
+            stage.setHeight(screen_height / 3);
+        } else if (aspect_ratio >= 1) {
+            stage.setX(screen_width - (screen_height * 0.75));
+            stage.setY(0);
+
+            stage.setWidth(screen_height * 0.75);
+            stage.setHeight(screen_height * 0.75);
+        }
+    }
+
     public void build_gui(Stage stage) {
 
-        //    double canvas_width = 1305;
-        //    double canvas_height = 795;
-
-        double root_width = 600;
-        double root_height = 600;
-
-        this.game_widget = new GravityGameWidget(root_width, root_height,
+        this.game_widget = new GravityGameWidget(
                 SolarSystem.solar_sys_game_view_sun_earth,
                 SolarSystem.solar_system_sim,
                 SUSPEND);
@@ -64,16 +96,7 @@ public class GravityGame extends ApplicationX {
 //        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
         this.stage.set_scene(scene);
 
-//        Rectangle2D screen_bounds = ScreenX.get_screen(Integer.MAX_VALUE).getBounds();
-        Rectangle2D screen_bounds = ScreenX.get_screen(0).getBounds();
-
-        stage.setX(screen_bounds.getMaxX() - root_width - 0);
-        stage.setY(screen_bounds.getMinY());
-
-        stage.setWidth(root_width);
-        stage.setHeight(root_height);
-
-        // stage.centerOnScreen();
+        set_window_geometry(stage);
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
