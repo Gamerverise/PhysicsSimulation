@@ -1,10 +1,10 @@
-package gui.widgets;
+package lib.widgets;
 
 import javafx.animation.AnimationTimer;
 
 public class AnimatedWidgetState {
 
-    AnimationTimer anim_timer;
+    public AnimationTimer anim_timer;
 
     public AnimatedWidgetState(AnimatedWidget widget) {
         anim_timer = new AnimationTimer() {

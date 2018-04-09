@@ -1,4 +1,4 @@
-package gui.widgets;
+package lib.widgets;
 
 public interface AnimatedWidget {
 

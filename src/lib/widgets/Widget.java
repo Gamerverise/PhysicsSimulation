@@ -1,4 +1,4 @@
-package gui.widgets;
+package lib.widgets;
 
 public abstract class Widget {
 
@@ -21,5 +21,7 @@ public abstract class Widget {
         this.height = Math.abs(y2 - y1);
     }
 
-    public void draw_self() {}
+    public abstract void draw_self();
+
+    public abstract void set_
 }

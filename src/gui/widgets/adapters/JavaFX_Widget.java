@@ -1,6 +1,6 @@
 package gui.widgets.adapters;
 
-import gui.widgets.Widget;
+import lib.widgets.Widget;
 
 public class JavaFX_Widget extends Widget {
 }

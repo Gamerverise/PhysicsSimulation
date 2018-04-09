@@ -8,6 +8,9 @@ import javafx.scene.text.Font;
 
 import lib.data_structures.RunCommand;
 import lib.debug.MethodNameHack;
+import lib.widgets.AnimatedWidget;
+import lib.widgets.AnimatedWidgetState;
+import lib.widgets.Widget;
 import model.Particle;
 import model.Universe;
 import simulation.SimulationDynamic;
@@ -37,19 +40,18 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
     SimulationDynamic simulation;
 
-    public GravityGameWidget(double width, double height,
-                             GameWidgetView init_gv,
+    public GravityGameWidget(GameWidgetView init_gv,
                              Universe universe,
                              double dt_real,
                              double dt_sim,
                              RunCommand init_run_command)
     {
-        this(width, height, init_gv,
-                new SimulationStatic(universe, dt_real, dt_sim, init_run_command), init_run_command);
+        this(init_gv,
+             new SimulationStatic(universe, dt_real, dt_sim, init_run_command),
+             init_run_command);
     }
 
-    public GravityGameWidget(double width, double height,
-                             GameWidgetView init_gv,
+    public GravityGameWidget(GameWidgetView init_gv,
                              SimulationStatic init_simulation,
                              RunCommand init_run_command)
     {
@@ -65,6 +67,14 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
             anim_state.anim_timer.start();
 
 //        init_graphics_context();
+    }
+
+    public void set_size(double width, double height) {
+        this.width = width;
+        this.height = height;
+
+        canvas.setWidth(width);
+        canvas.setHeight(height);
     }
 
     public void init_graphics_context() {
