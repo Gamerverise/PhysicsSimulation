@@ -1,26 +1,23 @@
 import gui.debug.DebugJavaFX;
+import gui.stylesheets.GravityGameStylesheets;
+import gui.widgets.GravityGameStage;
+import gui.widgets.GravityGameWidget;
 import gui.widgets.adapters.SceneAdapter;
 import javafx.collections.ObservableList;
-import javafx.stage.Screen;
-import lib.javafx_api_extensions.ApplicationX;
-import gui.stylesheets.GravityGameStylesheets;
-import gui.widgets.GravityGameWidget;
-import gui.widgets.GravityGameStage;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import lib.debug.*;
-import lib.javafx_api_extensions.ScreenX;
+import lib.debug.Debug;
+import lib.javafx_api_extensions.ApplicationX;
 import missions.SolarSystem;
 
-import static lib.data_structures.RunCommand.*;
+import static lib.data_structures.RunCommand.SUSPEND;
 
 public class GravityGame extends ApplicationX {
     String user_dir = System.getProperty("user.dir");
 
-    GravityGameStylesheets stylesheets = new gui.stylesheets.GravityGameStylesheets();
+    GravityGameStylesheets stylesheets = new GravityGameStylesheets();
     public static final double widget_spacing = 20;
 
     GravityGameStage stage;
@@ -36,7 +33,7 @@ public class GravityGame extends ApplicationX {
     public void start(Stage stage) {
         build_gui(stage);
 
-        Debug.<Node, Integer>print(false, DebugJavaFX::JavaFX_node_tree_debug, scene.getRoot(), 0);
+        Debug.print(false, DebugJavaFX::JavaFX_node_tree_debug, scene.getRoot(), 0);
 
         stage.show();
 
@@ -55,7 +52,7 @@ public class GravityGame extends ApplicationX {
         else
             screen_to_use = 0;
 
-        Rectangle2D screen_bounds = ScreenX.get_screen(screen_to_use).getBounds();
+        Rectangle2D screen_bounds = screen_list.get(screen_to_use).getBounds();
 
         double screen_width = screen_bounds.getWidth();
         double screen_height = screen_bounds.getHeight();

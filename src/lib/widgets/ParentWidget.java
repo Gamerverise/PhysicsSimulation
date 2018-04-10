@@ -9,18 +9,18 @@ public abstract class ParentWidget extends Widget {
     }
 
     public void layout() {
-        // Each widget lays out its children. By default, the traversal of the widget
-        // tree is breadth-first. A widget can override the traversal order by
-        // overriding this method
+        // Most or all sub-classes of ParentWidget should override this method. This method is here only
+        // for completeness. Since this method does not change the geometry of any of its children,
+        // a child will not change unless it does something independent of a change in its geometry.
 
         layout_children();
+    }
 
+    public void layout_children() {
         for (Widget child : children)
             if (child instanceof ParentWidget)
                 ((ParentWidget) child).layout();
     }
-
-    public void layout_children() {}
 
     public void draw() {
         // Widgets are drawn in depth-first order so that a parent can draw over its

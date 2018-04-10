@@ -23,7 +23,7 @@ public class TypedTuple<V> {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <T> TypedTuple T(T... values) {
-        return new TypedTuple(values);
+    public static <T> TypedTuple<T> T(T... values) {
+        return new TypedTuple<>(values);
     }
 }

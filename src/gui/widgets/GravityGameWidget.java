@@ -58,7 +58,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         this.init_gv = init_gv;
         this.init_simulation = init_simulation;
 
-        canvas = new Canvas(width, height);
         simulation = new SimulationDynamic(init_simulation, COPY_DEEP, init_run_command);
 
         anim_state = new AnimatedWidgetState(this);
@@ -66,18 +65,36 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         if (simulation.atomic_run_command.get() == RUN)
             anim_state.anim_timer.start();
 
-//        init_graphics_context();
+        init_graphics_context();
     }
 
-    public void set_size(double width, double height) {
-        this.width = width;
-        this.height = height;
-
+    public void layout() {
+        canvas.setLayoutX(x);
+        canvas.setLayoutY(y);
         canvas.setWidth(width);
         canvas.setHeight(height);
+
+        gc.restore();
+        gc.save();
+        init_transform();
+    }
+
+    public void init_transform() {
+        // Set origin to center of canvas, instead of top left
+        gc.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
+
+        // Change positive y direction from down to up
+        gc.scale(1, -1);
+
+        if (init_gv != null)
+            view(init_gv);
+
+        gcx.update_min_radius(gcx::invert_x);
     }
 
     public void init_graphics_context() {
+        canvas = new Canvas();
+
         gc = canvas.getGraphicsContext2D();
         gcx = new GraphicsContextX(gc, min_radius_px);
 

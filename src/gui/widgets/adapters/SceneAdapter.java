@@ -29,7 +29,7 @@ public class SceneAdapter extends Region {
     }
 
     protected void layoutChildren() {
-        root_widget.set_geometry(0, 0, getWidth(), getHeight());
+        root_widget.layout(0, 0, getWidth(), getHeight());
 
         if (root_widget instanceof ParentWidget)
             ((ParentWidget) root_widget).layout();

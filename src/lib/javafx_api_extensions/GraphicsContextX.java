@@ -3,14 +3,18 @@ package lib.javafx_api_extensions;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
-
 import lib.debug.MethodNameHack;
+import lib.java_lang_extensions.anonymous_types.Tuple;
 import lib.java_lang_extensions.function_types.FunctionR1;
+
+import java.util.LinkedList;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
-import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.java_lang_extensions.anonymous_types.Tuple.T;
+import static lib.javafx_api_extensions.GraphicsContextX.TransformType.SCALE;
 import static lib.javafx_api_extensions.javafx_support.Enums.Dimension2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
 
 public class GraphicsContextX {
     public GraphicsContext gc;
@@ -18,10 +22,14 @@ public class GraphicsContextX {
     public double min_radius_px;
     public double min_radius;
 
+    public enum TransformType {TRANSLATE, SCALE, ROTATE}
+
+    public LinkedList<Tuple> saved_transforms = new LinkedList<>();
+
     public GraphicsContextX(GraphicsContext gc, double min_radius_px) {
         this.gc = gc;
         this.min_radius_px = min_radius_px;
-        min_radius = min_radius_px;
+        update_min_radius(this::invert_x);
     }
 
     public void fill_circle(double x, double y, double radius) {
@@ -67,6 +75,9 @@ public class GraphicsContextX {
     }
 
     public Dimension2D scale(double scale_rel, ScaleOp2D scale_op) {
+//        saved_transforms.add(<Double>T(SCALE, scale_rel, scale_op));
+        saved_transforms.add(T(1d));
+
         Canvas canvas = gc.getCanvas();
         double scale;
 

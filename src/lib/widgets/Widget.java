@@ -15,13 +15,19 @@ public abstract class Widget {
     }
 
     public void set_geometry_box(double x1, double x2, double y1, double y2) {
-        this.x = x1;
-        this.y = y1;
-        this.width = Math.abs(x2 - x1);
-        this.height = Math.abs(y2 - y1);
+        set_geometry(x1, y1, Math.abs(x2 - x1), Math.abs(y2 - y1));
     }
 
-    public abstract void draw_self();
+    public void layout(double x, double y, double width, double height) {
+        set_geometry(x, y, width, height);
+        layout();
+    }
 
-    public abstract void set_
+    public void layout_box(double x1, double x2, double y1, double y2) {
+        layout(x1, y1, Math.abs(x2 - x1), Math.abs(y2 - y1));
+    }
+
+    public void draw_self() {}
+
+    public void layout() {}
 }
