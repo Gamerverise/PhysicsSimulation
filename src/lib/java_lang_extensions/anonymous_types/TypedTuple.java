@@ -1,7 +1,6 @@
 package lib.java_lang_extensions.anonymous_types;
 
-public class TypedTuple<V> {
-    V[] data;
+public class TypedTuple<V> extends Tuple {
 
     @SuppressWarnings("unchecked")
     TypedTuple(int n) {
@@ -9,12 +8,13 @@ public class TypedTuple<V> {
     }
 
     @SafeVarargs
-    TypedTuple(V... values) {
-        data = values;
+    TypedTuple(Object... values) {
+        data = (V[]) values;
     }
 
-    <T> V get(int i) {
-        return data[i];
+    @SuppressWarnings("unchecked")
+    V get(int i) {
+        return (V) data[i];
     }
 
     void put(int i, V elem) {
@@ -23,7 +23,7 @@ public class TypedTuple<V> {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <T> TypedTuple<T> T(T... values) {
-        return new TypedTuple<>(values);
+    public static <T> TypedTuple T(T... values) {
+        return new TypedTuple(values);
     }
 }
