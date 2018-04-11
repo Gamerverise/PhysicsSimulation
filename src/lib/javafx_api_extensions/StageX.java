@@ -1,18 +1,20 @@
 package lib.javafx_api_extensions;
 
 import javafx.beans.value.ObservableValue;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-import lib.java_lang_extensions.anonymous_types.TypedStruct;
+import javafx.scene.Scene;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import lib.java_lang_extensions.anonymous_types.Struct;
 
-import static lib.javafx_api_extensions.StageX.SizeChangeFlag.*;
-import static lib.javafx_api_extensions.StageX.WinBorder.*;
-import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
-import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
 import static lib.java_lang_extensions.anonymous_types.StructField.F;
-import static lib.java_lang_extensions.anonymous_types.TypedStruct.*;
+import static lib.java_lang_extensions.anonymous_types.Struct.*;
+import static lib.javafx_api_extensions.StageX.SizeChangeFlag.HEIGHT_CHANGED;
+import static lib.javafx_api_extensions.StageX.SizeChangeFlag.WIDTH_CHANGED;
+import static lib.javafx_api_extensions.StageX.WinBorder.*;
+import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.HEURISTIC_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.UNKNOWN_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
 
 public class StageX {
 
@@ -20,19 +22,19 @@ public class StageX {
         TOP, LEFT, BOTTOM, RIGHT
     }
 
-    TypedStruct<WinBorder, Double> win_borders_px;
+    Struct<WinBorder, Double> win_borders_px;
 
     public Stage stage;
     public Scene scene;
 
     @SuppressWarnings("unchecked")
     public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
-        this(stage, TS(F(TOP, -1d), F(LEFT, -1d), F(BOTTOM, -1d), F(RIGHT, -1d)));
+        this(stage, S(F(TOP, -1d), F(LEFT, -1d), F(BOTTOM, -1d), F(RIGHT, -1d)));
     }
 
     @SuppressWarnings("unchecked")
     public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
-        this(stage, TS(
+        this(stage, S(
                         F(TOP, 15 * 5d),    // Heuristic for top
                         F(LEFT, 15d),       // Heuristic for left
                         F(BOTTOM, 15d),     // Heuristic for bottom
@@ -43,12 +45,10 @@ public class StageX {
 
     @SuppressWarnings("unchecked")
     public StageX(Stage stage, double top, double left, double bottom, double right) {
-        this(stage, TS(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right)));
+        this(stage, S(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right)));
     }
 
-    public StageX(Stage stage,
-                  TypedStruct<WinBorder, Double> win_borders_px)
-    {
+    public StageX(Stage stage, Struct<WinBorder, Double> win_borders_px) {
         this.stage = stage;
 
         this.win_borders_px = win_borders_px;
@@ -86,7 +86,7 @@ public class StageX {
     }
 
     @SuppressWarnings("unchecked")
-    TypedStruct<WinBorder, Double> calc_win_borders_px() {
+    Struct<WinBorder, Double> calc_win_borders_px() {
         double top;
         double left;
         double bottom;
@@ -121,7 +121,7 @@ public class StageX {
             right = win_width_px - left - scene_width_px;
         }
 
-        return TS(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right));
+        return S(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right));
     }
 
     void set_size(FULL_SCREEN overload_constant) {
@@ -143,7 +143,7 @@ public class StageX {
         double primary_screen_width_px = primary_screen_bounds.getWidth();
         double primary_screen_height_px = primary_screen_bounds.getHeight();
 
-        TypedStruct<WinBorder, Double> borders_px = calc_win_borders_px();
+        Struct<WinBorder, Double> borders_px = calc_win_borders_px();
 
         double max_scene_width_px = primary_screen_width_px - borders_px.get(LEFT) - borders_px.get(RIGHT);
         double max_scene_height_px = primary_screen_height_px - borders_px.get(TOP) - borders_px.get(BOTTOM);

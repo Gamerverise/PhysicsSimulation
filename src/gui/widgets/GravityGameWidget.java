@@ -71,11 +71,9 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
     public void layout() {
         canvas.setLayoutX(x);
         canvas.setLayoutY(y);
-        canvas.setWidth(width);
-        canvas.setHeight(height);
 
-        gc.restore();
-        gc.save();
+        gcx.set_viewport(width, height);
+
         init_transform();
     }
 
@@ -132,6 +130,14 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
                     BAD_CODE_PATH);
     }
 
+    public void view(GameWidgetViewParticle gv) {
+        view_particle(gv.p, gv.zoom, gv.scale_op);
+    }
+
+    public void view(GameWidgetViewTwoParticles gv) {
+        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.scale_op);
+    }
+
     // view_particle
     //     Change the current view (aka transform) so that:
     //
@@ -169,14 +175,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
                     this.getClass(),
                     new MethodNameHack(){}.method_name(),
                     BAD_CODE_PATH);
-    }
-
-    public void view(GameWidgetViewParticle gv) {
-        view_particle(gv.p, gv.zoom, gv.scale_op);
-    }
-
-    public void view(GameWidgetViewTwoParticles gv) {
-        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.scale_op);
     }
 
     void draw_particle(Particle p) {

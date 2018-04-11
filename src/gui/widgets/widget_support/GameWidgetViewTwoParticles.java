@@ -5,6 +5,12 @@ import model.Particle;
 import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
 
 public class GameWidgetViewTwoParticles extends GameWidgetView {
+
+    // GameWidgetView and its subclasses describe transformations from model coordinates to normalized
+    // view coordinates:
+    //
+    //     model coordinates -> normalized view coordinates
+
     public Particle center;
     public Particle p;
     public Particle q;
