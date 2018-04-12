@@ -1,4 +1,4 @@
-package lib.javafx_api_extensions;
+package lib.render;
 
 import javafx.scene.canvas.Canvas;
 import lib.debug.MethodNameHack;
@@ -8,7 +8,7 @@ import lib.javafx_api_extensions.javafx_support.Enums;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public class CanvasX extends Canvas {
+public class RenderingCanvas extends Canvas {
 
     GraphicsContextX gcx;
 
@@ -16,7 +16,7 @@ public class CanvasX extends Canvas {
     // We should/would override setWidth and setHeight of Canvas, but since those methods are final,
     // we cannot do so.
 
-    public CanvasX(double aspect_ratio) {
+    public RenderingCanvas(double aspect_ratio) {
         this.gcx = new GraphicsContextX(getGraphicsContext2D());
         this.aspect_ratio = aspect_ratio;
 

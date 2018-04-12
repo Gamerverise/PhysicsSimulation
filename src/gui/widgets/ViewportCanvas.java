@@ -1,39 +1,35 @@
-package lib.javafx_api_extensions;
+package gui.widgets;
 
 import javafx.scene.canvas.Canvas;
 import lib.debug.MethodNameHack;
+import lib.javafx_api_extensions.CanvasX;
 import lib.javafx_api_extensions.GraphicsContextX;
 import lib.javafx_api_extensions.javafx_support.Enums;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public class CanvasX extends Canvas {
+public class ViewportCanvas extends CanvasX {
 
-    GraphicsContextX gcx;
+    double aspect_ratio;
 
     // set_width and set_height herein should be used instead of setWidth and setHeight from Canvas.
     // We should/would override setWidth and setHeight of Canvas, but since those methods are final,
     // we cannot do so.
 
-    public CanvasX(double aspect_ratio) {
+    public ViewportCanvas(double aspect_ratio) {
         this.gcx = new GraphicsContextX(getGraphicsContext2D());
         this.aspect_ratio = aspect_ratio;
-
-        // The initial translation for the device transform is zero, since the initial canvas size is zero
-
-        this.device_transform_x = 0;
-        this.device_transform_y = 0;
     }
 
     void set_width(double width) {
+        gcx.center_x_model = width/2;
         setWidth(width);
-        device_transform_x = getWidth()/2;
     }
 
     public void set_height(double height) {
-        setHeight(height);
-        device_transform_y = getHeight()/2;
+        gcx.center_x_model = height/2;
+        setWidth(height);
     }
 
     public void set_dimensions(double width, double height) {
@@ -43,7 +39,7 @@ public class CanvasX extends Canvas {
 
     void scale_to_width(double width) {
         double height = width / aspect_ratio;
-        set_dimensions(width, height);
+        set_dimensions(width,height);
     }
 
     void scale_to_height(double height) {

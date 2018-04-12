@@ -1,16 +1,12 @@
 package lib.java_lang_extensions.anonymous_types;
 
-public class Pair<A, B> {
-    A _1;
-    B _2;
-
-    Pair(A _1, B _2) {
-        this._1 = _1;
-        this._2 = _2;
+public class Pair<T> extends PairUV<T, T> {
+    public Pair(T _1, T _2) {
+        super(_1, _2);
     }
 
     @SuppressWarnings("unchecked")
-    static <A, B> Pair<A, B> P(A _1, B _2) {
+    public static <A> Pair<A> P(A _1, A _2) {
         return new Pair(_1, _2);
     }
 }

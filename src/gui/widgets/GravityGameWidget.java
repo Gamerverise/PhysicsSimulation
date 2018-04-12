@@ -1,5 +1,7 @@
 package gui.widgets;
 
+import javafx.scene.transform.NonInvertibleTransformException;
+import lib.java_lang_extensions.function_types.FunctionR1_NonInvertibleExc;
 import lib.javafx_api_extensions.GraphicsContextX;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -67,6 +69,35 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
         init_graphics_context();
     }
+
+    public void hmm(){
+        this.min_radius_px = min_radius_px;
+        public double min_radius_px;
+        public double min_radius;
+
+        min_radius = 0;
+        if (radius < min_radius)
+            radius = min_radius;
+
+    }
+
+    public void update_min_radius(FunctionR1_NonInvertibleExc<Double, Double> inverter) {
+
+        // To avoid distortion from scaling, we require that the rectangle of the model mapped into the viewport has
+        // same aspect ratio as the viewport. (In other words, a circle will remain a circle.) As such, we may use
+        // either the x- or y-axis to determine the minimum radius allowed. Currently, we use the x-axis.
+
+        try {
+            double inverted_radius = inverter.call(min_radius_px);
+            double inverted_origin = inverter.call(0d);
+            min_radius = Math.abs(inverted_radius - inverted_origin);
+        } catch (NonInvertibleTransformException e) {
+            min_radius = 0;
+        }
+    }
+
+    update_min_radius(this::invert_x);
+
 
     public void layout() {
         canvas.setLayoutX(x);
