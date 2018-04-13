@@ -1,6 +1,6 @@
 package lib.render;
 
-public interface RenderingDevice {
+public interface VirtualRenderingDevice {
 
     void set_device_width(double width_px);
 

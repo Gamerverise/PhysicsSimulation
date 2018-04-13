@@ -2,9 +2,10 @@ package lib.render;
 
 import javafx.scene.canvas.Canvas;
 
+import javafx.scene.canvas.GraphicsContext;
 import lib.javafx_api_extensions.GraphicsContextX;
 
-public class CanvasRenderingDevice extends Canvas implements RenderingDevice {
+public class CanvasRenderingDevice extends Canvas implements VirtualRenderingDevice {
 
     // set_width and set_height herein should be used instead of setWidth and setHeight from Canvas.
     // We should/would override setWidth and setHeight of Canvas, but since those methods are final,
@@ -21,7 +22,7 @@ public class CanvasRenderingDevice extends Canvas implements RenderingDevice {
     public CanvasRenderingDevice() {
         gcx = new GraphicsContextX(getGraphicsContext2D());
 
-        // Default canvas dimensions are zero by zero
+        // The initial translation for the device transform is zero, since the initial canvas size is zero
 
         device_transform_x_px = 0;
         device_transform_y_px = 0;
@@ -40,5 +41,9 @@ public class CanvasRenderingDevice extends Canvas implements RenderingDevice {
     public void set_device_dimensions(double width_px, double height_px) {
         set_device_width(width_px);
         set_device_height(height_px);
+    }
+
+    public GraphicsContext get_native_drawing_object_hack() {
+        return getGraphicsContext2D();
     }
 }

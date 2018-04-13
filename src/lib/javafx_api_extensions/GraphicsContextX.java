@@ -1,9 +1,11 @@
 package lib.javafx_api_extensions;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib.java_lang_extensions.anonymous_types.Pair;
+import lib.render.CanvasRenderingDevice;
 
 import static lib.java_lang_extensions.anonymous_types.Pair.P;
 
@@ -30,5 +32,10 @@ public class GraphicsContextX {
 
         Point2D xy = gc.getTransform().inverseTransform(0, y);
         return P(xy.getX(), xy.getY());
+    }
+
+    public static GraphicsContext JAVA_HACK_get_graphics_context(Object canvas) {
+        if (canvas instanceof Canvas)
+            return ((Canvas) canvas).getGraphicsContext2D();
     }
 }
