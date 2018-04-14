@@ -13,4 +13,9 @@ public class FlowControl {
         for (int i = 0; i < count; i++)
             f.call(i);
     }
+
+    public static void repeat(int start, int count, FunctionV1<Integer> f) {
+        for (int i = start; i < count; i++)
+            f.call(i);
+    }
 }

@@ -1,18 +1,18 @@
-package lib.render;
+package lib.render.context;
 
-import javafx.scene.canvas.GraphicsContext;
 import lib.javafx_api_extensions.GraphicsContextX;
+import lib.render.Viewport;
+import lib.render.device.GraphicsDevice;
 
-public abstract class RenderingGraphicsContext<RENDERING_DEVICE extends VirtualRenderingDevice> extends GraphicsContextX {
+public abstract class RenderingGraphicsContext<DEVICE extends GraphicsDevice>
+        extends PrimitiveGraphicsContext<DEVICE>
+{
 
     Viewport viewport;
-    RENDERING_DEVICE device;
 
-    RenderingGraphicsContext(Viewport viewport, RENDERING_DEVICE device) {
-        super(GraphicsContextX.JAVA_HACK_get_graphics_context(device));
-
+    RenderingGraphicsContext(DEVICE device, Viewport viewport) {
+        super(device);
         this.viewport = viewport;
-        this.device = device;
     }
 
     // begin_render should save the transform state, and apply the viewport and device transforms so that

@@ -75,6 +75,7 @@ public class FixMe extends Canvas {
                 this.getClass(),
                 new MethodNameHack(){}.method_name(),
                 BAD_CODE_PATH);
+
         return null;
     }
 }
