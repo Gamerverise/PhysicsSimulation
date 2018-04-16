@@ -1,5 +1,6 @@
 package lib.render.context;
 
+import lib.java_lang_extensions.tuples.WidthHeight;
 import lib.render.device.GraphicsDevice;
 
 public abstract class PrimitiveGraphicsContext<DEVICE extends GraphicsDevice> {

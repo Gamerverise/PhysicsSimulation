@@ -103,7 +103,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
 
         scale(device.get_scale_x(), device.get_scale_y());
 
-        update_min_radius(this.invert_x);
+        update_min_radius();
     }
 
     public void end_render() {
@@ -118,34 +118,22 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
 
     public abstract void pop_transform();
 
-    public void update_min_radius(FunctionR1_NonInvertibleExc<Double, Double> inverter) {
+    public void update_min_radius() {
 
         // To avoid distortion from scaling, we require that the transform from model coordinates to device
-        // coordinates map a circle to a circle. As such, we may use either the x- or y-axis to determine the minimum
-        // radius allowed. Currently, we use the x-axis.
+        // coordinates map a circle to a circle. As such, we may use either the x- or y-axis to determine the
+        // minimum radius allowed. Currently, we use the x-axis.
+
+        Affine transform = get_transform();
 
         try {
-            double inverted_radius = inverter.call(min_radius_px);
-            double inverted_origin = inverter.call(0d);
+            double inverted_radius = transform.inverseTransform(min_radius_px, 0).getX();
+            double inverted_origin = transform.inverseTransform(0, 0).getX();
             min_radius_model = Math.abs(inverted_radius - inverted_origin);
         } catch (NonInvertibleTransformException e) {
             min_radius_model = 0;
         }
     }
 
-    public XY<Double> invert_coordinates(double x, double y) throws NonInvertibleTransformException {
-
-        // FIXME: Fix this comment
-        // Currently, invert_coordinates is only used in computing the min_radius.
-        //
-        // We only expect the NonInvertibleTransformException when the viewport is set to its default size of zero width and
-        // zero height. As of now, if this exception was raised in any other circumstance, it would be a bug.
-
-        Point2D xy = gc.getTransform().inverseTransform(0, y);
-        return XY(xy.getX(), xy.getY());
-    }
-
-    public Affine get_inverse_transform() {
-
-    }
+    public abstract Affine get_transform();
 }

@@ -1,6 +1,7 @@
 package lib.render.device;
 
 import lib.debug.MethodNameHack;
+import lib.java_lang_extensions.tuples.WidthHeight;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.AssertMessages.MUST_OVERRIDE_METHOD;

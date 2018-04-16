@@ -1,6 +1,7 @@
 package lib.render.device;
 
 import javafx.scene.canvas.Canvas;
+import lib.java_lang_extensions.tuples.WidthHeight;
 import lib.javafx_api_extensions.GraphicsContextX;
 
 public class CanvasGraphicsDevice extends VirtualGraphicsDevice {
