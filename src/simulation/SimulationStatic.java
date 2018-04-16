@@ -1,10 +1,10 @@
 package simulation;
 
-import lib.data_structures.CopyType;
-import lib.data_structures.RunCommand;
-import model.Universe;
+import lib.tokens.enums.CopyType;
+import lib.tokens.enums.RunCommand;
+import phys_model.Universe;
 
-import static lib.data_structures.CopyType.COPY_DEEP;
+import static lib.tokens.enums.CopyType.COPY_DEEP;
 
 public class SimulationStatic {
     public Universe universe;

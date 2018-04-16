@@ -1,8 +1,8 @@
 package gui.widgets.widget_support;
 
-import model.Particle;
+import phys_model.Particle;
 
-import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp;
 
 public class GameWidgetViewTwoParticles extends GameWidgetView {
 
@@ -15,9 +15,9 @@ public class GameWidgetViewTwoParticles extends GameWidgetView {
     public Particle p;
     public Particle q;
     public double zoom;
-    public ScaleOp2D scale_op;
+    public ScaleOp scale_op;
 
-    public GameWidgetViewTwoParticles(Particle center, Particle p, Particle q, double zoom, ScaleOp2D scale_op) {
+    public GameWidgetViewTwoParticles(Particle center, Particle p, Particle q, double zoom, ScaleOp scale_op) {
         this.center = center;
         this.p = p;
         this.q = q;

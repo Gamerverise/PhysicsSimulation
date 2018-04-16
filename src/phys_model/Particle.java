@@ -1,4 +1,4 @@
-package model;
+package phys_model;
 
 import javafx.scene.paint.Color;
 

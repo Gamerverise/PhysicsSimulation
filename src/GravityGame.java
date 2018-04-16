@@ -12,7 +12,7 @@ import lib.debug.Debug;
 import lib.javafx_api_extensions.ApplicationX;
 import missions.SolarSystem;
 
-import static lib.data_structures.RunCommand.SUSPEND;
+import static lib.tokens.enums.RunCommand.SUSPEND;
 
 public class GravityGame extends ApplicationX {
     String user_dir = System.getProperty("user.dir");

@@ -4,7 +4,7 @@ import lib.javafx_api_extensions.StageX;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.*;
+import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.*;
 
 public class GravityGameStage extends StageX {
 

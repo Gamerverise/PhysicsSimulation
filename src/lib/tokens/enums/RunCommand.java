@@ -1,3 +1,3 @@
-package lib.data_structures;
+package lib.tokens.enums;
 
 public enum RunCommand {RUN, SUSPEND, EXIT}

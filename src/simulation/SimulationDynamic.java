@@ -3,16 +3,16 @@ package simulation;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
 
-import lib.data_structures.CopyType;
-import lib.data_structures.RunCommand;
+import lib.tokens.enums.CopyType;
+import lib.tokens.enums.RunCommand;
 import lib.debug.MethodNameHack;
-import model.Particle;
-import model.Universe;
+import phys_model.Particle;
+import phys_model.Universe;
 
-import static lib.data_structures.CopyType.COPY_DEEP;
+import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static lib.data_structures.RunCommand.*;
+import static lib.tokens.enums.RunCommand.*;
 
 public class SimulationDynamic extends SimulationStatic {
     Thread thread;

@@ -1,4 +1,4 @@
-package lib.java_lang_extensions.anonymous_types;
+package lib.java_lang_extensions.old.anonymous_types;
 
 public class Tuple<V> {
 

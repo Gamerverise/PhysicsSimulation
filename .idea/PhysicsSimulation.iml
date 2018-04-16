@@ -11,6 +11,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib/java_lang_extensions/anonymous_types/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib/java_lang_extensions/multi_class/TMP_EXCLUDE" />
+      <excludeFolder url="file://$MODULE_DIR$/src/lib/java_lang_extensions/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib/javafx_api_extensions/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_2/java_lang_extensions/multi_class" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_unfinished" />

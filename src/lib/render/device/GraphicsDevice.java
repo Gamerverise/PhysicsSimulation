@@ -20,6 +20,16 @@ public abstract class GraphicsDevice {
     private static double device_transform_scale_x;
     private static double device_transform_scale_y;
 
+    public abstract double get_width_px();
+
+    public abstract double get_height_px();
+
+    public abstract WidthHeight<Double> get_dimensions_px();
+
+    public double get_aspect_ratio() {
+        return get_width_px() / get_height_px();
+    }
+
     public double get_delta_x() {
         return device_transform_x_px;
     }

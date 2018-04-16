@@ -1,5 +1,9 @@
 package lib.render;
 
+import lib.java_lang_extensions.tuples.Geometry_XY_WH;
+import lib.java_lang_extensions.tuples.WidthHeight;
+import lib.java_lang_extensions.tuples.XY;
+
 public class Viewport {
 
     // _model suffix means units in model space
@@ -53,9 +57,9 @@ public class Viewport {
         basis_center_y_model += delta_y;
     }
 
-    public void scale_basis(double scale) {
-        basis_width_model *= scale;
-        basis_height_model += scale;
+    public void scale_basis(double scale_model) {
+        basis_width_model *= scale_model;
+        basis_height_model *= scale_model;
     }
 
     public void translate_basis(int delta_x_count, int delta_y_count) {
@@ -67,23 +71,39 @@ public class Viewport {
         this.scale_count += scale_count;
     }
 
+    public XY<Double> get_center_model() {
+        return new XY<>(basis_center_x_model + delta_x_count*translation_unit,
+                basis_center_y_model + delta_y_count*translation_unit);
+    }
+
+    public double get_width_model() {
+        return basis_width_model*(1 + scale_count * scale_unit);
+    }
+
+    public double get_height_model() {
+        return basis_height_model*(1 + scale_count * scale_unit);
+    }
+
+    public WidthHeight<Double> get_dimensions_model() {
+        return new WidthHeight<>(basis_width_model*(1 + scale_count * scale_unit),
+                basis_height_model*(1 + scale_count * scale_unit));
+    }
+
+    public Geometry_XY_WH<Double> get_geometry_model() {
+        return new Geometry_XY_WH<>(
+                basis_center_x_model + delta_x_count*translation_unit,
+                basis_center_y_model + delta_y_count*translation_unit,
+                basis_width_model*(1 + scale_count * scale_unit),
+                basis_height_model*(1 + scale_count * scale_unit));
+    }
+
     void scale_to_width(double basis_width_model) {
-        double aspect_ratio = this.basis_width_model / this.basis_height_model;
-        double height = basis_width_model / aspect_ratio;
+        double basis_height_model = this.basis_height_model / this.basis_width_model * basis_width_model;
         set_basis_dimensions(basis_width_model, basis_height_model);
     }
 
     void scale_to_height(double basis_height_model) {
-        double aspect_ratio = this.basis_height_model / this.basis_height_model;
-        double width = basis_height_model * aspect_ratio;
-        set_basis_dimensions(width, basis_height_model);
-    }
-
-    public void scale_relative(double percent) {
-        gcx.px_per_unit_model = px_per_unit_model;
-    }
-
-    public void scale_relative(int scale_count) {
-        this.scale_count += scale_count;
+        double basis_width_model = this.basis_width_model / this.basis_height_model * basis_height_model;
+        set_basis_dimensions(basis_width_model, basis_height_model);
     }
 }

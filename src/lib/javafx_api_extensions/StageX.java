@@ -5,50 +5,38 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import lib.java_lang_extensions.anonymous_types.Struct;
+import lib.java_lang_extensions.tuples.Geometry_TL_BR;
 
-import static lib.java_lang_extensions.anonymous_types.StructField.F;
-import static lib.java_lang_extensions.anonymous_types.Struct.*;
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.HEIGHT_CHANGED;
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.WIDTH_CHANGED;
-import static lib.javafx_api_extensions.StageX.WinBorder.*;
-import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.HEURISTIC_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_support.WinBorderStructOverloadConstants.UNKNOWN_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConstants.*;
+import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.HEURISTIC_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.UNKNOWN_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConst.*;
+
+import static lib.java_lang_extensions.tuples.Geometry_TL_BR.Geometry_TL_BR;
 
 public class StageX {
 
-    public enum WinBorder {
-        TOP, LEFT, BOTTOM, RIGHT
-    }
+    public enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED}
 
-    Struct<WinBorder, Double> win_borders_px;
+    Geometry_TL_BR<Double> win_borders_px;
 
     public Stage stage;
     public Scene scene;
 
-    @SuppressWarnings("unchecked")
     public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
-        this(stage, S(F(TOP, -1d), F(LEFT, -1d), F(BOTTOM, -1d), F(RIGHT, -1d)));
+        this(stage, Geometry_TL_BR(-1d, -1d, -1d, -1d));
     }
 
-    @SuppressWarnings("unchecked")
     public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
-        this(stage, S(
-                        F(TOP, 15 * 5d),    // Heuristic for top
-                        F(LEFT, 15d),       // Heuristic for left
-                        F(BOTTOM, 15d),     // Heuristic for bottom
-                        F(RIGHT, 15d)       // Heuristic for right
-                )
-        );
+        this(stage, Geometry_TL_BR(15 * 5d, 5d, 5d, 5d));
     }
 
-    @SuppressWarnings("unchecked")
     public StageX(Stage stage, double top, double left, double bottom, double right) {
-        this(stage, S(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right)));
+        this(stage, Geometry_TL_BR(top, left, bottom, right));
     }
 
-    public StageX(Stage stage, Struct<WinBorder, Double> win_borders_px) {
+    public StageX(Stage stage, Geometry_TL_BR<Double> win_borders_px) {
         this.stage = stage;
 
         this.win_borders_px = win_borders_px;
@@ -74,8 +62,6 @@ public class StageX {
         stage.setScene(scene);
     }
 
-    enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED}
-
     public void size_changed_event_handler(
             SizeChangeFlag flag,
             ObservableValue<? extends Number> observable,
@@ -85,8 +71,7 @@ public class StageX {
         // Intentionally empty
     }
 
-    @SuppressWarnings("unchecked")
-    Struct<WinBorder, Double> calc_win_borders_px() {
+    Geometry_TL_BR<Double> calc_win_borders_px() {
         double top;
         double left;
         double bottom;
@@ -121,7 +106,7 @@ public class StageX {
             right = win_width_px - left - scene_width_px;
         }
 
-        return S(F(TOP, top), F(LEFT, left), F(BOTTOM, bottom), F(RIGHT, right));
+        return Geometry_TL_BR(top, left, bottom, right);
     }
 
     void set_size(FULL_SCREEN overload_constant) {
@@ -143,10 +128,10 @@ public class StageX {
         double primary_screen_width_px = primary_screen_bounds.getWidth();
         double primary_screen_height_px = primary_screen_bounds.getHeight();
 
-        Struct<WinBorder, Double> borders_px = calc_win_borders_px();
+        Geometry_TL_BR<Double> borders_px = calc_win_borders_px();
 
-        double max_scene_width_px = primary_screen_width_px - borders_px.get(LEFT) - borders_px.get(RIGHT);
-        double max_scene_height_px = primary_screen_height_px - borders_px.get(TOP) - borders_px.get(BOTTOM);
+        double max_scene_width_px = primary_screen_width_px - borders_px.left - borders_px.right;
+        double max_scene_height_px = primary_screen_height_px - borders_px.top - borders_px.bottom;
 
         double max_scene_aspect_ratio = max_scene_width_px / max_scene_height_px;
 
@@ -173,10 +158,10 @@ public class StageX {
 
         if (aspect_ratio >= max_scene_aspect_ratio) {
             stage_width_px = primary_screen_width_px;
-            double scene_width_px = stage_width_px - borders_px.get(LEFT) - borders_px.get(RIGHT);
-            stage_height_px = borders_px.get(TOP) + scene_width_px / aspect_ratio + borders_px.get(BOTTOM);
+            double scene_width_px = stage_width_px - borders_px.left - borders_px.right;
+            stage_height_px = borders_px.top + scene_width_px / aspect_ratio + borders_px.bottom;
         } else {
-            stage_width_px = borders_px.get(LEFT) + max_scene_height_px * aspect_ratio + borders_px.get(RIGHT);
+            stage_width_px = borders_px.left + max_scene_height_px * aspect_ratio + borders_px.right;
             stage_height_px = primary_screen_height_px;
         }
 

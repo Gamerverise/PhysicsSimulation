@@ -1,8 +1,8 @@
-package lib.java_lang_extensions.anonymous_types;
+package lib.java_lang_extensions.old.anonymous_types;
 
 public class PairUV<A, B> {
-    A _1;
-    B _2;
+    public A _1;
+    public B _2;
 
     public PairUV(A _1, B _2) {
         this._1 = _1;

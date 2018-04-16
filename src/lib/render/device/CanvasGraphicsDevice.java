@@ -43,4 +43,16 @@ public class CanvasGraphicsDevice extends VirtualGraphicsDevice {
         set_device_width(width_px);
         set_device_height(height_px);
     }
+
+    public double get_width_px() {
+        return canvas.getWidth();
+    }
+
+    public double get_height_px() {
+        return canvas.getHeight();
+    }
+
+    public WidthHeight<Double> get_dimensions_px() {
+        return new WidthHeight<>(canvas.getWidth(), canvas.getHeight());
+    }
 }

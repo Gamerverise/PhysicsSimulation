@@ -1,10 +1,7 @@
 package lib.render.context;
 
-import javafx.scene.canvas.GraphicsContext;
-import lib.render.device.CanvasGraphicsDevice;
 import lib.render.Viewport;
-
-import static lib.render.device.CanvasGraphicsDevice.*;
+import lib.render.device.CanvasGraphicsDevice;
 
 public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<CanvasGraphicsDevice> {
 
@@ -12,19 +9,19 @@ public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<Can
         super(device, viewport);
     }
 
-    public void begin_render() {
-        GraphicsContext gc = device.gcx.gc;
-        gc.save();
-
-        gc.translate(viewport.viewport_center_x_model, viewport.viewport_center_y_model);
-        gc.scale(device.canvas.getWidth() / viewport.viewport_width_model,
-                 device.canvas.getHeight() / viewport.viewport_center_y_model);
-
-        gc.translate(device.device_transform_x_px, device.device_transform_y_px);
-        gc.scale(device_transform_scale_x, device_transform_scale_y);
+    public void translate(double delta_x_context, double delta_y_context) {
+        device.gcx.gc.translate(delta_x_context, delta_y_context);
     }
 
-    public void end_render() {
+    public void scale(double width_scale_context, double height_scale_context) {
+        device.gcx.gc.scale(width_scale_context, height_scale_context);
+    }
+
+    public void push_transform() {
+        device.gcx.gc.save();
+    }
+
+    public void pop_transform() {
         device.gcx.gc.restore();
     }
 }

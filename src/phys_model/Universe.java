@@ -1,10 +1,10 @@
-package model;
+package phys_model;
 
 import java.util.LinkedList;
 
-import lib.data_structures.CopyType;
+import lib.tokens.enums.CopyType;
 
-import static lib.data_structures.CopyType.COPY_SHALLOW;
+import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public class Universe {
 

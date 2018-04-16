@@ -5,11 +5,11 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib.debug.MethodNameHack;
-import lib.java_lang_extensions.anonymous_types.Pair;
+import lib.java_lang_extensions.tuples.XY;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
-import static lib.java_lang_extensions.anonymous_types.Pair.P;
+import static lib.java_lang_extensions.tuples.XY.XY;
 
 public class GraphicsContextX {
 
@@ -24,7 +24,7 @@ public class GraphicsContextX {
         gc.fillOval(x - radius, y - radius, 2 * radius, 2 * radius);
     }
 
-    public Pair<Double> invert_coordinates(double x, double y) throws NonInvertibleTransformException {
+    public XY<Double> invert_coordinates(double x, double y) throws NonInvertibleTransformException {
 
         // FIXME: Fix this comment
         // Currently, invert_coordinates is only used in computing the min_radius.
@@ -33,7 +33,7 @@ public class GraphicsContextX {
         // zero height. As of now, if this exception was raised in any other circumstance, it would be a bug.
 
         Point2D xy = gc.getTransform().inverseTransform(0, y);
-        return P(xy.getX(), xy.getY());
+        return XY(xy.getX(), xy.getY());
     }
 
     public static GraphicsContext JAVA_HACK_get_graphics_context(Object canvas) {

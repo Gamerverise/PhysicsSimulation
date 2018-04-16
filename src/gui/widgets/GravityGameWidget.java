@@ -1,20 +1,18 @@
 package gui.widgets;
 
-import javafx.scene.transform.NonInvertibleTransformException;
-import lib.java_lang_extensions.function_types.FunctionR1_NonInvertibleExc;
 import lib.javafx_api_extensions.GraphicsContextX;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import lib.data_structures.RunCommand;
+import lib.tokens.enums.RunCommand;
 import lib.debug.MethodNameHack;
 import lib.widgets.AnimatedWidget;
 import lib.widgets.AnimatedWidgetState;
 import lib.widgets.Widget;
-import model.Particle;
-import model.Universe;
+import phys_model.Particle;
+import phys_model.Universe;
 import simulation.SimulationDynamic;
 import simulation.SimulationStatic;
 import gui.widgets.widget_support.GameWidgetView;
@@ -23,9 +21,9 @@ import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 
 import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp2D;
-import static lib.data_structures.CopyType.COPY_DEEP;
-import static lib.data_structures.RunCommand.*;
+import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp;
+import static lib.tokens.enums.CopyType.COPY_DEEP;
+import static lib.tokens.enums.RunCommand.*;
 
 public class GravityGameWidget extends Widget implements AnimatedWidget {
     double min_radius_px = 1.1;
@@ -80,24 +78,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
             radius = min_radius;
 
     }
-
-    public void update_min_radius(FunctionR1_NonInvertibleExc<Double, Double> inverter) {
-
-        // To avoid distortion from scaling, we require that the rectangle of the model mapped into the viewport has
-        // same aspect ratio as the viewport. (In other words, a circle will remain a circle.) As such, we may use
-        // either the x- or y-axis to determine the minimum radius allowed. Currently, we use the x-axis.
-
-        try {
-            double inverted_radius = inverter.call(min_radius_px);
-            double inverted_origin = inverter.call(0d);
-            min_radius = Math.abs(inverted_radius - inverted_origin);
-        } catch (NonInvertibleTransformException e) {
-            min_radius = 0;
-        }
-    }
-
-    update_min_radius(this::invert_x);
-
 
     public void layout() {
         canvas.setLayoutX(x);
@@ -176,7 +156,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
     //     and
     //         diameter_px(p, q) = zoom * canvas_dim
 
-    public void view_particle(Particle p, double zoom, ScaleOp2D scale_op) {
+    public void view_particle(Particle p, double zoom, ScaleOp scale_op) {
         double scale_rel = 1 / p.radius / 2 * zoom;
         gc.translate(p.x, p.y);
         gcx.scale(scale_rel, scale_op);
@@ -188,7 +168,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
     //
     //         dist_px(p, q) = zoom * canvas_dim
 
-    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, ScaleOp2D scale_op) {
+    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, ScaleOp scale_op) {
         double scale_rel = 1 / p.distance(q) * zoom;
         gc.translate(center.x, center.y);
         gcx.scale(scale_rel, scale_op);
