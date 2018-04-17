@@ -28,7 +28,6 @@ import static lib.debug.Debug.assert_msg;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
 import static lib.tokens.enums.RunCommand.SUSPEND;
-import static lib.java_lang_extensions.tuples.WidthHeight.WidthHeight;
 
 public class GravityGameWidget extends Widget implements AnimatedWidget {
     double min_radius_px = 1.1;
@@ -54,19 +53,15 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
     public GravityGameWidget(double arena_width,
                              double arena_height,
-                             AffineX init_view,
+                             ParticleView init_view,
                              Universe universe,
                              double dt_real,
                              double dt_sim,
                              RunCommand init_run_command)
     {
-        this(new Mission(
-                            WidthHeight(arena_width, arena_height),
-                            init_view,
-                            new SimulationStatic(universe, dt_real, dt_sim, init_run_command)
-                        ),
-             init_run_command
-        );
+        this(new Mission(init_view,
+                         new SimulationStatic(universe, dt_real, dt_sim, init_run_command)),
+             init_run_command);
     }
 
     public GravityGameWidget(Mission init_mission,
@@ -97,8 +92,9 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
 
-        if (init_view != null)
-            view(init_view);
+        if (init_mission.init_view != null)
+            if (init_mission.init_view.transform != null)
+                gc.setTransform(init_mission.init_view.transform);
 
         draw_frame();
     }
@@ -107,12 +103,13 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         canvas_device.set_device_geometry(x, y, width, height);
         viewport.set_basis_geometry(0, 0, width / height, 1);
 
-        if (init_view != null)
-            view(init_view);
+        if (init_mission.init_view != null)
+            if (init_mission.init_view.transform != null)
+                gc.setTransform(init_mission.init_view.transform);
     }
 
     public void reset() {
-        simulation.reset(init_simulation);
+        simulation.reset(init_mission.init_sim);
         init_graphics_context();
     }
 

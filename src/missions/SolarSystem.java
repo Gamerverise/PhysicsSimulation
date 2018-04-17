@@ -12,7 +12,6 @@ import views.ParticleView;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 import static lib.tokens.enums.RunCommand.SUSPEND;
-import static views.ParticleView.*;
 import static views.ParticleView.VIEW_TWO_PARTICLES.VIEW_TWO_PARTICLES;
 
 public class SolarSystem {

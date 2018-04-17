@@ -8,8 +8,8 @@ public class Mission {
     public ParticleView init_view;
     public SimulationStatic init_sim;
     
-    public Mission(double init_arena_width, double init_arena_height, SimulationStatic init_sim) {
-        this.init_view = new ParticleView(init_arena_width, init_arena_height);
+    public Mission(ParticleView particle_view, SimulationStatic init_sim) {
+        this.init_view = particle_view;
         this.init_sim = init_sim;
     }
 }
