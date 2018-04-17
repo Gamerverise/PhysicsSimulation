@@ -9,6 +9,6 @@ public class Width<T> {
     }
 
     public static <T> Width<T> Width(T top) {
-        return new Width(top);
+        return new Width<>(top);
     }
 }

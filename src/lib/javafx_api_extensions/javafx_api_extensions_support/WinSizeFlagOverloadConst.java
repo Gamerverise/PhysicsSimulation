@@ -1,4 +1,4 @@
-package lib.javafx_api_extensions.javafx_support;
+package lib.javafx_api_extensions.javafx_api_extensions_support;
 
 public class WinSizeFlagOverloadConst {
 

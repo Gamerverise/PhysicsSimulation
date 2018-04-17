@@ -1,7 +1,7 @@
 package gui.widgets.adapters;
 
-import lib.widgets.ParentWidget;
-import lib.widgets.Widget;
+import lib.widget.ParentWidget;
+import lib.widget.Widget;
 import javafx.scene.layout.Region;
 
 public class SceneAdapter extends Region {

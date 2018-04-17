@@ -35,18 +35,4 @@ public class GraphicsContextX {
         Point2D xy = gc.getTransform().inverseTransform(0, y);
         return XY(xy.getX(), xy.getY());
     }
-
-    public static GraphicsContext JAVA_HACK_get_graphics_context(Object canvas) {
-        if (canvas instanceof Canvas)
-            return ((Canvas) canvas).getGraphicsContext2D();
-
-        assert false : assert_msg(
-                new MethodNameHack() {
-                }.method_name().getClass(),
-                new MethodNameHack() {
-                }.method_name(),
-                BAD_CODE_PATH);
-
-        return null;
-    }
 }

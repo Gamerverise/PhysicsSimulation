@@ -1,4 +1,4 @@
-package lib.widgets;
+package lib.widget;
 
 public abstract class ParentWidget extends Widget {
 

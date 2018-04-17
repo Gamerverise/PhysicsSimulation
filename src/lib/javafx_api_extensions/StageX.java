@@ -9,9 +9,9 @@ import lib.java_lang_extensions.tuples.Geometry_TL_BR;
 
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.HEIGHT_CHANGED;
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.WIDTH_CHANGED;
-import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.HEURISTIC_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.UNKNOWN_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_support.WinSizeFlagOverloadConst.*;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.HEURISTIC_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.UNKNOWN_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinSizeFlagOverloadConst.*;
 
 import static lib.java_lang_extensions.tuples.Geometry_TL_BR.Geometry_TL_BR;
 

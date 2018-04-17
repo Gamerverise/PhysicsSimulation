@@ -9,6 +9,6 @@ public class Z<T> {
     }
 
     public static <T> Z<T> Z(T top) {
-        return new Z(top);
+        return new Z<>(top);
     }
 }

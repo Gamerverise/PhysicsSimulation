@@ -1,36 +1,33 @@
 package gui.widgets;
 
-import lib.javafx_api_extensions.GraphicsContextX;
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
-import lib.tokens.enums.RunCommand;
 import lib.debug.MethodNameHack;
-import lib.widgets.AnimatedWidget;
-import lib.widgets.AnimatedWidgetState;
-import lib.widgets.Widget;
-import phys_model.Particle;
-import phys_model.Universe;
-import simulation.SimulationDynamic;
-import simulation.SimulationStatic;
-import gui.widgets.widget_support.GameWidgetView;
-import gui.widgets.widget_support.GameWidgetViewParticle;
-import gui.widgets.widget_support.GameWidgetViewTwoParticles;
+import lib.javafx_api_extensions.AffineX;
+import lib.javafx_api_extensions.GraphicsContextX;
+import lib.tokens.enums.RunCommand;
+import lib.widget.AnimatedWidget;
+import lib.widget.Widget;
+import particle_model.Particle;
+import particle_model.Universe;
+import particle_model.simulation.SimulationDynamic;
+import particle_model.simulation.SimulationStatic;
 
-import static lib.debug.Debug.assert_msg;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp;
+import static lib.debug.Debug.assert_msg;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
-import static lib.tokens.enums.RunCommand.*;
+import static lib.tokens.enums.RunCommand.RUN;
+import static lib.tokens.enums.RunCommand.SUSPEND;
 
 public class GravityGameWidget extends Widget implements AnimatedWidget {
     double min_radius_px = 1.1;
 
-    AnimatedWidgetState anim_state;
+    AnimationTimer anim_timer;
 
-    GameWidgetView init_gv;
+    AffineX init_view;
     SimulationStatic init_simulation;
 
     Canvas canvas;
@@ -40,43 +37,36 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
     SimulationDynamic simulation;
 
-    public GravityGameWidget(GameWidgetView init_gv,
+    public GravityGameWidget(AffineX init_view,
                              Universe universe,
                              double dt_real,
                              double dt_sim,
                              RunCommand init_run_command)
     {
-        this(init_gv,
+        this(init_view,
              new SimulationStatic(universe, dt_real, dt_sim, init_run_command),
              init_run_command);
     }
 
-    public GravityGameWidget(GameWidgetView init_gv,
+    public void AnimatedWidget(AnimationTimer anim_timer) {
+        this.anim_timer = anim_timer;
+    }
+
+    public GravityGameWidget(AffineX init_view,
                              SimulationStatic init_simulation,
                              RunCommand init_run_command)
     {
-        this.init_gv = init_gv;
+        AnimatedWidget.AnimatedWidget(this);
+
+        this.init_view = init_view;
         this.init_simulation = init_simulation;
 
         simulation = new SimulationDynamic(init_simulation, COPY_DEEP, init_run_command);
 
-        anim_state = new AnimatedWidgetState(this);
-
         if (simulation.atomic_run_command.get() == RUN)
-            anim_state.anim_timer.start();
+            anim_timer.start();
 
         init_graphics_context();
-    }
-
-    public void hmm(){
-        this.min_radius_px = min_radius_px;
-        public double min_radius_px;
-        public double min_radius;
-
-        min_radius = 0;
-        if (radius < min_radius)
-            radius = min_radius;
-
     }
 
     public void layout() {
@@ -95,17 +85,15 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         // Change positive y direction from down to up
         gc.scale(1, -1);
 
-        if (init_gv != null)
-            view(init_gv);
-
-        gcx.update_min_radius(gcx::invert_x);
+        if (init_view != null)
+            view(init_view);
     }
 
     public void init_graphics_context() {
         canvas = new Canvas();
 
         gc = canvas.getGraphicsContext2D();
-        gcx = new GraphicsContextX(gc, min_radius_px);
+        gcx = new GraphicsContextX(gc);
 
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
@@ -116,8 +104,8 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         // Change positive y direction from down to up
         gc.scale(1, -1);
 
-        if (init_gv != null)
-            view(init_gv);
+        if (init_view != null)
+            view(init_view);
 
         draw_frame();
     }
@@ -139,39 +127,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
                     this.getClass(),
                     new MethodNameHack(){}.method_name(),
                     BAD_CODE_PATH);
-    }
-
-    public void view(GameWidgetViewParticle gv) {
-        view_particle(gv.p, gv.zoom, gv.scale_op);
-    }
-
-    public void view(GameWidgetViewTwoParticles gv) {
-        view_two_particles(gv.center, gv.p, gv.q, gv.zoom, gv.scale_op);
-    }
-
-    // view_particle
-    //     Change the current view (aka transform) so that:
-    //
-    //         (center_px, center_py) = (canvas_origin_x, canvas_origin_x)
-    //     and
-    //         diameter_px(p, q) = zoom * canvas_dim
-
-    public void view_particle(Particle p, double zoom, ScaleOp scale_op) {
-        double scale_rel = 1 / p.radius / 2 * zoom;
-        gc.translate(p.x, p.y);
-        gcx.scale(scale_rel, scale_op);
-    }
-
-    // FIXME: LOW PRIORITY: Old comment
-    // view_particle
-    //     Scale the current view (aka transform) so that:
-    //
-    //         dist_px(p, q) = zoom * canvas_dim
-
-    public void view_two_particles(Particle center, Particle p, Particle q, double zoom, ScaleOp scale_op) {
-        double scale_rel = 1 / p.distance(q) * zoom;
-        gc.translate(center.x, center.y);
-        gcx.scale(scale_rel, scale_op);
     }
 
     public void view(GameWidgetView gv) {

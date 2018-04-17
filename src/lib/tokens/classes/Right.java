@@ -9,6 +9,6 @@ public class Right<T> {
     }
 
     public static <T> Right<T> Right(T top) {
-        return new Right(top);
+        return new Right<>(top);
     }
 }

@@ -9,6 +9,6 @@ public class Height<T> {
     }
 
     public static <T> Height<T> Height(T top) {
-        return new Height(top);
+        return new Height<>(top);
     }
 }

@@ -1,4 +1,4 @@
-package simulation;
+package particle_model.simulation;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
@@ -6,8 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import lib.tokens.enums.CopyType;
 import lib.tokens.enums.RunCommand;
 import lib.debug.MethodNameHack;
-import phys_model.Particle;
-import phys_model.Universe;
+import particle_model.Particle;
+import particle_model.Universe;
 
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.debug.Debug.assert_msg;

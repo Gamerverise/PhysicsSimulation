@@ -9,6 +9,6 @@ public class Bottom<T> {
     }
 
     public static <T> Bottom<T> Bottom(T top) {
-        return new Bottom(top);
+        return new Bottom<>(top);
     }
 }

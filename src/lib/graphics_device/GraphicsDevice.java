@@ -1,4 +1,4 @@
-package lib.render.device;
+package lib.graphics_device;
 
 import lib.debug.MethodNameHack;
 import lib.java_lang_extensions.tuples.WidthHeight;

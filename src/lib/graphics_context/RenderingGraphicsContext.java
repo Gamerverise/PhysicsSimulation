@@ -1,16 +1,13 @@
-package lib.render.context;
+package lib.graphics_context;
 
-import javafx.geometry.Point2D;
-import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
-import lib.java_lang_extensions.function_types.FunctionR1_NonInvertibleExc;
+import lib.graphics_device.VirtualGraphicsDevice;
 import lib.java_lang_extensions.tuples.WidthHeight;
 import lib.java_lang_extensions.tuples.XY;
+import lib.javafx_api_extensions.AffineX;
 import lib.render.Viewport;
-import lib.render.device.VirtualGraphicsDevice;
 
-import static lib.render.context.RenderingGraphicsContext.AspectRatioOption.SCALE_VIEWPORT_TO_FIT_DEVICE;
-import static lib.java_lang_extensions.tuples.XY.XY;
+import static lib.graphics_context.RenderingGraphicsContext.AspectRatioOption.SCALE_VIEWPORT_TO_FIT_DEVICE;
 
 public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDevice>
         extends PrimitiveGraphicsContext<DEVICE>
@@ -124,7 +121,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         // coordinates map a circle to a circle. As such, we may use either the x- or y-axis to determine the
         // minimum radius allowed. Currently, we use the x-axis.
 
-        Affine transform = get_transform();
+        AffineX transform = get_transform();
 
         try {
             double inverted_radius = transform.inverseTransform(min_radius_px, 0).getX();
@@ -135,5 +132,5 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         }
     }
 
-    public abstract Affine get_transform();
+    public abstract AffineX get_transform();
 }

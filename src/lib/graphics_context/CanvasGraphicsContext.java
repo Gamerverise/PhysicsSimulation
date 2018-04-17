@@ -1,6 +1,6 @@
-package lib.render.context;
+package lib.graphics_context;
 
-import lib.render.device.CanvasGraphicsDevice;
+import lib.graphics_device.CanvasGraphicsDevice;
 
 public class CanvasGraphicsContext extends PrimitiveGraphicsContext<CanvasGraphicsDevice> {
 

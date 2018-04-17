@@ -1,8 +1,8 @@
-package simulation;
+package particle_model.simulation;
 
 import lib.tokens.enums.CopyType;
 import lib.tokens.enums.RunCommand;
-import phys_model.Universe;
+import particle_model.Universe;
 
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 

@@ -9,6 +9,6 @@ public class X<T> {
     }
 
     public static <T> X<T> X(T top) {
-        return new X(top);
+        return new X<>(top);
     }
 }

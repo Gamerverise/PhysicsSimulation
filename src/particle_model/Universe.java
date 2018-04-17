@@ -1,4 +1,4 @@
-package phys_model;
+package particle_model;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package lib.render.device;
+package lib.graphics_device;
 
 import javafx.scene.canvas.Canvas;
 import lib.java_lang_extensions.tuples.WidthHeight;

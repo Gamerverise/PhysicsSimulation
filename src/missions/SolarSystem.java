@@ -1,15 +1,13 @@
 package missions;
 
-import gui.widgets.widget_support.GameWidgetView;
-import gui.widgets.widget_support.GameWidgetViewTwoParticles;
 import javafx.scene.paint.Color;
-import phys_model.Particle;
-import phys_model.Universe;
-import simulation.SimulationStatic;
+import lib.javafx_api_extensions.javafx_api_extensions_support.ScaleOp;
+import particle_model.Particle;
+import particle_model.Universe;
+import particle_model.simulation.SimulationStatic;
 
 import static lib.tokens.enums.CopyType.*;
 import static lib.tokens.enums.RunCommand.*;
-import static lib.javafx_api_extensions.javafx_support.Enums.ScaleOp;
 
 public class SolarSystem {
     // Units are meters (m) and seconds (s)
@@ -60,5 +58,6 @@ public class SolarSystem {
             SUSPEND
     );
 
-    public static GameWidgetView solar_sys_game_view_sun_earth = new GameWidgetViewTwoParticles(sun, sun, earth, 0.95, ScaleOp.HALF_MAX);
+    public static GameWidgetView solar_sys_game_view_sun_earth
+            = new GameWidgetViewTwoParticles(sun, sun, earth, 0.95, ScaleOp.HALF_MAX);
 }

@@ -4,7 +4,10 @@ import lib.javafx_api_extensions.StageX;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import static lib.javafx_api_extensions.javafx_support.WinBorderTupleOverloadConst.*;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.UNKNOWN_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.HEURISTIC_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.UNKNOWN_BORDER_SIZES.UNKNOWN_BORDER_SIZES;
+import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.HEURISTIC_BORDER_SIZES.HEURISTIC_BORDER_SIZES;
 
 public class GravityGameStage extends StageX {
 
