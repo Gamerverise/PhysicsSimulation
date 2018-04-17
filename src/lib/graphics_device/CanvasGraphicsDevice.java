@@ -30,6 +30,11 @@ public class CanvasGraphicsDevice extends VirtualGraphicsDevice {
         return device_transform_scale_y;
     }
 
+    public void set_device_xy(double x_px, double y_px) {
+        canvas.setLayoutX(x_px);
+        canvas.setLayoutY(y_px);
+    }
+
     public void set_device_width(double width_px) {
         device_transform_x_px = width_px / 2;
         canvas.setWidth(width_px);
@@ -43,6 +48,11 @@ public class CanvasGraphicsDevice extends VirtualGraphicsDevice {
     public void set_device_dimensions(double width_px, double height_px) {
         set_device_width(width_px);
         set_device_height(height_px);
+    }
+
+    public void set_device_geometry(double x_px, double y_px, double width_px, double height_px) {
+        set_device_xy(x_px, y_px);
+        set_device_dimensions(width_px, height_px);
     }
 
     public double get_width_px() {

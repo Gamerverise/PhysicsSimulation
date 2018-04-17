@@ -1,4 +1,4 @@
-package gui.widgets;
+package gui.widget;
 
 import lib.javafx_api_extensions.StageX;
 import javafx.stage.Screen;
@@ -11,11 +11,11 @@ import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderS
 
 public class GravityGameStage extends StageX {
 
-    public GravityGameStage(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
+    public GravityGameStage(Stage stage, UNKNOWN_BORDER_SIZES overload_const) {
         super(stage, UNKNOWN_BORDER_SIZES);
     }
 
-    public GravityGameStage(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
+    public GravityGameStage(Stage stage, HEURISTIC_BORDER_SIZES overload_const) {
         super(stage, HEURISTIC_BORDER_SIZES);
     }
 

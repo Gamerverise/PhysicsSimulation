@@ -1,17 +1,14 @@
 package lib.javafx_api_extensions;
 
 import javafx.geometry.Point2D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.transform.NonInvertibleTransformException;
-import lib.debug.MethodNameHack;
 import lib.java_lang_extensions.tuples.XY;
+import lib.transforms.TransformMulti;
 
-import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static lib.debug.Debug.assert_msg;
 import static lib.java_lang_extensions.tuples.XY.XY;
 
-public class GraphicsContextX {
+public class GraphicsContextX implements TransformMulti {
 
     public GraphicsContext gc;
 
@@ -34,5 +31,20 @@ public class GraphicsContextX {
 
         Point2D xy = gc.getTransform().inverseTransform(0, y);
         return XY(xy.getX(), xy.getY());
+    }
+
+    @Override
+    public void translate(double dx, double dy) {
+        gc.translate(dx, dy);
+    }
+
+    @Override
+    public void scale(double scale_x, double scale_y) {
+        gc.scale(scale_x, scale_y);
+    }
+
+    @Override
+    public void rotate(double degrees) {
+        gc.rotate(degrees);
     }
 }

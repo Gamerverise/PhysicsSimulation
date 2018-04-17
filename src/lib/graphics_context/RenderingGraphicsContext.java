@@ -20,7 +20,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         SCALE_VIEWPORT_TO_FIT_DEVICE
     }
 
-    Viewport viewport;
+    public Viewport viewport;
 
     public AspectRatioOption aspect_ratio_option;
 
@@ -35,9 +35,9 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     public double min_radius_px = 2;
     public double min_radius_model = 2;
 
-    RenderingGraphicsContext(DEVICE device, Viewport viewport) {
+    RenderingGraphicsContext(DEVICE device) {
         super(device);
-        this.viewport = viewport;
+        this.viewport = new Viewport();
         aspect_ratio_option = SCALE_VIEWPORT_TO_FIT_DEVICE;
     }
 

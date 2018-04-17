@@ -24,11 +24,11 @@ public class StageX {
     public Stage stage;
     public Scene scene;
 
-    public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_constant) {
+    public StageX(Stage stage, UNKNOWN_BORDER_SIZES overload_const) {
         this(stage, Geometry_TL_BR(-1d, -1d, -1d, -1d));
     }
 
-    public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_constant) {
+    public StageX(Stage stage, HEURISTIC_BORDER_SIZES overload_const) {
         this(stage, Geometry_TL_BR(15 * 5d, 5d, 5d, 5d));
     }
 
@@ -109,20 +109,20 @@ public class StageX {
         return Geometry_TL_BR(top, left, bottom, right);
     }
 
-    void set_size(FULL_SCREEN overload_constant) {
+    void set_size(FULL_SCREEN overload_const) {
         // Not finished yet
     }
 
-    void set_size(ORIGINAL_SIZE overload_constant) {
+    void set_size(ORIGINAL_SIZE overload_const) {
         // Not finished yet
     }
 
-    void set_size(MAXIMIZED overload_constant) {
+    void set_size(MAXIMIZED overload_const) {
         // Not finished yet
     }
 
     @SuppressWarnings("unused")
-    void set_size(MAXIMIZED_FIXED_ASPECT_RATIO overload_constant, double aspect_ratio, boolean decorated) {
+    void set_size(MAXIMIZED_FIXED_ASPECT_RATIO overload_const, double aspect_ratio, boolean decorated) {
         Rectangle2D primary_screen_bounds = Screen.getPrimary().getVisualBounds();
 
         double primary_screen_width_px = primary_screen_bounds.getWidth();

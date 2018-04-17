@@ -1,8 +1,8 @@
 import gui.debug.DebugJavaFX;
 import gui.stylesheets.GravityGameStylesheets;
-import gui.widgets.GravityGameStage;
-import gui.widgets.GravityGameWidget;
-import gui.widgets.adapters.SceneAdapter;
+import gui.widget.GravityGameStage;
+import gui.widget.GravityGameWidget;
+import gui.widget.adapters.SceneAdapter;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;

@@ -1,4 +1,4 @@
-package lib.java_lang_extensions.overload_constants;
+package lib.java_lang_extensions.overload_const;
 
 public class CopyTypeOverloadConstants {
 

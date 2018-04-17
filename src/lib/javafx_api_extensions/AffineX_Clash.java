@@ -2,11 +2,15 @@ package lib.javafx_api_extensions;
 
 import lib.transforms.TransformMulti;
 
-public class AffineXClash implements TransformMulti {
+public class AffineX_Clash implements TransformMulti {
 
     public AffineX affine;
 
-    public AffineXClash(AffineX affine) {
+    public AffineX_Clash() {
+        affine = new AffineX();
+    }
+
+    public AffineX_Clash(AffineX affine) {
         this.affine = affine;
     }
 

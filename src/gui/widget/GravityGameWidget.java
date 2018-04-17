@@ -1,4 +1,4 @@
-package gui.widgets;
+package gui.widget;
 
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -6,62 +6,77 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lib.debug.MethodNameHack;
+import lib.graphics_context.CanvasRenderingGraphicsContext;
+import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
 import lib.javafx_api_extensions.GraphicsContextX;
+import lib.javafx_api_extensions.javafx_api_extensions_support.ScaleOp;
+import lib.render.Viewport;
 import lib.tokens.enums.RunCommand;
+import lib.transforms.TransformMulti;
 import lib.widget.AnimatedWidget;
 import lib.widget.Widget;
+import missions.Mission;
 import particle_model.Particle;
 import particle_model.Universe;
 import particle_model.simulation.SimulationDynamic;
 import particle_model.simulation.SimulationStatic;
+import views.ParticleView;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
 import static lib.tokens.enums.RunCommand.SUSPEND;
+import static lib.java_lang_extensions.tuples.WidthHeight.WidthHeight;
 
 public class GravityGameWidget extends Widget implements AnimatedWidget {
     double min_radius_px = 1.1;
 
     AnimationTimer anim_timer;
 
-    AffineX init_view;
-    SimulationStatic init_simulation;
+    Mission init_mission;
 
+    CanvasGraphicsDevice canvas_device;
     Canvas canvas;
 
+    CanvasRenderingGraphicsContext rgc;
     GraphicsContextX gcx;
     GraphicsContext gc;
 
-    SimulationDynamic simulation;
+    Viewport viewport;
 
-    public GravityGameWidget(AffineX init_view,
-                             Universe universe,
-                             double dt_real,
-                             double dt_sim,
-                             RunCommand init_run_command)
-    {
-        this(init_view,
-             new SimulationStatic(universe, dt_real, dt_sim, init_run_command),
-             init_run_command);
-    }
+    SimulationDynamic simulation;
 
     public void AnimatedWidget(AnimationTimer anim_timer) {
         this.anim_timer = anim_timer;
     }
 
-    public GravityGameWidget(AffineX init_view,
-                             SimulationStatic init_simulation,
+    public GravityGameWidget(double arena_width,
+                             double arena_height,
+                             AffineX init_view,
+                             Universe universe,
+                             double dt_real,
+                             double dt_sim,
+                             RunCommand init_run_command)
+    {
+        this(new Mission(
+                            WidthHeight(arena_width, arena_height),
+                            init_view,
+                            new SimulationStatic(universe, dt_real, dt_sim, init_run_command)
+                        ),
+             init_run_command
+        );
+    }
+
+    public GravityGameWidget(Mission init_mission,
                              RunCommand init_run_command)
     {
         AnimatedWidget.AnimatedWidget(this);
 
-        this.init_view = init_view;
-        this.init_simulation = init_simulation;
+        this.init_mission = init_mission;
 
-        simulation = new SimulationDynamic(init_simulation, COPY_DEEP, init_run_command);
+        simulation = new SimulationDynamic(init_mission.init_sim, COPY_DEEP, init_run_command);
 
         if (simulation.atomic_run_command.get() == RUN)
             anim_timer.start();
@@ -69,45 +84,31 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         init_graphics_context();
     }
 
-    public void layout() {
-        canvas.setLayoutX(x);
-        canvas.setLayoutY(y);
-
-        gcx.set_viewport(width, height);
-
-        init_transform();
-    }
-
-    public void init_transform() {
-        // Set origin to center of canvas, instead of top left
-        gc.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-
-        // Change positive y direction from down to up
-        gc.scale(1, -1);
-
-        if (init_view != null)
-            view(init_view);
-    }
-
     public void init_graphics_context() {
-        canvas = new Canvas();
+        canvas_device = new CanvasGraphicsDevice();
+        canvas = canvas_device.canvas;
 
-        gc = canvas.getGraphicsContext2D();
-        gcx = new GraphicsContextX(gc);
+        rgc = new CanvasRenderingGraphicsContext(canvas_device);
+        gcx = rgc.device.gcx;
+        gc = gcx.gc;
+
+        viewport = rgc.viewport;
 
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
-
-        // Set origin to center of canvas, instead of top left
-        gc.translate(canvas.getWidth() / 2, canvas.getHeight() / 2);
-
-        // Change positive y direction from down to up
-        gc.scale(1, -1);
 
         if (init_view != null)
             view(init_view);
 
         draw_frame();
+    }
+
+    public void layout() {
+        canvas_device.set_device_geometry(x, y, width, height);
+        viewport.set_basis_geometry(0, 0, width / height, 1);
+
+        if (init_view != null)
+            view(init_view);
     }
 
     public void reset() {
@@ -118,29 +119,31 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
     public void toggle_run_suspend() {
         if (simulation.atomic_run_command.get() == RUN) {
             simulation.suspend();
-            anim_state.anim_timer.stop();
-        } else if (simulation.atomic_run_command.get() == SUSPEND){
-            anim_state.anim_timer.start();
+            anim_timer.stop();
+        } else if (simulation.atomic_run_command.get() == SUSPEND) {
+            anim_timer.start();
             simulation.run();
         } else
             assert false : assert_msg(
                     this.getClass(),
-                    new MethodNameHack(){}.method_name(),
+                    new MethodNameHack() {}.method_name(),
                     BAD_CODE_PATH);
     }
 
-    public void view(GameWidgetView gv) {
-        if (gv instanceof GameWidgetViewParticle) {
-            GameWidgetViewParticle v = (GameWidgetViewParticle) gv;
-            view_particle(v.p, v.zoom, v.scale_op);
-        } else if (gv instanceof GameWidgetViewTwoParticles) {
-            GameWidgetViewTwoParticles v = (GameWidgetViewTwoParticles) gv;
-            view_two_particles(v.center, v.p, v.q, v.zoom, v.scale_op);
-        } else
-            assert false : assert_msg(
-                    this.getClass(),
-                    new MethodNameHack(){}.method_name(),
-                    BAD_CODE_PATH);
+    public void view(AffineX affine) {
+        gcx.gc.transform(affine);
+    }
+
+    public void view_particle(TransformMulti transform, Particle p, double zoom, ScaleOp scale_op)
+    {
+        ParticleView.view_particle(gcx, p, zoom, canvas.getWidth(), canvas.getHeight(), scale_op);
+    }
+
+    public void view_two_particles(TransformMulti transform, Particle center, Particle p, Particle q,
+                                   double zoom, ScaleOp scale_op)
+    {
+        ParticleView.view_two_particles(gcx, center, p, q, zoom,
+                canvas.getWidth(), canvas.getHeight(), scale_op);
     }
 
     void draw_particle(Particle p) {

@@ -7,7 +7,7 @@ public abstract class PrimitiveGraphicsContext<DEVICE extends GraphicsDevice> {
 
     // Drawing primitives for a device should be organized into a sub-class of PrimitiveGraphicsContext
 
-    DEVICE device;
+    public DEVICE device;
 
     public PrimitiveGraphicsContext(DEVICE device) {
         this.device = device;
