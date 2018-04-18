@@ -82,30 +82,41 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         gcx = rgc.device.gcx;
         gc = gcx.gc;
 
+        if (init_mission.init_view != null)
+            rgc.viewport.init(init_mission.init_view);
+
         viewport = rgc.viewport;
 
         gc.setFont(new Font(30));
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
+    }
 
-        if (init_mission.init_view != null)
-            if (init_mission.init_view.transform != null)
-                gc.setTransform(init_mission.init_view.transform);
+    public void layout(boolean match_aspect_ratios) {
+        canvas_device.set_device_geometry(x, y, width, height);
+
+        if (match_aspect_ratios) {
+            double canvas_aspect_ratio = canvas_device.get_aspect_ratio();
+            double viewport_width_model = viewport.get_width_model();
+            double viewport_height_model = viewport.get_height_model();
+            double viewport_aspect_ratio = viewport_width_model / viewport_height_model;
+
+            if (viewport_aspect_ratio > canvas_aspect_ratio)
+                viewport.set_basis_dimensions(viewport_width_model, viewport_width_model / canvas_aspect_ratio);
+            else
+                viewport.set_basis_dimensions(viewport_height_model * canvas_aspect_ratio, viewport_height_model);
+        }
 
         draw_frame();
     }
 
     public void layout() {
-        canvas_device.set_device_geometry(x, y, width, height);
-        viewport.set_basis_geometry(0, 0, width / height, 1);
-
-        if (init_mission.init_view != null)
-            if (init_mission.init_view.transform != null)
-                gc.setTransform(init_mission.init_view.transform);
+        layout(false);
     }
 
     public void reset() {
         simulation.reset(init_mission.init_sim);
         init_graphics_context();
+        layout();
     }
 
     public void toggle_run_suspend() {

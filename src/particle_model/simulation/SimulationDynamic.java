@@ -28,7 +28,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         shared_construction();
     }
 
-    public SimulationDynamic(SimulationStatic s, CopyType copy_type, RunCommand init_run_command) {
+    public SimulationDynamic(SimulationStatic<T> s, CopyType copy_type, RunCommand init_run_command) {
         super(s, copy_type);
 
         if (init_run_command != null)
@@ -121,7 +121,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         }
     }
 
-    public void reset(SimulationStatic init_sim) {
+    public void reset(SimulationStatic<T> init_sim) {
         exit();
 
         copy(init_sim, COPY_DEEP);

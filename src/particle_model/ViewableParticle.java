@@ -5,6 +5,7 @@ import lib.render.Viewport;
 
 public class ViewableParticle extends Particle {
 
+    @SuppressWarnings("unchecked")
     public <T extends Particle> T copy() {
         return (T) new ViewableParticle(this);
     }
@@ -17,7 +18,7 @@ public class ViewableParticle extends Particle {
         super(particle);
     }
 
-    public void view(Viewport viewport, double x_offset_pct, double y_offset_pct, double zoom)
+    public Viewport view(Viewport viewport, double x_offset_pct, double y_offset_pct, double zoom)
     {
         double viewport_aspect_ratio = viewport.basis_width_model / viewport.basis_height_model;
 
@@ -33,9 +34,11 @@ public class ViewableParticle extends Particle {
 
         viewport.basis_center_x_model = x - x_offset_pct * viewport.basis_width_model / 2;
         viewport.basis_center_y_model = y - y_offset_pct * viewport.basis_height_model /2 ;
+
+        return viewport;
     }
 
-    public void view_orbit(Viewport viewport, Particle orbiter, double margin_pct_model)
+    public Viewport view_orbit(Viewport viewport, Particle orbiter, double margin_pct_model)
     {
         double viewport_width_model;
         double viewport_height_model;
@@ -56,5 +59,7 @@ public class ViewableParticle extends Particle {
         }
 
         viewport.set_basis_geometry(x, y, viewport_width_model, viewport_height_model);
+
+        return viewport;
     }
 }

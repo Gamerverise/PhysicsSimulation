@@ -21,11 +21,11 @@ public class SimulationStatic<T extends Particle> {
         this.init_run_command = init_run_command;
     }
 
-    public SimulationStatic(SimulationStatic s, CopyType copy_type) {
+    public SimulationStatic(SimulationStatic<T> s, CopyType copy_type) {
         copy(s, copy_type);
     }
 
-    public void copy(SimulationStatic s, CopyType copy_type) {
+    public void copy(SimulationStatic<T> s, CopyType copy_type) {
         if (copy_type == CopyType.COPY_SHALLOW)
             universe = s.universe;
         else

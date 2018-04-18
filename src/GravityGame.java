@@ -81,10 +81,7 @@ public class GravityGame extends ApplicationX {
 
     public void build_gui(Stage stage) {
 
-        this.game_widget = new GravityGameWidget(
-                SolarSystem.solar_sys_game_view_sun_earth,
-                SolarSystem.solar_system_sim,
-                SUSPEND);
+        this.game_widget = new GravityGameWidget(SolarSystem.mission, SUSPEND);
         this.root = new SceneAdapter(game_widget);
         this.scene = new Scene(root);
         this.stage = new GravityGameStage(stage);

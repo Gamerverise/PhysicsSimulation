@@ -41,6 +41,7 @@ public class Particle {
         this.color = p.color;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Particle> T copy() {
         return (T) new Particle(this);
     }

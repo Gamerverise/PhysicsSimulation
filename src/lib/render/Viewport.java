@@ -31,6 +31,48 @@ public class Viewport {
         scale_count = 0;
     }
 
+    public Viewport(double basis_center_x_model, double basis_center_y_model,
+                    double basis_width_model, double basis_height_model,
+                    double translation_unit, double scale_unit,
+                    int delta_x_count, int delta_y_count, int scale_count)
+    {
+        init(   basis_center_x_model, basis_center_y_model,
+                basis_width_model, basis_height_model,
+                translation_unit, scale_unit,
+                delta_x_count, delta_y_count, scale_count);
+    }
+
+    public Viewport copy() {
+        return new Viewport(
+                basis_center_x_model, basis_center_y_model,
+                basis_width_model, basis_height_model,
+                translation_unit, scale_unit,
+                delta_x_count, delta_y_count, scale_count);
+    }
+
+    public void init(double basis_center_x_model, double basis_center_y_model,
+                     double basis_width_model, double basis_height_model,
+                     double translation_unit, double scale_unit,
+                     int delta_x_count, int delta_y_count, int scale_count)
+    {
+        this.basis_center_x_model = basis_center_x_model;
+        this.basis_center_y_model = basis_center_y_model;
+        this.basis_width_model = basis_width_model;
+        this.basis_height_model = basis_height_model;
+        this.translation_unit = translation_unit;
+        this.scale_count = scale_count;
+        this.delta_x_count = delta_x_count;
+        this.delta_y_count = delta_y_count;
+        this.scale_count = scale_count;
+    }
+
+    public void init(Viewport v) {
+        init(   v.basis_center_x_model, v.basis_center_y_model,
+                v.basis_width_model, v.basis_height_model,
+                v.translation_unit, v.scale_unit,
+                v.delta_x_count, v.delta_y_count, v.scale_count);
+    }
+
     public void set_basis_center(double basis_center_x_model, double basis_center_y_model) {
         this.basis_center_x_model = basis_center_x_model;
         this.basis_center_y_model = basis_center_y_model;
@@ -95,6 +137,10 @@ public class Viewport {
                 basis_center_y_model + delta_y_count*translation_unit,
                 basis_width_model*(1 + scale_count * scale_unit),
                 basis_height_model*(1 + scale_count * scale_unit));
+    }
+
+    public double get_aspect_ratio() {
+        return get_width_model() / get_height_model();
     }
 
     void scale_to_width(double basis_width_model) {

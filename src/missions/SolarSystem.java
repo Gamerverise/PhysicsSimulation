@@ -46,24 +46,14 @@ public class SolarSystem {
     public static Mission solar_system_mission;
 
 
-    public static SimulationStatic solar_system_sim = new SimulationStatic(
+    public static SimulationStatic<ViewableParticle> solar_system_sim = new SimulationStatic<>(
             new Universe<>(solar_sys, COPY_SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8,     // double dt_sim = 60*8     (s) = 8 min
             SUSPEND
     );
 
-    public static Mission Mission() {
-
-        Viewport viewport = new Viewport();
-
-        sun.view_orbit(viewport, earth, 0.95);
-        
-        return new Mission(
-                solar_system_sim,
-                viewport
-        );
-    }
+    public static Mission mission;
 
     static {
         // Symmetry of original setup about x = y
@@ -75,5 +65,9 @@ public class SolarSystem {
 
         // Make an elliptical orbit
         solar_sys_debug_1.particles.get(0).rotate_velocity_abs(100);
+
+        mission = new Mission(
+                solar_system_sim,
+                sun.view_orbit(new Viewport(), earth, 0.95));
     }
 }

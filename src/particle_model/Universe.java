@@ -13,13 +13,14 @@ public class Universe<T extends Particle> {
 
     public LinkedList<T> particles = new LinkedList<>();
 
+    @SafeVarargs
     public Universe(double acceleration_constant, double max_speed, T... particles) {
         this.acceleration_constant = acceleration_constant;
         this.max_speed = max_speed;
         add_particles(particles);
     }
 
-    public Universe(Universe u, CopyType copy_type) {
+    public Universe(Universe<T> u, CopyType copy_type) {
         acceleration_constant = u.acceleration_constant;
         max_speed = u.max_speed;
 
@@ -29,7 +30,8 @@ public class Universe<T extends Particle> {
             add_particles(u.particles);
     }
 
-    public void add_particles(T... particles) {
+    @SafeVarargs
+    public final void add_particles(T... particles) {
         for (T p : particles)
             this.particles.add(p.copy());
     }
