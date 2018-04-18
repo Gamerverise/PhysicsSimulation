@@ -10,18 +10,16 @@ import lib.graphics_context.CanvasRenderingGraphicsContext;
 import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
 import lib.javafx_api_extensions.GraphicsContextX;
-import lib.javafx_api_extensions.javafx_api_extensions_support.ScaleOp;
 import lib.render.Viewport;
 import lib.tokens.enums.RunCommand;
-import lib.transforms.TransformMulti;
 import lib.widget.AnimatedWidget;
 import lib.widget.Widget;
 import missions.Mission;
 import particle_model.Particle;
 import particle_model.Universe;
+import particle_model.ViewableParticle;
 import particle_model.simulation.SimulationDynamic;
 import particle_model.simulation.SimulationStatic;
-import views.ParticleView;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
@@ -45,22 +43,19 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
     Viewport viewport;
 
-    SimulationDynamic simulation;
+    SimulationDynamic<ViewableParticle> simulation;
 
     public void AnimatedWidget(AnimationTimer anim_timer) {
         this.anim_timer = anim_timer;
     }
 
-    public GravityGameWidget(double arena_width,
-                             double arena_height,
-                             ParticleView init_view,
-                             Universe universe,
+    public GravityGameWidget(Universe<ViewableParticle> universe,
                              double dt_real,
                              double dt_sim,
-                             RunCommand init_run_command)
+                             RunCommand init_run_command,
+                             Viewport init_view)
     {
-        this(new Mission(init_view,
-                         new SimulationStatic(universe, dt_real, dt_sim, init_run_command)),
+        this(new Mission(new SimulationStatic<>(universe, dt_real, dt_sim, init_run_command), init_view),
              init_run_command);
     }
 
@@ -71,7 +66,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
         this.init_mission = init_mission;
 
-        simulation = new SimulationDynamic(init_mission.init_sim, COPY_DEEP, init_run_command);
+        simulation = new SimulationDynamic<>(init_mission.init_sim, COPY_DEEP, init_run_command);
 
         if (simulation.atomic_run_command.get() == RUN)
             anim_timer.start();
@@ -131,18 +126,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         gcx.gc.transform(affine);
     }
 
-    public void view_particle(TransformMulti transform, Particle p, double zoom, ScaleOp scale_op)
-    {
-        ParticleView.view_particle(gcx, p, zoom, canvas.getWidth(), canvas.getHeight(), scale_op);
-    }
-
-    public void view_two_particles(TransformMulti transform, Particle center, Particle p, Particle q,
-                                   double zoom, ScaleOp scale_op)
-    {
-        ParticleView.view_two_particles(gcx, center, p, q, zoom,
-                canvas.getWidth(), canvas.getHeight(), scale_op);
-    }
-
     void draw_particle(Particle p) {
         gc.setFill(p.color);
         gcx.fill_circle(p.x, p.y, p.radius);
@@ -160,7 +143,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
         simulation.xy_data_rw_lock.lock();
 
-        for (Particle p : simulation.universe.particles)
+        for (ViewableParticle p : simulation.universe.particles)
             draw_particle(p);
 
         simulation.xy_data_rw_lock.unlock();

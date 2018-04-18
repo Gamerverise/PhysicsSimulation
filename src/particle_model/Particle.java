@@ -41,6 +41,10 @@ public class Particle {
         this.color = p.color;
     }
 
+    public <T extends Particle> T copy() {
+        return (T) new Particle(this);
+    }
+
     public double distance(Particle p) {
         double dx = p.x - x;
         double dy = p.y - y;

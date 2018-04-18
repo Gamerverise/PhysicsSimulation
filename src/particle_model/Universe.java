@@ -6,14 +6,14 @@ import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
-public class Universe {
+public class Universe<T extends Particle> {
 
     public double acceleration_constant;
     public double max_speed;
 
-    public LinkedList<Particle> particles = new LinkedList<>();
+    public LinkedList<T> particles = new LinkedList<>();
 
-    public Universe(double acceleration_constant, double max_speed, Particle... particles) {
+    public Universe(double acceleration_constant, double max_speed, T... particles) {
         this.acceleration_constant = acceleration_constant;
         this.max_speed = max_speed;
         add_particles(particles);
@@ -29,13 +29,13 @@ public class Universe {
             add_particles(u.particles);
     }
 
-    public void add_particles(Particle... particles) {
-        for (Particle p : particles)
-            this.particles.add(new Particle(p));
+    public void add_particles(T... particles) {
+        for (T p : particles)
+            this.particles.add(p.copy());
     }
 
-    public void add_particles(LinkedList<Particle> particles) {
-        for (Particle p : particles)
-            this.particles.add(new Particle(p));
+    public void add_particles(LinkedList<T> particles) {
+        for (T p : particles)
+            this.particles.add(p.copy());
     }
 }

@@ -1,20 +1,20 @@
 package particle_model.simulation;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
-
+import lib.debug.MethodNameHack;
 import lib.tokens.enums.CopyType;
 import lib.tokens.enums.RunCommand;
-import lib.debug.MethodNameHack;
 import particle_model.Particle;
 import particle_model.Universe;
 
-import static lib.tokens.enums.CopyType.COPY_DEEP;
-import static lib.debug.Debug.assert_msg;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
+
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.debug.Debug.assert_msg;
+import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.*;
 
-public class SimulationDynamic extends SimulationStatic {
+public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
     Thread thread;
 
     public AtomicReference<RunCommand> atomic_run_command;
@@ -23,7 +23,7 @@ public class SimulationDynamic extends SimulationStatic {
 
     double time_step_counter;
 
-    public SimulationDynamic(Universe universe, double dt_real, double dt_sim, RunCommand init_run_command) {
+    public SimulationDynamic(Universe<T> universe, double dt_real, double dt_sim, RunCommand init_run_command) {
         super(universe, dt_real, dt_sim, init_run_command);
         shared_construction();
     }
@@ -135,8 +135,8 @@ public class SimulationDynamic extends SimulationStatic {
         // FIXME: LOW PRIORITY: cause unnecessary iteration, inflating the O(n^2) to 2*O(n^2)
 
         int i = 1;
-        for (Particle pi : universe.particles) {
-            for (Particle pj : universe.particles.subList(i, universe.particles.size())) {
+        for (T pi : universe.particles) {
+            for (T pj : universe.particles.subList(i, universe.particles.size())) {
                 double dist = pi.distance(pj);
 
                 double dir_pi_pj_x = pj.x - pi.x; // x-component of the (pi -> pj) vector
@@ -166,7 +166,7 @@ public class SimulationDynamic extends SimulationStatic {
 
         xy_data_rw_lock.lock();
 
-        for (Particle p : universe.particles) {
+        for (T p : universe.particles) {
             p.vx += p.ax * dt_sim;
             p.vy += p.ay * dt_sim;
 

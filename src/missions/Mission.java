@@ -1,15 +1,15 @@
 package missions;
 
+import lib.render.Viewport;
 import particle_model.simulation.SimulationStatic;
-import views.ParticleView;
 
 public class Mission {
 
-    public ParticleView init_view;
     public SimulationStatic init_sim;
-    
-    public Mission(ParticleView particle_view, SimulationStatic init_sim) {
-        this.init_view = particle_view;
+    public Viewport init_view;
+
+    public Mission(SimulationStatic init_sim, Viewport init_view) {
         this.init_sim = init_sim;
+        this.init_view = init_view;
     }
 }
