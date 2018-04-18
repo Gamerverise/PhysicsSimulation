@@ -1,56 +1,85 @@
 package gui.widget;
 
-import lib.javafx_api_extensions.StageX;
+import javafx.collections.ObservableList;
+import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import lib.java_lang_extensions.tuples.Geometry_TL_BR;
+import lib.javafx_api_extensions.StageX;
 
-import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.UNKNOWN_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.HEURISTIC_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.UNKNOWN_BORDER_SIZES.UNKNOWN_BORDER_SIZES;
-import static lib.javafx_api_extensions.javafx_api_extensions_support.WinBorderSizesOverloadConst.HEURISTIC_BORDER_SIZES.HEURISTIC_BORDER_SIZES;
+import static lib.java_lang_extensions.tuples.Geometry_TL_BR.Geometry_TL_BR;
 
 public class GravityGameStage extends StageX {
 
-    public GravityGameStage(Stage stage, UNKNOWN_BORDER_SIZES overload_const) {
-        super(stage, UNKNOWN_BORDER_SIZES);
-    }
-
-    public GravityGameStage(Stage stage, HEURISTIC_BORDER_SIZES overload_const) {
-        super(stage, HEURISTIC_BORDER_SIZES);
-    }
-
     public GravityGameStage(Stage stage, double top, double left, double bottom, double right) {
-        super(stage, top, left, bottom, right);
+        this(stage, Geometry_TL_BR(top, left, bottom, right));
     }
 
     public GravityGameStage(Stage stage) {
         this(stage, UNKNOWN_BORDER_SIZES);
     }
 
-    void finish_construction() {
+    public GravityGameStage(Stage stage, Geometry_TL_BR<Double> win_borders_px) {
+        super(stage, win_borders_px);
 
         // FIXME (maybe fixed): What is the proper/best order of operations for initialing a window? We may have the best/proper order
         // FIXME (maybe fixed): Does stage have to be showing when centerOnScreen is called? Apparently not
 
-        double stage_width_px = 0.9 * Screen.getPrimary().getVisualBounds().getWidth();
-        double stage_height_px = 0.9 * Screen.getPrimary().getVisualBounds().getHeight();
-
-        stage.setTitle("Gravity Game");
-
-        stage.setMinWidth(0.6 * stage_width_px);
-        stage.setMinHeight(0.6 * stage_height_px);
+        stage.setTitle("Altered States");
 
         // The stage's width and height are initially NaN. If we don't set the width and height here, we get
         // problems hereafter. To avoid this issue, we set the width and height to arbitrary-ish initial
         // values. Actually, we use some hopefully decent values.
 
-        stage.setWidth(0.9 * stage_width_px);
-        stage.setHeight(0.9 * stage_height_px);
+        set_geometry();
+
+        stage.setMinWidth(0.6 * stage.getWidth());
+        stage.setMinHeight(0.6 * stage.getHeight());
 
         stage.setResizable(true);
         stage.setResizable(false);
 
         stage.setFullScreen(true);
         stage.setFullScreen(false);
+    }
+
+    void set_geometry() {
+        ObservableList<Screen> screen_list = (Screen.getScreens());
+
+        int screen_to_use;
+
+        // If we have more than one screen, we will use the second screen
+
+        if (screen_list.size() >= 2)
+            screen_to_use = 1;
+        else
+            screen_to_use = 0;
+
+        Rectangle2D screen_bounds = screen_list.get(screen_to_use).getBounds();
+
+        double screen_width = screen_bounds.getWidth();
+        double screen_height = screen_bounds.getHeight();
+        double aspect_ratio = screen_width / screen_height;
+
+        stage.setY(0);
+
+        if (screen_to_use == 1) {
+
+            stage.setX(0);
+            stage.setWidth(screen_width);
+            stage.setHeight(screen_height);
+
+        } else if (aspect_ratio < 1) {
+
+            stage.setX(screen_width - (screen_height / 3));
+            stage.setWidth(screen_height / 3);
+            stage.setHeight(screen_height / 3);
+
+        } else if (aspect_ratio >= 1) {
+
+            stage.setX(screen_width - (screen_height * 0.75));
+            stage.setWidth(screen_height * 0.75);
+            stage.setHeight(screen_height * 0.75);
+        }
     }
 }

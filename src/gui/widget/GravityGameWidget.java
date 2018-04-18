@@ -110,7 +110,7 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
     }
 
     public void layout() {
-        layout(false);
+        layout(true);
     }
 
     public void reset() {

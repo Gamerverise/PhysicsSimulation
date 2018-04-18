@@ -1,8 +1,7 @@
 package gui.widget.adapters;
 
-import lib.widget.ParentWidget;
-import lib.widget.Widget;
 import javafx.scene.layout.Region;
+import lib.widget.Widget;
 
 public class SceneAdapter extends Region {
 
@@ -30,8 +29,5 @@ public class SceneAdapter extends Region {
 
     protected void layoutChildren() {
         root_widget.layout(0, 0, getWidth(), getHeight());
-
-        if (root_widget instanceof ParentWidget)
-            ((ParentWidget) root_widget).layout();
     }
 }
