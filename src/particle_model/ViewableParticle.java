@@ -38,23 +38,21 @@ public class ViewableParticle extends Particle {
         return viewport;
     }
 
-    public Viewport view_orbit(Viewport viewport, Particle orbiter, double margin_pct_model)
+    public Viewport view_orbit(Viewport viewport, Particle orbiter, double radius_pct_of_half_wh)
     {
         double viewport_width_model;
         double viewport_height_model;
 
-        double half_wh_model;
-
-        half_wh_model= distance(orbiter) + orbiter.radius;
-        half_wh_model = half_wh_model / (1 - margin_pct_model);
+        double half_wh_model= distance(orbiter) / radius_pct_of_half_wh;
+        double wh_model = 2 * half_wh_model;
 
         double viewport_aspect_ratio = viewport.basis_width_model / viewport.basis_height_model;
 
         if (viewport_aspect_ratio > 1) {
-            viewport_height_model = half_wh_model;
+            viewport_height_model = wh_model;
             viewport_width_model = viewport_height_model * viewport_aspect_ratio;
         } else {
-            viewport_width_model = half_wh_model;
+            viewport_width_model = wh_model;
             viewport_height_model =  viewport_width_model * viewport_aspect_ratio;
         }
 
