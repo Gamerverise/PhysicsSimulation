@@ -2,7 +2,7 @@ import gui.debug.DebugJavaFX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widget.GravityGameStage;
 import gui.widget.GravityGameWidget;
-import gui.widget.adapters.SceneAdapter;
+import lib.widget.adapters.SceneAdapter;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lib.debug.Debug;

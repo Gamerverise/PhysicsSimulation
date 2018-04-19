@@ -1,8 +1,10 @@
 package gui.widget;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lib.debug.MethodNameHack;
@@ -13,7 +15,9 @@ import lib.javafx_api_extensions.GraphicsContextX;
 import lib.render.Viewport;
 import lib.tokens.enums.RunCommand;
 import lib.widget.AnimatedWidget;
+import lib.widget.RootWidget;
 import lib.widget.Widget;
+import lib.widget.adapters.SceneAdapter;
 import missions.Mission;
 import particle_model.Particle;
 import particle_model.Universe;
@@ -27,7 +31,7 @@ import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
 import static lib.tokens.enums.RunCommand.SUSPEND;
 
-public class GravityGameWidget extends Widget implements AnimatedWidget {
+public class GravityGameWidget extends RootWidget implements AnimatedWidget {
     double min_radius_px = 1.1;
 
     AnimationTimer anim_timer;
@@ -91,26 +95,37 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
     }
 
+    public Node get_javafx_root() {
+        return canvas;
+    }
+
     public void layout(boolean match_aspect_ratios) {
         canvas_device.set_device_geometry(x, y, width, height);
 
         if (match_aspect_ratios) {
-            double canvas_aspect_ratio = canvas_device.get_aspect_ratio();
-            double viewport_width_model = viewport.get_width_model();
-            double viewport_height_model = viewport.get_height_model();
-            double viewport_aspect_ratio = viewport_width_model / viewport_height_model;
+            if (canvas_device.get_width_px() != 0 && canvas_device.get_height_px() != 0) {
+                double canvas_aspect_ratio = canvas_device.get_aspect_ratio();
+                double viewport_width_model = viewport.get_width_model();
+                double viewport_height_model = viewport.get_height_model();
+                double viewport_aspect_ratio = viewport_width_model / viewport_height_model;
 
-            if (viewport_aspect_ratio > canvas_aspect_ratio)
-                viewport.set_basis_dimensions(viewport_width_model, viewport_width_model / canvas_aspect_ratio);
-            else
-                viewport.set_basis_dimensions(viewport_height_model * canvas_aspect_ratio, viewport_height_model);
+                if (viewport_aspect_ratio > canvas_aspect_ratio)
+                    viewport.set_basis_dimensions(viewport_width_model, viewport_width_model / canvas_aspect_ratio);
+                else
+                    viewport.set_basis_dimensions(viewport_height_model * canvas_aspect_ratio, viewport_height_model);
+
+                // FIXME: Is this draw_frame needed?
+                draw_frame();
+            }
         }
-
-        draw_frame();
     }
 
     public void layout() {
         layout(true);
+    }
+
+    public void draw_self() {
+        draw_frame();
     }
 
     public void reset() {
@@ -154,10 +169,14 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
 
         simulation.xy_data_rw_lock.lock();
 
+        rgc.begin_render();
+
         for (ViewableParticle p : simulation.universe.particles)
             draw_particle(p);
 
         simulation.xy_data_rw_lock.unlock();
+
+        rgc.end_render();
 
         switch (simulation.atomic_run_command.get()) {
             case RUN:

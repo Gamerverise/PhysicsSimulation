@@ -1,4 +1,4 @@
-package gui.widget.adapters.unfinished;
+package lib.widget.adapters.unfinished;
 
 import javafx.scene.layout.Region;
 

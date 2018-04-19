@@ -1,4 +1,4 @@
-package gui.widget.adapters;
+package lib.widget.adapters;
 
 import lib.widget.Widget;
 

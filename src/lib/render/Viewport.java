@@ -24,11 +24,14 @@ public class Viewport {
         // Default viewport size is zero-by-zero
         // Default viewport translation is the identity operation
 
-        set_basis_geometry(0, 0, 0, 0);
+        this(2, 2);     // It is an invalid state for a Viewport's area to be zero
+    }
 
-        delta_x_count = 0;
-        delta_y_count = 0;
-        scale_count = 0;
+    public Viewport(double basis_width_model, double basis_height_model) {
+        init(   0, 0,
+                basis_width_model, basis_height_model,
+                0, 0,
+                0, 0, 0);
     }
 
     public Viewport(double basis_center_x_model, double basis_center_y_model,
