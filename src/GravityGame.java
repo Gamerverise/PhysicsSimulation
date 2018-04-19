@@ -19,7 +19,7 @@ public class GravityGame extends ApplicationX {
 
     GravityGameStage stage;
     Scene scene;
-    SceneAdapter root;
+    SceneAdapter scene_adapter;
     GravityGameWidget game_widget;
 
     public static void main(String[] args) {
@@ -38,8 +38,8 @@ public class GravityGame extends ApplicationX {
     public void build_gui(Stage stage) {
 
         this.game_widget = new GravityGameWidget(SolarSystem.mission, SUSPEND);
-        this.root = new SceneAdapter(game_widget);
-        this.scene = new Scene(root);
+        this.scene_adapter = new SceneAdapter(game_widget);
+        this.scene = new Scene(scene_adapter);
         this.stage = new GravityGameStage(stage);
 
         // FIXME: How will stylesheets interact with our JavaFX_Widget mechanism?

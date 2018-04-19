@@ -42,7 +42,7 @@ public class Viewport {
                 delta_x_count, delta_y_count, scale_count);
     }
 
-    public Viewport copy() {
+    public Viewport new_copy() {
         return new Viewport(
                 basis_center_x_model, basis_center_y_model,
                 basis_width_model, basis_height_model,

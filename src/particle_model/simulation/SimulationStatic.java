@@ -22,10 +22,10 @@ public class SimulationStatic<T extends Particle> {
     }
 
     public SimulationStatic(SimulationStatic<T> s, CopyType copy_type) {
-        copy(s, copy_type);
+        copy_in(s, copy_type);
     }
 
-    public void copy(SimulationStatic<T> s, CopyType copy_type) {
+    public void copy_in(SimulationStatic<T> s, CopyType copy_type) {
         if (copy_type == CopyType.COPY_SHALLOW)
             universe = s.universe;
         else

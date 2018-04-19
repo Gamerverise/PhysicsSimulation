@@ -25,19 +25,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
 
     public SimulationDynamic(Universe<T> universe, double dt_real, double dt_sim, RunCommand init_run_command) {
         super(universe, dt_real, dt_sim, init_run_command);
-        shared_construction();
-    }
 
-    public SimulationDynamic(SimulationStatic<T> s, CopyType copy_type, RunCommand init_run_command) {
-        super(s, copy_type);
-
-        if (init_run_command != null)
-            this.init_run_command = init_run_command;
-
-        shared_construction();
-    }
-
-    public void shared_construction() {
         time_step_counter = 0;
 
         atomic_run_command = new AtomicReference<>(init_run_command);
@@ -45,6 +33,15 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         xy_data_rw_lock = new ReentrantLock();
 
         birth_thread();
+    }
+
+    public SimulationDynamic(SimulationStatic<T> s, RunCommand override) {
+        this(s.universe, s.dt_real, s.dt_sim,
+                override == null ? s.init_run_command : override);
+    }
+
+    public SimulationDynamic(SimulationStatic<T> s, CopyType copy_type, RunCommand override) {
+        this(new SimulationStatic<>(s, copy_type), override);
     }
 
     public void time_step_wrapper() {
@@ -76,7 +73,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
 
     public void birth_thread() {
         do_run_command(init_run_command);
-        thread = new Thread(this::time_step_wrapper);
+        thread = new Thread(this::time_step_wrapper, "Simulation Thread");
         thread.start();
     }
 
@@ -124,7 +121,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
     public void reset(SimulationStatic<T> init_sim) {
         exit();
 
-        copy(init_sim, COPY_DEEP);
+        copy_in(init_sim, COPY_DEEP);
         time_step_counter = 0;
 
         birth_thread();

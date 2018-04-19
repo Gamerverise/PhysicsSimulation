@@ -42,7 +42,7 @@ public class Particle {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Particle> T copy() {
+    public <T extends Particle> T new_copy() {
         return (T) new Particle(this);
     }
 

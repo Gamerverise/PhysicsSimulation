@@ -33,11 +33,11 @@ public class Universe<T extends Particle> {
     @SafeVarargs
     public final void add_particles(T... particles) {
         for (T p : particles)
-            this.particles.add(p.copy());
+            this.particles.add(p.new_copy());
     }
 
     public void add_particles(LinkedList<T> particles) {
         for (T p : particles)
-            this.particles.add(p.copy());
+            this.particles.add(p.new_copy());
     }
 }

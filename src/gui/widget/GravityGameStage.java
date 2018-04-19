@@ -36,10 +36,10 @@ public class GravityGameStage extends StageX {
         stage.setMinWidth(0.6 * stage.getWidth());
         stage.setMinHeight(0.6 * stage.getHeight());
 
-        stage.setResizable(true);
+//        stage.setResizable(true);
         stage.setResizable(false);
 
-        stage.setFullScreen(true);
+//        stage.setFullScreen(true);
         stage.setFullScreen(false);
     }
 
