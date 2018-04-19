@@ -10,7 +10,6 @@ import lib.debug.MethodNameHack;
 import lib.graphics.CustomGraphicsContext;
 import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
-import lib.javafx_api_extensions.GraphicsContextX;
 import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.RunCommand;
