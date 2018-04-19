@@ -4,11 +4,10 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lib.debug.MethodNameHack;
-import lib.graphics_context.CanvasRenderingGraphicsContext;
+import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
 import lib.javafx_api_extensions.GraphicsContextX;
@@ -16,8 +15,6 @@ import lib.render.Viewport;
 import lib.tokens.enums.RunCommand;
 import lib.widget.AnimatedWidget;
 import lib.widget.RootWidget;
-import lib.widget.Widget;
-import lib.widget.adapters.SceneAdapter;
 import missions.Mission;
 import particle_model.Particle;
 import particle_model.Universe;
@@ -135,12 +132,17 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
     }
 
     public void toggle_run_suspend() {
-        if (simulation.atomic_run_command.get() == RUN) {
+        RunCommand command = simulation.atomic_run_command.get();
+
+        if (command == RUN) {
             simulation.suspend();
             anim_timer.stop();
-        } else if (simulation.atomic_run_command.get() == SUSPEND) {
+            simulation.atomic_run_command.set(SUSPEND);
+            draw_frame();
+        } else if (command == SUSPEND) {
             anim_timer.start();
             simulation.run();
+            simulation.atomic_run_command.set(RUN);
         } else
             assert false : assert_msg(
                     this.getClass(),
@@ -154,7 +156,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
     void draw_particle(Particle p) {
         gc.setFill(p.color);
-        gcx.fill_circle(p.x, p.y, p.radius);
+        rgc.fill_circle(p.x, p.y, p.radius);
     }
 
     public void draw_frame() {

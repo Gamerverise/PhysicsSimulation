@@ -1,4 +1,4 @@
-package lib.graphics_context;
+package lib.render.graphics_context;
 
 import javafx.scene.transform.NonInvertibleTransformException;
 import lib.graphics_device.VirtualGraphicsDevice;
@@ -7,12 +7,13 @@ import lib.java_lang_extensions.tuples.XY;
 import lib.javafx_api_extensions.AffineX;
 import lib.render.Viewport;
 
-import static lib.graphics_context.RenderingGraphicsContext.AspectRatioOption.SCALE_VIEWPORT_TO_FIT_DEVICE;
+import static lib.render.graphics_context.RenderingGraphicsContext.AspectRatioOption.SCALE_VIEWPORT_TO_FIT_DEVICE;
 
 public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDevice>
         extends PrimitiveGraphicsContext<DEVICE>
 {
     public enum AspectRatioOption {
+        KEEP_CURRENT_VIEWPORT,
         FIXED_GEOMETRY,
         SCALED_GEOMETRY,
         SCALE_VIEWPORT_TO_DEVICE_WIDTH,
@@ -58,6 +59,9 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         double scale;
 
         switch (aspect_ratio_option) {
+            case KEEP_CURRENT_VIEWPORT:
+                break;
+
             case FIXED_GEOMETRY:
                 translate(viewport_center_x_device, viewport_center_y_device);
                 break;
@@ -133,4 +137,13 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     }
 
     public abstract AffineX get_transform();
+
+    public void fill_circle(double x, double y, double radius) {
+        if (radius < min_radius_model)
+            radius = min_radius_model;
+
+        primitive_fill_circle(x, y, radius);
+    }
+
+    public abstract void primitive_fill_circle(double x, double y, double radius);
 }

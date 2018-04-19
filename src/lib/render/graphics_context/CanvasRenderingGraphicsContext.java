@@ -1,4 +1,4 @@
-package lib.graphics_context;
+package lib.render.graphics_context;
 
 import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
@@ -27,5 +27,9 @@ public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<Can
 
     public AffineX get_transform() {
         return new AffineX(device.gcx.gc.getTransform());
+    }
+
+    public void primitive_fill_circle(double x, double y, double radius) {
+        device.gcx.fill_circle(x, y, radius);
     }
 }

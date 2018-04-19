@@ -1,4 +1,4 @@
-package lib.graphics_context;
+package lib.render.graphics_context;
 
 import lib.graphics_device.CanvasGraphicsDevice;
 
