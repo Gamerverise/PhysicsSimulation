@@ -2,7 +2,7 @@ package particle_model;
 
 import javafx.scene.paint.Color;
 import lib.graphics.CustomGraphicsContext;
-import lib.javafx_api_extensions.GraphicsContextX;
+import lib.java_lang_extensions.tuples.XY;
 import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 
@@ -70,12 +70,18 @@ public class ViewableParticle extends Particle {
         return viewport;
     }
 
-    public void draw(CanvasRenderingGraphicsContext rgc) {
-        CustomGraphicsContext cgc = rgc.device.cgc;
-
-        cgc.gc.setFill(color);
+    public void draw_model(CanvasRenderingGraphicsContext rgc) {
+        rgc.device.cgc.gc.setFill(color);
         rgc.fill_circle(x, y, radius);
+    }
 
-        cgc.draw_arrow(x, y, vx, vy, Color.YELLOWGREEN);
+    public void draw_overlay(CanvasRenderingGraphicsContext rgc, double arrow_scale) {
+        XY<Double> xy_device = rgc.map_model_to_device(x, y);
+        XY<Double> vx_vy_device = rgc.map_model_to_device(vx, vy);
+
+        rgc.device.cgc.draw_arrow(
+                xy_device.x, xy_device.y,
+                arrow_scale * vx_vy_device.x, arrow_scale * vx_vy_device.y,
+                Color.YELLOWGREEN);
     }
 }

@@ -46,16 +46,16 @@ public class GravityGameStage extends StageX {
     void set_geometry() {
         ObservableList<Screen> screen_list = (Screen.getScreens());
 
-        int screen_to_use;
+        int screen_index;
 
         // If we have more than one screen, we will use the second screen
 
-        if (screen_list.size() >= 2)
-            screen_to_use = 1;
+        if (screen_list.size() > 1)
+            screen_index = 1;
         else
-            screen_to_use = 0;
+            screen_index = 0;
 
-        Rectangle2D screen_bounds = screen_list.get(screen_to_use).getBounds();
+        Rectangle2D screen_bounds = screen_list.get(screen_index).getVisualBounds();
 
         double screen_width = screen_bounds.getWidth();
         double screen_height = screen_bounds.getHeight();
@@ -63,23 +63,23 @@ public class GravityGameStage extends StageX {
 
         stage.setY(0);
 
-        if (screen_to_use == 1) {
+        if (screen_index == 1) {
 
-            stage.setX(0);
+            stage.setX(screen_bounds.getMinX());
             stage.setWidth(screen_width);
             stage.setHeight(screen_height);
 
-        } else if (aspect_ratio < 1) {
+        } else {
+            double wh;
 
-            stage.setX(screen_width - (screen_height / 3));
-            stage.setWidth(screen_height / 3);
-            stage.setHeight(screen_height / 3);
+            if (aspect_ratio < 1)
+                wh = screen_height / 3;
+            else
+                wh = 0.75 * screen_height;
 
-        } else if (aspect_ratio >= 1) {
-
-            stage.setX(screen_width - (screen_height * 0.75));
-            stage.setWidth(screen_height * 0.75);
-            stage.setHeight(screen_height * 0.75);
+            stage.setX(screen_width - wh);
+            stage.setWidth(wh);
+            stage.setHeight(wh);
         }
     }
 }

@@ -17,6 +17,10 @@ public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<Can
         device.cgc.gc.scale(width_scale_context, height_scale_context);
     }
 
+    public void rotate(double degrees) {
+        device.cgc.gc.rotate(degrees);
+    }
+
     public void push_transform() {
         device.cgc.gc.save();
     }

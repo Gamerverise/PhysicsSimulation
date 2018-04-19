@@ -6,11 +6,13 @@ import lib.java_lang_extensions.tuples.WidthHeight;
 import lib.java_lang_extensions.tuples.XY;
 import lib.javafx_api_extensions.AffineX;
 import lib.render.Viewport;
+import lib.transforms.TransformMulti;
 
 import static lib.render.graphics_context.RenderingGraphicsContext.AspectRatioOption.SCALE_VIEWPORT_TO_FIT_DEVICE;
 
 public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDevice>
         extends PrimitiveGraphicsContext<DEVICE>
+        implements TransformMulti
 {
     public enum AspectRatioOption {
         KEEP_CURRENT_VIEWPORT,
@@ -36,17 +38,57 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     public double min_radius_px = 2;
     public double min_radius_model = 2;
 
+    public AffineX model_to_device_map_cache;
+
     RenderingGraphicsContext(DEVICE device) {
         super(device);
         this.viewport = new Viewport();
         aspect_ratio_option = SCALE_VIEWPORT_TO_FIT_DEVICE;
     }
 
+    public TransformMulti cache_model_to_device_map() {
+        model_to_device_map_cache = new AffineX();
+
+        apply_viewport_to_nominal_device_map(model_to_device_map_cache.transform);
+        apply_model_to_viewport_map(model_to_device_map_cache.transform);
+
+        return model_to_device_map_cache.transform;
+    }
+
+    public XY<Double> map_model_to_device(double x, double y) {
+        return model_to_device_map_cache.transform.map_point(x, y);
+    }
+
+    public TransformMulti get_model_to_device_map(TransformMulti t) {
+        apply_viewport_to_nominal_device_map(t);
+        apply_model_to_viewport_map(t);
+
+        return t;
+    }
+
     // begin_render should save the transform state, and apply the viewport and device transforms so that
     // the drawing of models appears correctly on the device
 
-    public void begin_render() {
+    public enum MODEL_MODE {MODEL_MODE}
+    public enum DEVICE_MODE {DEVICE_MODE}
+
+    public void begin_render(MODEL_MODE overload_const) {
         push_transform();
+
+        apply_device_nominal_to_actual_map(this);
+        apply_viewport_to_nominal_device_map(this);
+        apply_model_to_viewport_map(this);
+
+        update_min_radius();
+    }
+
+    public void begin_render(DEVICE_MODE overload_const) {
+        push_transform();
+
+        apply_device_nominal_to_actual_map(this);
+    }
+
+    public TransformMulti apply_device_nominal_to_actual_map(TransformMulti t) {
 
         // Note: JavaFx's transform ordering for a GraphicsContext is FILO, where the first transform applied
         // to the GraphicsContext is the last one applied to the points of a graphics primitive.
@@ -56,6 +98,11 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         translate(device.device_transform_x_px, device.device_transform_y_px);
 
         scale(device.get_scale_x(), device.get_scale_y());
+
+        return t;
+    }
+
+    public TransformMulti apply_viewport_to_nominal_device_map(TransformMulti t) {
 
         // 2) Map viewport coordinates to nominal device coordinates
 
@@ -101,22 +148,23 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
                 break;
         }
 
+        return t;
+    }
+
+    public TransformMulti apply_model_to_viewport_map(TransformMulti t) {
+
         XY<Double> viewport_center_model = viewport.get_center_model();
 
         // 1) Map model coordinates to viewport coordinates
 
         translate(viewport_center_model.x, viewport_center_model.y);
 
-        update_min_radius();
+        return t;
     }
 
     public void end_render() {
         pop_transform();
     }
-
-    public abstract void translate(double delta_x_context, double delta_y_context);
-
-    public abstract void scale(double width_scale_context, double height_scale_context);
 
     public abstract void push_transform();
 
@@ -149,4 +197,8 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     }
 
     public abstract void primitive_fill_circle(double x, double y, double radius);
+
+    public XY<Double> model_to_device(double x, double y) {
+
+    }
 }
