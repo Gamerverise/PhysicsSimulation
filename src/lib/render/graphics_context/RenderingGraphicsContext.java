@@ -48,11 +48,14 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     public void begin_render() {
         push_transform();
 
-        // 1) Map model coordinates to viewport coordinates
+        // Note: JavaFx's transform ordering for a GraphicsContext is FILO, where the first transform applied
+        // to the GraphicsContext is the last one applied to the points of a graphics primitive.
 
-        XY<Double> viewport_center_model = viewport.get_center_model();
+        // 3) Map nominal device coordinates to actual device coordinates
 
-        translate(viewport_center_model.x, viewport_center_model.y);
+        translate(device.device_transform_x_px, device.device_transform_y_px);
+
+        scale(device.get_scale_x(), device.get_scale_y());
 
         // 2) Map viewport coordinates to nominal device coordinates
 
@@ -98,11 +101,11 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
                 break;
         }
 
-        // 2) Map nominal device coordinates to actual device coordinates
+        XY<Double> viewport_center_model = viewport.get_center_model();
 
-        translate(device.device_transform_x_px, device.device_transform_y_px);
+        // 1) Map model coordinates to viewport coordinates
 
-        scale(device.get_scale_x(), device.get_scale_y());
+        translate(viewport_center_model.x, viewport_center_model.y);
 
         update_min_radius();
     }

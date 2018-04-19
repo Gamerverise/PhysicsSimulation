@@ -12,10 +12,16 @@ public class Particle {
     public double ay;
     public double mass;
     public double radius;
-    public Color color;
-    
 
-    public Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
+    public Particle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius) {
+        init(name, x, y, vx, vy, ax, ay, mass, radius);
+    }
+
+    public Particle(Particle p) {
+        init(p.name, p.x, p.y, p.vx, p.vy, p.ax, p.ay, p.mass, p.radius);
+    }
+
+    public void init(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius) {
         this.name = name;
         this.x = x;
         this.y = y;
@@ -25,20 +31,6 @@ public class Particle {
         this.ay = ay;
         this.mass = mass;
         this.radius = radius;
-        this.color = color;
-    }
-
-    public Particle(Particle p) {
-        this.name = p.name;
-        this.x = p.x;
-        this.y = p.y;
-        this.vx = p.vx;
-        this.vy = p.vy;
-        this.ax = p.ax;
-        this.ay = p.ay;
-        this.mass = p.mass;
-        this.radius = p.radius;
-        this.color = p.color;
     }
 
     @SuppressWarnings("unchecked")

@@ -7,16 +7,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import lib.debug.MethodNameHack;
-import lib.render.graphics_context.CanvasRenderingGraphicsContext;
+import lib.graphics.CustomGraphicsContext;
 import lib.graphics_device.CanvasGraphicsDevice;
 import lib.javafx_api_extensions.AffineX;
 import lib.javafx_api_extensions.GraphicsContextX;
 import lib.render.Viewport;
+import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.RunCommand;
 import lib.widget.AnimatedWidget;
 import lib.widget.RootWidget;
 import missions.Mission;
-import particle_model.Particle;
 import particle_model.Universe;
 import particle_model.ViewableParticle;
 import particle_model.simulation.SimulationDynamic;
@@ -39,7 +39,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
     Canvas canvas;
 
     CanvasRenderingGraphicsContext rgc;
-    GraphicsContextX gcx;
+    CustomGraphicsContext cgc;
     GraphicsContext gc;
 
     Viewport viewport;
@@ -80,8 +80,8 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
         canvas = canvas_device.canvas;
 
         rgc = new CanvasRenderingGraphicsContext(canvas_device);
-        gcx = rgc.device.gcx;
-        gc = gcx.gc;
+        cgc = rgc.device.cgc;
+        gc = cgc.gc;
 
         if (init_mission.init_view != null)
             rgc.viewport.init(init_mission.init_view);
@@ -151,12 +151,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
     }
 
     public void view(AffineX affine) {
-        gcx.gc.transform(affine);
-    }
-
-    void draw_particle(Particle p) {
-        gc.setFill(p.color);
-        rgc.fill_circle(p.x, p.y, p.radius);
+        cgc.gc.transform(affine);
     }
 
     public void draw_frame() {
@@ -174,7 +169,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
         rgc.begin_render();
 
         for (ViewableParticle p : simulation.universe.particles)
-            draw_particle(p);
+            p.draw(rgc);
 
         simulation.xy_data_rw_lock.unlock();
 

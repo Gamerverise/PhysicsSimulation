@@ -1,20 +1,20 @@
 package lib.graphics_device;
 
 import javafx.scene.canvas.Canvas;
+import lib.graphics.CustomGraphicsContext;
 import lib.java_lang_extensions.tuples.WidthHeight;
-import lib.javafx_api_extensions.GraphicsContextX;
 
 public class CanvasGraphicsDevice extends VirtualGraphicsDevice {
 
     public Canvas canvas;
-    public GraphicsContextX gcx;
+    public CustomGraphicsContext cgc;
 
     public static double device_transform_scale_x = 1;
     public static double device_transform_scale_y = -1;
 
     public CanvasGraphicsDevice() {
         canvas = new Canvas();
-        gcx = new GraphicsContextX(canvas.getGraphicsContext2D());
+        cgc = new CustomGraphicsContext(canvas.getGraphicsContext2D());
 
         // The initial translation for the device transform is zero, since the initial canvas size is zero
 
