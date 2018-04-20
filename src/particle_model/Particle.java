@@ -1,7 +1,5 @@
 package particle_model;
 
-import javafx.scene.paint.Color;
-
 public class Particle {
     public String name;
     public double x;
@@ -36,6 +34,10 @@ public class Particle {
     @SuppressWarnings("unchecked")
     public <T extends Particle> T new_copy() {
         return (T) new Particle(this);
+    }
+
+    public double velocity() {
+        return Math.sqrt(vx*vx + vy*vy);
     }
 
     public double distance(Particle p) {

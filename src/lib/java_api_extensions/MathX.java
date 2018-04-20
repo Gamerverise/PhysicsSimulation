@@ -1,16 +1,47 @@
 package lib.java_api_extensions;
 
+import lib.java_lang_extensions.function_types.FunctionR1;
+
+import java.util.Arrays;
+import java.util.Iterator;
+
 public class MathX {
 
-    public static double max(double... nums) {
-        if (nums.length == 0)
-            return Double.NaN;
+    public static class UndefinedMaxExc extends Exception {}
 
-        double max = nums[0];
+    public static double max(double... nums)
+            throws UndefinedMaxExc
+    {
+        return max(
+                (Object d) -> (Double) d,
+                Arrays.asList(nums).iterator()
+        );
+    }
 
-        for (int i = 1; i < nums.length; i++)
-            if (nums[i] > max)
-                max = nums[i];
+    @SafeVarargs
+    public static <T> double max(FunctionR1<Double, T> obj_to_double_map, T... objs)
+            throws UndefinedMaxExc
+    {
+        return max(obj_to_double_map, Arrays.asList(objs).iterator());
+    }
+
+    public static <T> double max(FunctionR1<Double, T> obj_to_double_map, Iterator<T> objs)
+            throws UndefinedMaxExc
+    {
+
+        double max;
+
+        if (objs.hasNext())
+            max = obj_to_double_map.call(objs.next());
+        else
+            throw new UndefinedMaxExc();
+
+        while (objs.hasNext()) {
+            double num = obj_to_double_map.call(objs.next());
+
+            if (num > max)
+                max = num;
+        }
 
         return max;
     }

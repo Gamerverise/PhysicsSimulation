@@ -8,7 +8,7 @@ public class AnimatedWidgetMulti {
 
     public AnimatedWidgetMulti(AnimatedWidget anim_widget) {
 
-        AnimationTimer anim_timer = new AnimationTimer() {
+        anim_timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 anim_widget.draw_frame(now);

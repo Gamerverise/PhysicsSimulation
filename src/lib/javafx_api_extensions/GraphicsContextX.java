@@ -47,4 +47,8 @@ public class GraphicsContextX implements TransformMulti {
     public void rotate(double degrees) {
         gc.rotate(degrees);
     }
+
+    public XY<Double> map_point(double x, double y) {
+        return XY(gc.getTransform().transform(x, y));
+    }
 }

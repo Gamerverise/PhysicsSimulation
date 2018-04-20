@@ -59,7 +59,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
         return model_to_device_map_cache.transform.map_point(x, y);
     }
 
-    public TransformMulti get_model_to_device_map(TransformMulti t) {
+    public TransformMulti apply_model_to_device_map(TransformMulti t) {
         apply_viewport_to_nominal_device_map(t);
         apply_model_to_viewport_map(t);
 
@@ -95,9 +95,9 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
 
         // 3) Map nominal device coordinates to actual device coordinates
 
-        translate(device.device_transform_x_px, device.device_transform_y_px);
+        t.translate(device.device_transform_x_px, device.device_transform_y_px);
 
-        scale(device.get_scale_x(), device.get_scale_y());
+        t.scale(device.get_scale_x(), device.get_scale_y());
 
         return t;
     }
@@ -113,26 +113,26 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
                 break;
 
             case FIXED_GEOMETRY:
-                translate(viewport_center_x_device, viewport_center_y_device);
+                t.translate(viewport_center_x_device, viewport_center_y_device);
                 break;
 
             case SCALED_GEOMETRY:
-                translate(
+                t.translate(
                         viewport_center_x_device_rel * device.get_width_px(),
                         viewport_center_y_device_rel * device.get_height_px()
                 );
 
-                scale(width_scale, height_scale);
+                t.scale(width_scale, height_scale);
                 break;
 
             case SCALE_VIEWPORT_TO_DEVICE_WIDTH:
                 scale = device.get_width_px() / viewport.get_width_model();
-                scale(scale, scale);
+                t.scale(scale, scale);
                 break;
 
             case SCALE_VIEWPORT_TO_DEVICE_HEIGHT:
                 scale = device.get_height_px() / viewport.get_height_model();
-                scale(scale, scale);
+                t.scale(scale, scale);
                 break;
 
             case SCALE_VIEWPORT_TO_FIT_DEVICE:
@@ -144,7 +144,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
                 else
                     scale = device.get_height_px() / viewport_dims.height;
 
-                scale(scale, scale);
+                t.scale(scale, scale);
                 break;
         }
 
@@ -157,7 +157,7 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
 
         // 1) Map model coordinates to viewport coordinates
 
-        translate(viewport_center_model.x, viewport_center_model.y);
+        t.translate(viewport_center_model.x, viewport_center_model.y);
 
         return t;
     }
@@ -197,8 +197,4 @@ public abstract class RenderingGraphicsContext<DEVICE extends VirtualGraphicsDev
     }
 
     public abstract void primitive_fill_circle(double x, double y, double radius);
-
-    public XY<Double> model_to_device(double x, double y) {
-
-    }
 }

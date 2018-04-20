@@ -1,7 +1,10 @@
 package lib.render.graphics_context;
 
 import lib.graphics_device.CanvasGraphicsDevice;
+import lib.java_lang_extensions.tuples.XY;
 import lib.javafx_api_extensions.AffineX;
+
+import static lib.java_lang_extensions.tuples.XY.XY;
 
 public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<CanvasGraphicsDevice> {
 
@@ -19,6 +22,10 @@ public class CanvasRenderingGraphicsContext extends RenderingGraphicsContext<Can
 
     public void rotate(double degrees) {
         device.cgc.gc.rotate(degrees);
+    }
+
+    public XY<Double> map_point(double x, double y) {
+        return XY(device.cgc.gc.getTransform().transform(x, y));
     }
 
     public void push_transform() {

@@ -159,28 +159,30 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 //        gc.clearRect(0, 0, canvas_width, canvas_height);
 //        gc.setFill(Color.BLACK);
 
-//        gc.setFill(Color.LIGHTGREY);
-//        gc.fillRect(0, 0, width, height);
+        gc.setFill(Color.LIGHTGREY);
+        gc.fillRect(0, 0, width, height);
 
         simulation.xy_data_rw_lock.lock();
-
-        rgc.begin_render(MODEL_MODE);
         {
-            for (ViewableParticle p : simulation.universe.particles)
-                p.draw_model(rgc);
+            rgc.begin_render(MODEL_MODE);
+            {
+                for (ViewableParticle p : simulation.universe.particles)
+                    p.draw(rgc);
 
-            simulation.xy_data_rw_lock.unlock();
+            }
+            rgc.end_render();
+//
+//            rgc.cache_model_to_device_map();
+//
+//            rgc.begin_render(DEVICE_MODE);
+//            {
+//                for (ViewableParticle p : simulation.universe.particles)
+//                    p.draw_overlay(rgc, 1);
+//
+//            }
+//            rgc.end_render();
 
-        } rgc.end_render();
-
-        rgc.cache_model_to_device_map();
-
-        rgc.begin_render(DEVICE_MODE);
-        {
-            for (ViewableParticle p : simulation.universe.particles)
-                p.draw_overlay(rgc, 1);
-
-        } rgc.end_render();
+        } simulation.xy_data_rw_lock.unlock();
 
         gc.clearRect(0, 0, 100, 100);
 

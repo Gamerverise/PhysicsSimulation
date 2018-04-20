@@ -1,10 +1,17 @@
 package particle_model;
 
-import java.util.LinkedList;
-
+import lib.debug.MethodNameHack;
+import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;
 
-import static lib.tokens.enums.CopyType.COPY_SHALLOW;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import static java.lang.Double.NaN;
+import static lib.debug.AssertMessages.BAD_CODE_PATH;
+import static lib.debug.Debug.assert_msg;
+import static lib.java_api_extensions.MathX.max;
 
 public class Universe<T extends Particle> {
 
@@ -13,31 +20,64 @@ public class Universe<T extends Particle> {
 
     public LinkedList<T> particles = new LinkedList<>();
 
-    @SafeVarargs
-    public Universe(double acceleration_constant, double max_speed, T... particles) {
+    double max_starting_velocity;
+
+    public Universe(double acceleration_constant, double max_speed, Iterable<T> particles, CopyType copy_type) {
         this.acceleration_constant = acceleration_constant;
         this.max_speed = max_speed;
-        add_particles(particles);
+
+        copy_particles(particles, copy_type);
+        max_starting_velocity = max_velocity();
+    }
+
+    public Universe(double acceleration_constant, double max_speed, CopyType copy_type, T... particles) {
+        this(acceleration_constant, max_speed, Arrays.asList(particles), copy_type);
     }
 
     public Universe(Universe<T> u, CopyType copy_type) {
-        acceleration_constant = u.acceleration_constant;
-        max_speed = u.max_speed;
-
-        if (copy_type == COPY_SHALLOW)
-            particles = u.particles;
-        else
-            add_particles(u.particles);
+        this(u.acceleration_constant, u.max_speed, u.particles, copy_type);
     }
 
-    @SafeVarargs
-    public final void add_particles(T... particles) {
-        for (T p : particles)
-            this.particles.add(p.new_copy());
+    public void copy_particles(CopyType copy_type, T... particles) {
+        copy_particles(Arrays.asList(particles), copy_type);
     }
 
-    public void add_particles(LinkedList<T> particles) {
-        for (T p : particles)
-            this.particles.add(p.new_copy());
+    public void copy_particles(Iterable<T> particles, CopyType copy_type) {
+        Iterator<T> p_iterator = particles.iterator();
+
+        switch (copy_type) {
+            case COPY_SHALLOW:
+                if (particles instanceof LinkedList)
+                    this.particles = (LinkedList<T>) particles;
+                else
+                    while (p_iterator.hasNext())
+                        this.particles.add(p_iterator.next());
+                break;
+            case COPY_CONTAINER_ONLY:
+                this.particles = new LinkedList<>();
+                while (p_iterator.hasNext())
+                    this.particles.add(p_iterator.next());
+                break;
+            case COPY_DEEP:
+                this.particles = new LinkedList<>();
+                while (p_iterator.hasNext())
+                    this.particles.add(p_iterator.next().new_copy());
+                break;
+        }
+    }
+
+    public double max_velocity() {
+        try {
+            return max(
+                    (Object p) -> ((Particle) p).velocity(),
+                    particles.iterator()
+            );
+        } catch (MathX.UndefinedMaxExc e) {
+            assert false : assert_msg(
+                    this.getClass(),
+                    new MethodNameHack() {}.method_name(),
+                    BAD_CODE_PATH);
+            return NaN;
+        }
     }
 }
