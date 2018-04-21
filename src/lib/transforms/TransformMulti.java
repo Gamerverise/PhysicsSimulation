@@ -55,9 +55,11 @@ public interface TransformMulti {
 //                    return scale(transform, scale_rel/2, width, height, ScaleOp.HEIGHT);
 //        }
 //
+//        MethodNameHack hack = new MethodNameHack() {};
+//
 //        assert false : assert_msg(
-//                new MethodNameHack(){}.method_name().getClass(),
-//                new MethodNameHack(){}.method_name(),
+//                hack.method_name().getClass(),
+//                hack.method_name(),
 //                BAD_CODE_PATH);
 //
 //        return null;

@@ -1,7 +1,6 @@
 package particle_model;
 
-import lib.data_structures.Containable;
-import lib.data_structures.Container;
+import lib.data_structures.CollectionContainer;
 import lib.debug.MethodNameHack;
 import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;
@@ -15,7 +14,7 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 import static lib.java_api_extensions.MathX.max;
 
-public class Universe<T extends Particle> implements Container<T> {
+public class Universe<T extends Particle> implements CollectionContainer<T> {
 
     public double acceleration_constant;
     public double max_speed;
