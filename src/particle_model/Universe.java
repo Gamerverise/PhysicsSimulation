@@ -1,5 +1,7 @@
 package particle_model;
 
+import lib.data_structures.Containable;
+import lib.data_structures.Container;
 import lib.debug.MethodNameHack;
 import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;
@@ -13,7 +15,7 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 import static lib.java_api_extensions.MathX.max;
 
-public class Universe<T extends Particle> {
+public class Universe<T extends Particle> implements Container<T> {
 
     public double acceleration_constant;
     public double max_speed;
@@ -38,8 +40,8 @@ public class Universe<T extends Particle> {
         this(u.acceleration_constant, u.max_speed, u.particles, copy_type);
     }
 
-    public void copy_particles(CopyType copy_type, T... particles) {
-        copy_particles(Arrays.asList(particles), copy_type);
+    public Containable<T> new_copy(CopyType copy_type) {
+        return new Universe<>(acceleration_constant, max_speed, particles, copy_type);
     }
 
     public void copy_particles(Iterable<T> particles, CopyType copy_type) {
@@ -47,13 +49,6 @@ public class Universe<T extends Particle> {
 
         switch (copy_type) {
             case COPY_SHALLOW:
-                if (particles instanceof LinkedList)
-                    this.particles = (LinkedList<T>) particles;
-                else
-                    while (p_iterator.hasNext())
-                        this.particles.add(p_iterator.next());
-                break;
-            case COPY_CONTAINER_ONLY:
                 this.particles = new LinkedList<>();
                 while (p_iterator.hasNext())
                     this.particles.add(p_iterator.next());
@@ -64,6 +59,10 @@ public class Universe<T extends Particle> {
                     this.particles.add(p_iterator.next().new_copy());
                 break;
         }
+    }
+
+    public Iterator<T> iterator() {
+        return particles.iterator();
     }
 
     public double max_velocity() {
