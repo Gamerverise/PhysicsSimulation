@@ -1,6 +1,6 @@
 package lib.data_structures.specialized_container;
 
-import lib.data_structures.adapter_container.AdapterContainer;
+import lib.data_structures.old.AdapterContainer;
 import lib.tokens.enums.CopyType;
 
 import java.util.Collection;

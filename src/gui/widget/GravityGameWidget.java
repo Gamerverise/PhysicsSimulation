@@ -16,14 +16,13 @@ import lib.widget.AnimatedWidget;
 import lib.widget.AnimatedWidgetMulti;
 import lib.widget.RootWidget;
 import missions.Mission;
+import particle_model.RenderableParticle;
 import particle_model.Universe;
-import particle_model.ViewableParticle;
 import particle_model.simulation.SimulationDynamic;
 import particle_model.simulation.SimulationStatic;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
-import static lib.render.graphics_context.RenderingGraphicsContext.DEVICE_MODE.DEVICE_MODE;
 import static lib.render.graphics_context.RenderingGraphicsContext.MODEL_MODE.MODEL_MODE;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
@@ -45,9 +44,9 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
     Viewport viewport;
 
-    SimulationDynamic<ViewableParticle> simulation;
+    SimulationDynamic<RenderableParticle> simulation;
 
-    public GravityGameWidget(Universe<ViewableParticle> universe,
+    public GravityGameWidget(Universe<RenderableParticle> universe,
                              double dt_real,
                              double dt_sim,
                              RunCommand init_run_command,
@@ -166,7 +165,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
         {
             rgc.begin_render(MODEL_MODE);
             {
-                for (ViewableParticle p : simulation.universe.particles)
+                for (RenderableParticle p : simulation.universe.particles)
                     p.draw(rgc);
 
             }
@@ -176,7 +175,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 //
 //            rgc.begin_render(DEVICE_MODE);
 //            {
-//                for (ViewableParticle p : simulation.universe.particles)
+//                for (RenderableParticle p : simulation.universe.particles)
 //                    p.draw_overlay(rgc, 1);
 //
 //            }

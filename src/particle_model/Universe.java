@@ -1,6 +1,6 @@
 package particle_model;
 
-import lib.data_structures.specialized_container.CollectionContainer;
+import lib.data_structures.container.Container;
 import lib.debug.MethodNameHack;
 import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;
@@ -14,16 +14,16 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 import static lib.java_api_extensions.MathX.max;
 
-public class Universe<T extends Particle> implements CollectionContainer<T> {
-
+public class Universe extends Container<RenderableParticle, LinkedList<RenderableParticle>>
+{
     public double acceleration_constant;
     public double max_speed;
 
-    public LinkedList<T> particles = new LinkedList<>();
+    public LinkedList<RenderableParticle> particles;
 
     double max_starting_velocity;
 
-    public Universe(double acceleration_constant, double max_speed, Iterable<T> particles, CopyType copy_type) {
+    public Universe(double acceleration_constant, double max_speed, Iterable particles, CopyType copy_type) {
         this.acceleration_constant = acceleration_constant;
         this.max_speed = max_speed;
 
@@ -31,20 +31,28 @@ public class Universe<T extends Particle> implements CollectionContainer<T> {
         max_starting_velocity = max_velocity();
     }
 
-    public Universe(double acceleration_constant, double max_speed, CopyType copy_type, T... particles) {
+    public Universe(double acceleration_constant, double max_speed, CopyType copy_type, RenderableParticle... particles) {
         this(acceleration_constant, max_speed, Arrays.asList(particles), copy_type);
     }
 
-    public Universe(Universe<T> u, CopyType copy_type) {
+    public Universe(Universe u, CopyType copy_type) {
         this(u.acceleration_constant, u.max_speed, u.particles, copy_type);
     }
 
-    public Containable<T> new_copy(CopyType copy_type) {
-        return new Universe<>(acceleration_constant, max_speed, particles, copy_type);
+    public void init_underlying_data_structure() {
+         particles = new LinkedList<>();
     }
 
-    public void copy_particles(Iterable<T> particles, CopyType copy_type) {
-        Iterator<T> p_iterator = particles.iterator();
+    public void add_item(RenderableParticle item) {
+        particles.add(item);
+    }
+
+    public Universe new_copy(CopyType copy_type) {
+        return new Universe(acceleration_constant, max_speed, particles, copy_type);
+    }
+
+    public void copy_particles(Iterable<RenderableParticle> particles, CopyType copy_type) {
+        Iterator<RenderableParticle> p_iterator = particles.iterator();
 
         switch (copy_type) {
             case COPY_SHALLOW:
@@ -55,12 +63,12 @@ public class Universe<T extends Particle> implements CollectionContainer<T> {
             case COPY_DEEP:
                 this.particles = new LinkedList<>();
                 while (p_iterator.hasNext())
-                    this.particles.add(p_iterator.next().new_copy());
+                    this.particles.add(p_iterator.next().new_copy(copy_type));
                 break;
         }
     }
 
-    public Iterator<T> iterator() {
+    public Iterator iterator() {
         return particles.iterator();
     }
 

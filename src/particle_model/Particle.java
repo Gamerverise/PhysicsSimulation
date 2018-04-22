@@ -1,6 +1,9 @@
 package particle_model;
 
-public class Particle {
+import lib.data_structures.Copyable;
+import lib.tokens.enums.CopyType;
+
+public class Particle implements Copyable<Particle> {
     public String name;
     public double x;
     public double y;
@@ -31,9 +34,16 @@ public class Particle {
         this.radius = radius;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Particle> T new_copy() {
-        return (T) new Particle(this);
+    public Particle new_copy() {
+        return new Particle(this);
+    }
+
+    public Particle new_copy(CopyType copy_type) {
+        return new Particle(this);
+    }
+
+    public void copy_in(Particle src, CopyType copy_type) {
+        init(src.name, src.x, src.y, src.vx, src.vy, src.ax, src.ay, src.mass, src.radius);
     }
 
     public double velocity() {

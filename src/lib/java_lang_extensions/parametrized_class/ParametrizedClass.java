@@ -1,18 +1,18 @@
-package lib.data_structures;
+package lib.java_lang_extensions.parametrized_class;
 
 import lib.debug.MethodNameHack;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public class Copy {
+public class ParametrizedClass {
 
     @SuppressWarnings("unchecked")
-    public static <U> U new_copy(Object o) {
+    public static <U> U new_instance(Class clazz) {
         U copy;
 
         try {
-            copy = (U) o.getClass().newInstance();
+            copy = (U) clazz.newInstance();
 
         } catch (IllegalAccessException | InstantiationException e) {
             MethodNameHack hack = new MethodNameHack() {};

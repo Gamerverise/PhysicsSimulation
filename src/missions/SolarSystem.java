@@ -3,8 +3,8 @@ package missions;
 import javafx.scene.paint.Color;
 import lib.javafx_api_extensions.AffineX;
 import lib.render.Viewport;
+import particle_model.RenderableParticle;
 import particle_model.Universe;
-import particle_model.ViewableParticle;
 import particle_model.simulation.SimulationStatic;
 
 import static lib.tokens.enums.CopyType.COPY_DEEP;
@@ -33,20 +33,20 @@ public class SolarSystem {
     
     // Original configuration
 
-    public static ViewableParticle sun = new ViewableParticle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
-    public static ViewableParticle earth = new ViewableParticle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
+    public static RenderableParticle sun = new RenderableParticle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
+    public static RenderableParticle earth = new RenderableParticle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
 
-    public static Universe<ViewableParticle> solar_sys = new Universe<>(G, max_speed, sun, earth);
+    public static Universe<RenderableParticle> solar_sys = new Universe<>(G, max_speed, sun, earth);
 
-    public static Universe<ViewableParticle> solar_sys_debug_1 = new Universe<>(solar_sys, COPY_DEEP);
-    public static Universe<ViewableParticle> solar_sys_debug_2 = new Universe<>(solar_sys, COPY_DEEP);
+    public static Universe<RenderableParticle> solar_sys_debug_1 = new Universe<>(solar_sys, COPY_DEEP);
+    public static Universe<RenderableParticle> solar_sys_debug_2 = new Universe<>(solar_sys, COPY_DEEP);
 
     public static AffineX solar_system_init_view_sun_earth;
 
     public static Mission solar_system_mission;
 
 
-    public static SimulationStatic<ViewableParticle> solar_system_sim = new SimulationStatic<>(
+    public static SimulationStatic<RenderableParticle> solar_system_sim = new SimulationStatic<>(
             new Universe<>(solar_sys, COPY_SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8,     // double dt_sim = 60*8     (s) = 8 min
@@ -57,7 +57,7 @@ public class SolarSystem {
 
     static {
         // Symmetry of original setup about x = y
-        ViewableParticle earth_2 = solar_sys_debug_2.particles.get(0);
+        RenderableParticle earth_2 = solar_sys_debug_2.particles.get(0);
         earth_2.y = earth_sun_dist;
         earth_2.x = 0;
         earth_2.vy = earth_tangential_speed;

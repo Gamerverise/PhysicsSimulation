@@ -1,29 +1,20 @@
 package lib.data_structures;
 
-import lib.debug.MethodNameHack;
 import lib.tokens.enums.CopyType;
 
-import static lib.debug.AssertMessages.BAD_CODE_PATH;
-import static lib.debug.Debug.assert_msg;
+public interface Copyable<T extends Copyable<T>> {
 
-public class Copyable<T extends Copyable<T>> {
+    T new_copy(CopyType copy_type);
 
-    public T new_copy(CopyType copy_type) {
-        T copy;
-
-        try {
-            copy = (T) getClass().newInstance();
-
-        } catch (IllegalAccessException | InstantiationException e) {
-
-            assert false : assert_msg(
-                    this.getClass(),
-                    new MethodNameHack() {}.method_name(),
-                    BAD_CODE_PATH);
-
-            return null;
-        }
-
-        return copy;
-    }
+//    public T new_copy(CopyType copy_type) {
+//        T copy;
+//
+//        copy = ParametrizedClass.new_instance(this.getClass());
+//
+//        copy.copy_in((T) this, copy_type);
+//
+//        return copy;
+//    }
+//
+//    public abstract void copy_in(T src, CopyType copy_type);
 }

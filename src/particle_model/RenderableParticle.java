@@ -1,20 +1,20 @@
 package particle_model;
 
 import javafx.scene.paint.Color;
-import lib.java_lang_extensions.tuples.XY;
 import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
+import lib.tokens.enums.CopyType;
 
-public class ViewableParticle extends Particle {
+public class RenderableParticle extends Particle {
 
     public Color color;
 
-    public ViewableParticle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
+    public RenderableParticle(String name, double x, double y, double vx, double vy, double ax, double ay, double mass, double radius, Color color) {
         super(name, x, y, vx, vy, ax, ay, mass, radius);
         this.color = color;
     }
 
-    public ViewableParticle(ViewableParticle p) {
+    public RenderableParticle(RenderableParticle p) {
         this(p.name, p.x, p.y, p.vx, p.vy, p.ax, p.ay, p.mass, p.radius, p.color);
     }
 
@@ -23,9 +23,12 @@ public class ViewableParticle extends Particle {
         this.color = color;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends Particle> T new_copy() {
-        return (T) new ViewableParticle(this);
+    public RenderableParticle new_copy() {
+        return new RenderableParticle(this);
+    }
+
+    public RenderableParticle new_copy(CopyType copy_type) {
+        return new RenderableParticle(this);
     }
 
     public Viewport view(Viewport viewport, double x_offset_pct, double y_offset_pct, double zoom) {
