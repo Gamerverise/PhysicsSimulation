@@ -1,6 +1,6 @@
 package particle_model;
 
-import lib.data_structures.CollectionContainer;
+import lib.data_structures.specialized_container.CollectionContainer;
 import lib.debug.MethodNameHack;
 import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;

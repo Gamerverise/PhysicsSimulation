@@ -1,12 +1,13 @@
-package lib.data_structures;
+package lib.data_structures.container;
 
-import lib.data_structures.adapter.AdapterAbstractContainer;
+import lib.data_structures.Copyable;
+import lib.data_structures.adapter_container.AbstractAdapterContainer;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
 
 public abstract class AbstractContainer<T extends Copyable<T>>
-    extends AdapterAbstractContainer<T>
+    extends AbstractAdapterContainer<T>
 {
     public AbstractContainer() {
         init_underlying_data_structure();
@@ -17,7 +18,6 @@ public abstract class AbstractContainer<T extends Copyable<T>>
         add_copies(data_src, copy_type);
     }
 
-    @SuppressWarnings("unchecked")
     public AbstractContainer<T> new_copy(CopyType copy_type) {
         AbstractContainer<T> copy = (AbstractContainer<T>) super.new_copy(copy_type);
         copy.add_copies(this, copy_type);
@@ -33,7 +33,7 @@ public abstract class AbstractContainer<T extends Copyable<T>>
 
     public abstract void init_underlying_data_structure();
 
-    public abstract void add_item(Copyable<T> item);
+    public abstract void add_item(T item);
 
     public abstract <D> D get_underlying_data_structure();
 
