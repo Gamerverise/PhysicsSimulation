@@ -2,9 +2,9 @@ package lib.data_structures;
 
 import lib.tokens.enums.CopyType;
 
-public interface Copyable<T extends Copyable<T>> {
+public interface Copyable<DT extends BDT, BDT extends CDT, CDT extends lib.data_structures.Copyable<DT, BDT, CDT>> {
 
-    T new_copy(CopyType copy_type);
+    DT new_copy(CopyType copy_type);
 
 //    public T new_copy(CopyType copy_type) {
 //        T copy;

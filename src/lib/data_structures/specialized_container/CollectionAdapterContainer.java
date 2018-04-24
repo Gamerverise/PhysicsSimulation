@@ -1,11 +1,11 @@
 package lib.data_structures.specialized_container;
 
-import lib.data_structures.old.AdapterContainer;
+import lib.data_structures.container.AdapterContainer;
 import lib.tokens.enums.CopyType;
 
 import java.util.Collection;
 
-public abstract class CollectionAdapterContainer<T, D extends Collection<T>>
+public abstract class CollectionAdapterContainer<DT, DT extends Collection<T>>
     extends AdapterContainer<T, D>
 {
     public D collection;
