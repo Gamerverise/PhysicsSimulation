@@ -4,11 +4,9 @@ import lib.data_structures.Copyable;
 import lib.tokens.enums.CopyType;
 
 public abstract class ContainerCopyableDataStructure
-        <DT, DS extends CDS, CDS extends UnderlyingDataStructure<DT, DS, CDS>>
-    extends AdapterContainer<DT, DS>
+        <DT, DS extends UnderlyingDataStructure<DT> & Copyable<DS>>
+    extends ContainerAdapter<DT, DS>
 {
-    public DS underlying_data_structure;
-
     public ContainerCopyableDataStructure() {
         super();
     }
@@ -17,7 +15,12 @@ public abstract class ContainerCopyableDataStructure
         super(data_src, copy_type);
     }
 
-    public DS get_underlying_data_structure() {
-        return underlying_data_structure;
+    public void add_item(DT item) {
+        contents.add_item(item);
+    }
+
+    public void add_copies(Iterable<DT> data_src, CopyType copy_type) {
+        for (DT datum : data_src)
+            add_item_copy(datum, copy_type);
     }
 }

@@ -3,7 +3,7 @@ package particle_model;
 import lib.data_structures.Copyable;
 import lib.tokens.enums.CopyType;
 
-public class Particle implements Copyable<Particle, Particle> {
+public class Particle<T extends Particle<T> & Copyable<T>> implements Copyable<T> {
 
     public String name;
     public double x;
@@ -39,7 +39,7 @@ public class Particle implements Copyable<Particle, Particle> {
         return new Particle(this);
     }
 
-    public Particle new_copy(CopyType copy_type) {
+    public Particle<T> new_copy(CopyType copy_type) {
         return new Particle(this);
     }
 

@@ -165,7 +165,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
         {
             rgc.begin_render(MODEL_MODE);
             {
-                for (RenderableParticle p : simulation.universe.particles)
+                for (RenderableParticle p : simulation.universe.contents)
                     p.draw(rgc);
 
             }
@@ -175,7 +175,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 //
 //            rgc.begin_render(DEVICE_MODE);
 //            {
-//                for (RenderableParticle p : simulation.universe.particles)
+//                for (RenderableParticle p : simulation.universe.contents)
 //                    p.draw_overlay(rgc, 1);
 //
 //            }

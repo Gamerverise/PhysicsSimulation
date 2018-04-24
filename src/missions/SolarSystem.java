@@ -57,14 +57,14 @@ public class SolarSystem {
 
     static {
         // Symmetry of original setup about x = y
-        RenderableParticle earth_2 = solar_sys_debug_2.particles.get(0);
+        RenderableParticle earth_2 = solar_sys_debug_2.contents.get(0);
         earth_2.y = earth_sun_dist;
         earth_2.x = 0;
         earth_2.vy = earth_tangential_speed;
         earth_2.vx = 0;
 
         // Make an elliptical orbit
-        solar_sys_debug_1.particles.get(0).rotate_velocity_abs(100);
+        solar_sys_debug_1.contents.get(0).rotate_velocity_abs(100);
 
         mission = new Mission(
                 solar_system_sim,

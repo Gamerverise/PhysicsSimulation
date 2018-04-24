@@ -1,6 +1,6 @@
 package particle_model;
 
-import lib.data_structures.container.Container;
+import lib.data_structures.container.ContainerCopyableData;
 import lib.debug.MethodNameHack;
 import lib.java_api_extensions.MathX;
 import lib.tokens.enums.CopyType;
@@ -14,12 +14,12 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 import static lib.java_api_extensions.MathX.max;
 
-public class Universe extends Container<RenderableParticle, LinkedList<RenderableParticle>>
+public class Universe extends ContainerCopyableData<RenderableParticle, LinkedList<RenderableParticle>>
 {
     public double acceleration_constant;
     public double max_speed;
 
-    public LinkedList<RenderableParticle> particles;
+    public LinkedList<RenderableParticle> contents;
 
     double max_starting_velocity;
 
@@ -36,19 +36,19 @@ public class Universe extends Container<RenderableParticle, LinkedList<Renderabl
     }
 
     public Universe(Universe u, CopyType copy_type) {
-        this(u.acceleration_constant, u.max_speed, u.particles, copy_type);
+        this(u.acceleration_constant, u.max_speed, u.contents, copy_type);
     }
 
     public void init_underlying_data_structure() {
-         particles = new LinkedList<>();
+        contents = new LinkedList<>();
     }
 
     public void add_item(RenderableParticle item) {
-        particles.add(item);
+        contents.add(item);
     }
 
     public Universe new_copy(CopyType copy_type) {
-        return new Universe(acceleration_constant, max_speed, particles, copy_type);
+        return new Universe(acceleration_constant, max_speed, contents, copy_type);
     }
 
     public void copy_particles(Iterable<RenderableParticle> particles, CopyType copy_type) {
@@ -56,27 +56,27 @@ public class Universe extends Container<RenderableParticle, LinkedList<Renderabl
 
         switch (copy_type) {
             case COPY_SHALLOW:
-                this.particles = new LinkedList<>();
+                this.contents = new LinkedList<>();
                 while (p_iterator.hasNext())
-                    this.particles.add(p_iterator.next());
+                    this.contents.add(p_iterator.next());
                 break;
             case COPY_DEEP:
-                this.particles = new LinkedList<>();
+                this.contents = new LinkedList<>();
                 while (p_iterator.hasNext())
-                    this.particles.add(p_iterator.next().new_copy(copy_type));
+                    this.contents.add(p_iterator.next().new_copy(copy_type));
                 break;
         }
     }
 
     public Iterator iterator() {
-        return particles.iterator();
+        return contents.iterator();
     }
 
     public double max_velocity() {
         try {
             return max(
                     (Object p) -> ((Particle) p).velocity(),
-                    particles.iterator()
+                    contents.iterator()
             );
         } catch (MathX.UndefinedMaxExc e) {
             assert false : assert_msg(

@@ -5,7 +5,7 @@ import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.CopyType;
 
-public class RenderableParticle extends Particle
+public class RenderableParticle extends Particle<RenderableParticle>
 {
 
     public Color color;

@@ -132,8 +132,8 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         // FIXME: LOW PRIORITY: cause unnecessary iteration, inflating the O(n^2) to 2*O(n^2)
 
         int i = 1;
-        for (T pi : universe.particles) {
-            for (T pj : universe.particles.subList(i, universe.particles.size())) {
+        for (T pi : universe.contents) {
+            for (T pj : universe.contents.subList(i, universe.contents.size())) {
                 double dist = pi.distance(pj);
 
                 double dir_pi_pj_x = pj.x - pi.x; // x-component of the (pi -> pj) vector
@@ -163,7 +163,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
 
         xy_data_rw_lock.lock();
 
-        for (T p : universe.particles) {
+        for (T p : universe.contents) {
             p.vx += p.ax * dt_sim;
             p.vy += p.ay * dt_sim;
 
