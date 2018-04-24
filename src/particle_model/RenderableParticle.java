@@ -5,7 +5,7 @@ import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.CopyType;
 
-public class RenderableParticle extends Particle<RenderableParticle>
+public class RenderableParticle extends ParticleBase<RenderableParticle>
 {
 
     public Color color;
@@ -51,7 +51,7 @@ public class RenderableParticle extends Particle<RenderableParticle>
         return viewport;
     }
 
-    public Viewport view_orbit(Viewport viewport, Particle orbiter, double radius_pct_of_half_wh) {
+    public Viewport view_orbit(Viewport viewport, ParticleBase orbiter, double radius_pct_of_half_wh) {
         double viewport_width_model;
         double viewport_height_model;
 

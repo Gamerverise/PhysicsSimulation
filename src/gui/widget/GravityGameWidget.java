@@ -44,7 +44,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
     Viewport viewport;
 
-    SimulationDynamic<RenderableParticle> simulation;
+    SimulationDynamic simulation;
 
     public GravityGameWidget(Universe universe,
                              double dt_real,
@@ -63,7 +63,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
         this.init_mission = init_mission;
 
-        simulation = new SimulationDynamic<>(init_mission.init_sim, COPY_DEEP, init_run_command);
+        simulation = new SimulationDynamic(init_mission.init_sim, COPY_DEEP, init_run_command);
 
         if (simulation.atomic_run_command.get() == RUN)
             anim_multi.anim_timer.start();

@@ -2,12 +2,12 @@ package particle_model.simulation;
 
 import lib.tokens.enums.CopyType;
 import lib.tokens.enums.RunCommand;
-import particle_model.Particle;
+import particle_model.ParticleBase;
 import particle_model.Universe;
 
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 
-public class SimulationStatic<T extends Particle> {
+public class SimulationStatic<T extends ParticleBase<T>> {
     public Universe universe;
     public double dt_real;
     public double dt_sim;

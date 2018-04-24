@@ -3,7 +3,7 @@ package particle_model.simulation;
 import lib.debug.MethodNameHack;
 import lib.tokens.enums.CopyType;
 import lib.tokens.enums.RunCommand;
-import particle_model.Particle;
+import particle_model.RenderableParticle;
 import particle_model.Universe;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,7 +14,7 @@ import static lib.debug.Debug.assert_msg;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.*;
 
-public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
+public class SimulationDynamic extends SimulationStatic<RenderableParticle> {
     Thread thread;
 
     public AtomicReference<RunCommand> atomic_run_command;
@@ -35,12 +35,12 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         birth_thread();
     }
 
-    public SimulationDynamic(SimulationStatic<T> s, RunCommand override) {
+    public SimulationDynamic(SimulationStatic<RenderableParticle> s, RunCommand override) {
         this(s.universe, s.dt_real, s.dt_sim,
                 override == null ? s.init_run_command : override);
     }
 
-    public SimulationDynamic(SimulationStatic<T> s, CopyType copy_type, RunCommand override) {
+    public SimulationDynamic(SimulationStatic<RenderableParticle> s, CopyType copy_type, RunCommand override) {
         this(new SimulationStatic<>(s, copy_type), override);
     }
 
@@ -118,7 +118,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         }
     }
 
-    public void reset(SimulationStatic<T> init_sim) {
+    public void reset(SimulationStatic<RenderableParticle> init_sim) {
         exit();
 
         copy_in(init_sim, COPY_DEEP);
@@ -132,8 +132,8 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
         // FIXME: LOW PRIORITY: cause unnecessary iteration, inflating the O(n^2) to 2*O(n^2)
 
         int i = 1;
-        for (T pi : universe.contents) {
-            for (T pj : universe.contents.subList(i, universe.contents.size())) {
+        for (RenderableParticle pi : universe.contents) {
+            for (RenderableParticle pj : universe.contents.subList(i, universe.contents.size())) {
                 double dist = pi.distance(pj);
 
                 double dir_pi_pj_x = pj.x - pi.x; // x-component of the (pi -> pj) vector
@@ -163,7 +163,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
 
         xy_data_rw_lock.lock();
 
-        for (T p : universe.contents) {
+        for (RenderableParticle p : universe.contents) {
             p.vx += p.ax * dt_sim;
             p.vy += p.ay * dt_sim;
 

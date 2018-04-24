@@ -1,6 +1,8 @@
 package lib.data_structures.container;
 
-public interface UnderlyingDataStructure<DT>
+import lib.data_structures.Copyable;
+
+public interface UnderlyingDataStructure<DT> extends Copyable<UnderlyingDataStructure<DT>>
 {
-    void add_item(DT item);
+    void add(DT datum);
 }
