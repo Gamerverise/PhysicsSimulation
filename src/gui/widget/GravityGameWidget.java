@@ -46,7 +46,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
     SimulationDynamic<RenderableParticle> simulation;
 
-    public GravityGameWidget(Universe<RenderableParticle> universe,
+    public GravityGameWidget(Universe universe,
                              double dt_real,
                              double dt_sim,
                              RunCommand init_run_command,

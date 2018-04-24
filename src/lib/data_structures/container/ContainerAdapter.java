@@ -40,6 +40,7 @@ public abstract class ContainerAdapter
 
     public abstract void init_underlying_data_structure();
 
+    @SuppressWarnings("unchecked")
     public <D> D cast() {
         return (D) contents;
     }

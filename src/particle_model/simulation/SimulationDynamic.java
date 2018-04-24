@@ -23,7 +23,7 @@ public class SimulationDynamic<T extends Particle> extends SimulationStatic<T> {
 
     double time_step_counter;
 
-    public SimulationDynamic(Universe<T> universe, double dt_real, double dt_sim, RunCommand init_run_command) {
+    public SimulationDynamic(Universe universe, double dt_real, double dt_sim, RunCommand init_run_command) {
         super(universe, dt_real, dt_sim, init_run_command);
 
         time_step_counter = 0;

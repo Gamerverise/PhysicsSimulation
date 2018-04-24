@@ -39,7 +39,7 @@ public class Particle<T extends Particle<T> & Copyable<T>> implements Copyable<T
         return new Particle(this);
     }
 
-    public Particle<T> new_copy(CopyType copy_type) {
+    public T new_copy(CopyType copy_type) {
         return new Particle(this);
     }
 

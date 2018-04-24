@@ -36,10 +36,10 @@ public class SolarSystem {
     public static RenderableParticle sun = new RenderableParticle("sun", 0, 0, 0, 0, 0, 0, sun_mass, sun_radius, Color.rgb(0, 0, 0, 1));
     public static RenderableParticle earth = new RenderableParticle("earth", earth_sun_dist, 0, 0, earth_tangential_speed, 0, 0, earth_mass, earth_radius, Color.rgb(0, 0, 0, 1));
 
-    public static Universe<RenderableParticle> solar_sys = new Universe<>(G, max_speed, sun, earth);
+    public static Universe solar_sys = new Universe(G, max_speed, COPY_SHALLOW, sun, earth);
 
-    public static Universe<RenderableParticle> solar_sys_debug_1 = new Universe<>(solar_sys, COPY_DEEP);
-    public static Universe<RenderableParticle> solar_sys_debug_2 = new Universe<>(solar_sys, COPY_DEEP);
+    public static Universe solar_sys_debug_1 = new Universe(solar_sys, COPY_DEEP);
+    public static Universe solar_sys_debug_2 = new Universe(solar_sys, COPY_DEEP);
 
     public static AffineX solar_system_init_view_sun_earth;
 
@@ -47,7 +47,7 @@ public class SolarSystem {
 
 
     public static SimulationStatic<RenderableParticle> solar_system_sim = new SimulationStatic<>(
-            new Universe<>(solar_sys, COPY_SHALLOW),
+            new Universe(solar_sys, COPY_SHALLOW),
             1,       // dt_real = 1              (ms)
             60*8,     // double dt_sim = 60*8     (s) = 8 min
             SUSPEND

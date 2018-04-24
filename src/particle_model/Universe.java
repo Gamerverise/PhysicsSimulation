@@ -23,7 +23,7 @@ public class Universe extends ContainerCopyableData<RenderableParticle, LinkedLi
 
     double max_starting_velocity;
 
-    public Universe(double acceleration_constant, double max_speed, Iterable particles, CopyType copy_type) {
+    public Universe(double acceleration_constant, double max_speed, Iterable<RenderableParticle> particles, CopyType copy_type) {
         this.acceleration_constant = acceleration_constant;
         this.max_speed = max_speed;
 
@@ -68,7 +68,7 @@ public class Universe extends ContainerCopyableData<RenderableParticle, LinkedLi
         }
     }
 
-    public Iterator iterator() {
+    public Iterator<RenderableParticle> iterator() {
         return contents.iterator();
     }
 
