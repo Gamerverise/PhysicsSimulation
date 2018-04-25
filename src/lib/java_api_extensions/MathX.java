@@ -1,6 +1,8 @@
 package lib.java_api_extensions;
 
 import lib.java_lang_extensions.function_types.FunctionR1;
+import lib.java_lang_extensions.function_types.Identity;
+import lib.java_lang_extensions.parametrized_class.AtomicArrayIterator_double;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,7 +12,7 @@ import static java.lang.Math.atan;
 public class MathX {
 
     public static double max(double... nums) {
-        return max((Double d) -> d, nums);
+        return max(Identity::IDENTITY, new AtomicArrayIterator_double(nums));
     }
 
     @SafeVarargs

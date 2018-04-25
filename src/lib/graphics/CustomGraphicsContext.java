@@ -36,8 +36,8 @@ public class CustomGraphicsContext extends GraphicsContextX {
         gc.save();
 
         gc.translate(x, y);
-        gc.rotate(arrow_angle);
         gc.scale(scale, scale);
+        gc.rotate(arrow_angle);
 
         gc.moveTo(0, 0);
         gc.lineTo(1, 0);

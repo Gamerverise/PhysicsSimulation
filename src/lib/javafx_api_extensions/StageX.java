@@ -22,16 +22,29 @@ public class StageX {
     Geometry_TL_BR<Double> win_borders_px;
 
     public Stage stage;
-    public Scene scene;
+    public SceneX scene;
 
-    public StageX(Stage stage, double top, double left, double bottom, double right) {
-        this(stage, Geometry_TL_BR(top, left, bottom, right));
+    public StageX(SceneX scene) {
+        this(scene, UNKNOWN_BORDER_SIZES);
     }
 
-    public StageX(Stage stage, Geometry_TL_BR<Double> win_borders_px) {
-        this.stage = stage;
+    public StageX(SceneX scene,
+                  double top_border_thickness,
+                  double left_border_thickness,
+                  double bottom_border_thickness,
+                  double right_border_thickness)
+    {
+        this(scene, Geometry_TL_BR(top_border_thickness, left_border_thickness, bottom_border_thickness, right_border_thickness));
+    }
 
+    public StageX(SceneX scene, Geometry_TL_BR<Double> win_borders_px) {
+        this.scene = scene;
         this.win_borders_px = win_borders_px;
+    }
+
+    public void set_underlying_stage(Stage stage) {
+        this.stage = stage;
+        stage.setScene(scene);
 
         // FIXME: Do we still need these listeners?
 
@@ -49,11 +62,6 @@ public class StageX {
 //      appears when it is shown for the first time. Not sure why that is.
     }
 
-    public void set_scene(Scene scene) {
-        this.scene = scene;
-        stage.setScene(scene);
-    }
-
     public void size_changed_event_handler(
             SizeChangeFlag flag,
             ObservableValue<? extends Number> observable,
@@ -61,6 +69,19 @@ public class StageX {
             Number new_value)
     {
         // Intentionally empty
+    }
+
+    public void set_wh(double w, double h) {
+        set_external_wh(w, h);
+    }
+
+    public void set_internal_wh(double width, double height) {
+        scene.set_wh(width, height);
+    }
+
+    public void set_external_wh(double width, double height) {
+        stage.setWidth(width);
+        stage.setHeight(height);
     }
 
     Geometry_TL_BR<Double> calc_win_borders_px() {

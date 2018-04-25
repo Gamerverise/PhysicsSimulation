@@ -5,10 +5,8 @@ import javafx.scene.paint.Color;
 import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.CopyType;
-import missions.Mission;
 
 import static javafx.scene.paint.Color.YELLOWGREEN;
-import static lib.java_api_extensions.MathX.max;
 
 public class RenderableParticle extends ParticleBase<RenderableParticle>
 {
@@ -87,8 +85,7 @@ public class RenderableParticle extends ParticleBase<RenderableParticle>
         rgc.fill_circle(x, y, radius);
 
         gc.setFill(YELLOWGREEN);
-        gc.scale(scale, scale);
-        rgc.device.cgc.draw_arrow(x, y, vx, vy);
+        rgc.device.cgc.draw_arrow(x, y, scale*vx, scale*vy);
 
         gc.restore();
     }
