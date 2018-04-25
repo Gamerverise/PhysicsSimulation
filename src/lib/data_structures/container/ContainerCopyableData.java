@@ -16,17 +16,15 @@ public abstract class ContainerCopyableData
         super(contents);
     }
 
-    public void add_data(Iterable<DT> data_src, CopyType copy_type) {
-        Iterator<DT> iter = data_src.iterator();
-
+    public void add_data(Iterator<DT> data_src, CopyType copy_type) {
         switch (copy_type) {
             case COPY_SHALLOW:
-                while (iter.hasNext())
-                    this.contents.add(iter.next());
+                while (data_src.hasNext())
+                    this.contents.add(data_src.next());
                 break;
             case COPY_DEEP:
-                while (iter.hasNext())
-                    this.contents.add(iter.next().new_copy(copy_type));
+                while (data_src.hasNext())
+                    this.contents.add(data_src.next().new_copy(copy_type));
                 break;
         }
     }

@@ -1,9 +1,14 @@
 package particle_model;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import lib.render.Viewport;
 import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.CopyType;
+import missions.Mission;
+
+import static javafx.scene.paint.Color.YELLOWGREEN;
+import static lib.java_api_extensions.MathX.max;
 
 public class RenderableParticle extends ParticleBase<RenderableParticle>
 {
@@ -73,10 +78,18 @@ public class RenderableParticle extends ParticleBase<RenderableParticle>
         return viewport;
     }
 
-    public void draw(CanvasRenderingGraphicsContext rgc) {
-        rgc.device.cgc.gc.setFill(color);
+    public void draw(CanvasRenderingGraphicsContext rgc, double scale) {
+        GraphicsContext gc = rgc.device.cgc.gc;
+
+        gc.save();
+
+        gc.setFill(color);
         rgc.fill_circle(x, y, radius);
 
-        rgc.device.cgc.draw_arrow(x, y, vx, vy, Color.YELLOWGREEN);
+        gc.setFill(YELLOWGREEN);
+        gc.scale(scale, scale);
+        rgc.device.cgc.draw_arrow(x, y, vx, vy);
+
+        gc.restore();
     }
 }

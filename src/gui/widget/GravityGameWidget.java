@@ -23,6 +23,7 @@ import particle_model.simulation.SimulationStatic;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
+import static lib.java_api_extensions.MathX.max;
 import static lib.render.graphics_context.RenderingGraphicsContext.MODEL_MODE.MODEL_MODE;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
@@ -46,6 +47,8 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
 
     SimulationDynamic simulation;
 
+    double arrow_scale;
+
     public GravityGameWidget(Universe universe,
                              double dt_real,
                              double dt_sim,
@@ -56,14 +59,17 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
              init_run_command);
     }
 
-    public GravityGameWidget(Mission init_mission,
-                             RunCommand init_run_command)
-    {
+    public GravityGameWidget(Mission init_mission, RunCommand init_run_command) {
         anim_multi = new AnimatedWidgetMulti(this);
 
         this.init_mission = init_mission;
 
         simulation = new SimulationDynamic(init_mission.init_sim, COPY_DEEP, init_run_command);
+
+        double view_width = init_mission.init_view.get_width_model();
+        double view_height = init_mission.init_view.get_height_model();
+
+        arrow_scale = max(view_height, view_height) / init_mission.init_sim.universe.max_starting_velocity;
 
         if (simulation.atomic_run_command.get() == RUN)
             anim_multi.anim_timer.start();
@@ -166,7 +172,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
             rgc.begin_render(MODEL_MODE);
             {
                 for (RenderableParticle p : simulation.universe.contents)
-                    p.draw(rgc);
+                    p.draw(rgc, arrow_scale);
 
             }
             rgc.end_render();

@@ -169,9 +169,9 @@ public class SimulationDynamic extends SimulationStatic<RenderableParticle> {
 
             double new_speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
 
-            if (new_speed > universe.max_speed) {
-                p.vx = p.vx / new_speed * universe.max_speed;
-                p.vy = p.vy / new_speed * universe.max_speed;
+            if (new_speed > universe.max_velocity) {
+                p.vx = p.vx / new_speed * universe.max_velocity;
+                p.vy = p.vy / new_speed * universe.max_velocity;
             }
 
             p.x += p.vx * dt_sim;

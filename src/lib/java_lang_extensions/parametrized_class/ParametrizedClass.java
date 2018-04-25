@@ -7,6 +7,7 @@ import static lib.debug.Debug.assert_msg;
 
 public class ParametrizedClass {
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     public static <U> U new_instance(Class clazz) {
         U copy;

@@ -5,28 +5,21 @@ import lib.java_lang_extensions.function_types.FunctionR1;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import static java.lang.Math.atan;
+
 public class MathX {
 
-    public static class UndefinedMaxExc extends Exception {}
-
-    public static double max(double... nums)
-            throws UndefinedMaxExc
-    {
-        return max(
-                (Object d) -> (Double) d,
-                Arrays.asList(nums).iterator()
-        );
+    public static double max(double... nums) {
+        return max((Double d) -> d, nums);
     }
 
     @SafeVarargs
-    public static <T> double max(FunctionR1<Double, T> obj_to_double_map, T... objs)
-            throws UndefinedMaxExc
-    {
+    public static <T> double max(FunctionR1<Double, T> obj_to_double_map, T... objs) {
         return max(obj_to_double_map, Arrays.asList(objs).iterator());
     }
 
     public static <T> double max(FunctionR1<Double, T> obj_to_double_map, Iterator<T> objs)
-            throws UndefinedMaxExc
+            throws ArithmeticException
     {
 
         double max;
@@ -34,7 +27,7 @@ public class MathX {
         if (objs.hasNext())
             max = obj_to_double_map.call(objs.next());
         else
-            throw new UndefinedMaxExc();
+            throw new ArithmeticException();
 
         while (objs.hasNext()) {
             double num = obj_to_double_map.call(objs.next());
@@ -70,7 +63,25 @@ public class MathX {
         return Math.acos(degrees_to_radians(degrees));
     }
 
-    public static double atan(double degrees) {
-        return Math.atan(degrees_to_radians(degrees));
+    public static double atan_vector(double dx, double dy) {
+        if (dx == 0) {
+
+            if (dy == 0)
+                throw new ArithmeticException();
+
+            if (dy > 0)
+                return 90;
+            else
+                return -90;
+
+        } else if (dy == 0) {
+
+            if (dx > 0)
+                return 0;
+            else
+                return 180;
+        } else
+
+            return atan(dy/dx);
     }
 }

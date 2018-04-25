@@ -8,13 +8,15 @@ import lib.javafx_api_extensions.GraphicsContextX;
 
 import java.awt.geom.Point2D;
 
+import static lib.java_api_extensions.MathX.atan_vector;
+
 public class CustomGraphicsContext extends GraphicsContextX {
 
     public CustomGraphicsContext(GraphicsContext gc) {
         super(gc);
     }
 
-    public void draw_arrow(double x1, double y1, double x2, double y2, Color color) {
+    public void draw_arrow(double x, double y, double magnitude_x, double magnitude_y) {
         double fin_angle_degrees = 10;
         double fin_length_factor = 0.10;
 
@@ -24,18 +26,16 @@ public class CustomGraphicsContext extends GraphicsContextX {
         double arrow_angle;
 
         try {
-            arrow_angle = Geometry.line_angle_degrees(x1, y1, x2, y1);
+            arrow_angle = atan_vector(magnitude_x, magnitude_y);
         } catch (ArithmeticException e) {
             return;
         }
 
-        double scale = Point2D.distance(x1, y1, x2, y2);
+        double scale = Point2D.distance(0, 0, magnitude_x, magnitude_y);
 
         gc.save();
 
-        gc.setFill(color);
-
-        gc.translate(x1, y1);
+        gc.translate(x, y);
         gc.rotate(arrow_angle);
         gc.scale(scale, scale);
 
