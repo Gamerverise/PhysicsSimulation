@@ -1,17 +1,20 @@
-package lib.widget.adapters.unfinished;
+package lib.widget.adapters;
 
-import javafx.scene.layout.Region;
+import lib.widget.ParentWidget;
+import lib.widget.Widget;
 
-class AdapterWidget extends Region {
+class RootAdaptingWidget extends ParentWidget {
 
-    // AdapterWidget is the base class for all our widgets, thus acting as an interface
-    // between JavaFX and our widgets
+    RootAdaptingRegion root_adapting_region;
 
-    AdapterWidget[] children;
+    public RootAdaptingRegion get_root_adapting_region(RootAdaptingRegion root_adapting_region, Widget[] children) {
+        super(children);
+        this.root_adapting_region = root_adapting_region;
+    }
 
-//    public void layout() {
-//
-//    }
+    public SceneRootAdapter get_scene_root_adaper() {
+        return this;
+    }
 
 // FIXME: Gotta think about the uses for this code
 

@@ -29,6 +29,15 @@ public class SceneX extends Scene {
             region = null;
         }
 
-        region.resize(width, height);
+        // Here we have a hack to work around JavaFX mess. We want to change the size of a scene after it is
+        // created. Unfortunately, JavaFX does not allow doing so. However, a scene will take the preferred size
+        // of its root when the scene's window is shown. Thus, to change the size of a scene after it is created,
+        // we change the preferred size of its root.
+
+        region.setPrefWidth(width);
+        region.setPrefHeight(height);
+
+        if (getWindow().isShowing())
+            getRoot().requestLayout();
     }
 }

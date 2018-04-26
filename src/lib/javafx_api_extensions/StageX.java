@@ -77,6 +77,7 @@ public class StageX {
 
     public void set_internal_wh(double width, double height) {
         scene.set_wh(width, height);
+        stage.sizeToScene();
     }
 
     public void set_external_wh(double width, double height) {

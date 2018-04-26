@@ -2,15 +2,13 @@ package lib.widget.adapters;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
-import lib.widget.RootWidget;
-import lib.widget.Widget;
 
-public class SceneAdapter extends Region {
+public class RootAdaptingRegion extends Region {
 
     public RootWidget root_widget;
     public Node root_node;
 
-    public SceneAdapter(RootWidget root_widget) {
+    public RootAdaptingRegion(RootWidget root_widget) {
         this.root_widget = root_widget;
         this.root_node = root_widget.get_javafx_root();
 

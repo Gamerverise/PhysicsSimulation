@@ -23,6 +23,10 @@ public class GravityGameStage extends StageX {
 
     public GravityGameStage(SceneX scene, Geometry_TL_BR<Double> win_borders_px) {
         super(scene, win_borders_px);
+    }
+
+    public void adapt_late_init(Stage stage) {
+        set_underlying_stage(stage);
 
         // FIXME (maybe fixed): What is the proper/best order of operations for initialing a window? We may have the best/proper order
         // FIXME (maybe fixed): Does stage have to be showing when centerOnScreen is called? Apparently not
@@ -38,6 +42,8 @@ public class GravityGameStage extends StageX {
 
 //        stage.setFullScreen(true);
         stage.setFullScreen(false);
+
+        init_geometry();
     }
 
     public void init_geometry() {

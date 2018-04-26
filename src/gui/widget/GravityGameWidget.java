@@ -14,7 +14,6 @@ import lib.render.graphics_context.CanvasRenderingGraphicsContext;
 import lib.tokens.enums.RunCommand;
 import lib.widget.AnimatedWidget;
 import lib.widget.AnimatedWidgetMulti;
-import lib.widget.RootWidget;
 import missions.Mission;
 import particle_model.RenderableParticle;
 import particle_model.Universe;
@@ -29,7 +28,7 @@ import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.RunCommand.RUN;
 import static lib.tokens.enums.RunCommand.SUSPEND;
 
-public class GravityGameWidget extends RootWidget implements AnimatedWidget {
+public class GravityGameWidget implements AnimatedWidget {
     double min_radius_px = 1.1;
 
     public AnimatedWidgetMulti anim_multi;
@@ -130,7 +129,7 @@ public class GravityGameWidget extends RootWidget implements AnimatedWidget {
     public void reset() {
         simulation.reset(init_mission.init_sim);
         init_graphics_context();
-        layout();
+        requestLayout();
     }
 
     public void toggle_run_suspend() {

@@ -19,7 +19,8 @@ public abstract class ParentWidget extends Widget {
     public void layout_children() {
         for (Widget child : children)
             if (child instanceof ParentWidget)
-                ((ParentWidget) child).layout();
+                child.layout();
+        ?
     }
 
     public void draw() {

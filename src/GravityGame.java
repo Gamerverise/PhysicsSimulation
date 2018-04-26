@@ -3,8 +3,7 @@ import gui.stylesheets.GravityGameStylesheets;
 import gui.widget.GravityGameStage;
 import gui.widget.GravityGameWidget;
 import lib.javafx_api_extensions.SceneX;
-import lib.widget.adapters.SceneAdapter;
-import javafx.scene.Scene;
+import lib.widget.adapters.SceneRootAdapter;
 import javafx.stage.Stage;
 import lib.debug.Debug;
 import lib.javafx_api_extensions.ApplicationX;
@@ -20,7 +19,7 @@ public class GravityGame extends ApplicationX {
 
     GravityGameStage stage;
     SceneX scene;
-    SceneAdapter scene_adapter;
+    SceneRootAdapter scene_adapter;
     GravityGameWidget game_widget;
 
     public static void main(String[] args) {
@@ -39,15 +38,14 @@ public class GravityGame extends ApplicationX {
     public void build_gui(Stage stage) {
 
         this.game_widget = new GravityGameWidget(SolarSystem.mission, SUSPEND);
-        this.scene_adapter = new SceneAdapter(game_widget);
+        this.scene_adapter = new SceneRootAdapter(game_widget);
         this.scene = new SceneX(scene_adapter);
         this.stage = new GravityGameStage(scene);
 
         // FIXME: How will stylesheets interact with our JavaFX_Widget mechanism?
 //        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
 
-        this.stage.set_underlying_stage(stage);
-        this.stage.init_geometry();
+        this.stage.adapt_late_init(stage);
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
