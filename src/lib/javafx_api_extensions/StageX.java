@@ -1,6 +1,7 @@
 package lib.javafx_api_extensions;
 
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -42,7 +43,14 @@ public class StageX {
     public StageX(SceneX scene, Geometry_TL_BR<Double> win_borders_px) {
         this.scene = scene;
         this.win_borders_px = win_borders_px;
+    }
 
+    public void adapt_late_init(Stage stage) {
+        set_underlying_stage(stage);
+        calculate_win_border_allowances();
+    }
+
+    public void calculate_win_border_allowances() {
         stage.sizeToScene();
 
         // For this JavaFX workaround hack, we need the scene's width and height to be non-zero.
@@ -83,16 +91,16 @@ public class StageX {
         // Intentionally empty
     }
 
-    public void set_wh(double w, double h) {
-        set_external_wh(w, h);
-    }
-
     public void set_internal_wh(double width, double height) {
         scene.set_wh(width, height);
         stage.sizeToScene();
     }
 
     public void set_external_wh(double width, double height) {
+        double scene_width = width - win_border_allowances_px.width;
+        double scene_height = height - win_border_allowances_px.height;
+
+        scene.set_wh(scene_width, scene_height);
         stage.setWidth(width);
         stage.setHeight(height);
     }

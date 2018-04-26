@@ -1,0 +1,46 @@
+previous "previous here if desired.edsl"
+
+primordial_lex {
+    "(::empty::)"
+    "(::tab::)"
+    "(::return::)"
+    "(::whitespace::)"
+    "(::opt_whitespace::)"
+    "meta
+}
+
+key_lex id {
+
+key_lex eol_comment {
+    "//.*" -> \0
+}
+
+key_parse switch {
+    "switch" expression "{"
+        [expression ":" statement]*
+        [
+    "}"
+}
+
+key_parse loop {
+    "loop" "{"
+        statement*
+    "while" boolean_expression
+        statement*
+    "}"
+}
+
+lex differential {
+    d(::id::) -> \2
+}
+
+parse integrate {
+    "integrate" rational:a rational:b rational_function:function "differential":dx rational:num_partitions
+    ->
+    loop {
+        dx = (b - a) ;
+        rational:id:part_start = a;
+        rational:id:part_end = a + dx;
+        rational:id:cur_part = 1;
+    while
+}

@@ -26,7 +26,7 @@ public class GravityGameStage extends StageX {
     }
 
     public void adapt_late_init(Stage stage) {
-        set_underlying_stage(stage);
+        super.adapt_late_init(stage);
 
         // FIXME (maybe fixed): What is the proper/best order of operations for initialing a window? We may have the best/proper order
         // FIXME (maybe fixed): Does stage have to be showing when centerOnScreen is called? Apparently not
@@ -69,7 +69,7 @@ public class GravityGameStage extends StageX {
         if (screen_index == 1) {
 
             stage.setX(screen_bounds.getMinX());
-            set_wh(screen_width, screen_height);
+            set_external_wh(screen_width, screen_height);
 
         } else {
             double wh;
@@ -80,7 +80,8 @@ public class GravityGameStage extends StageX {
                 wh = 0.75 * screen_height;
 
             stage.setX(screen_width - wh);
-            set_internal_wh(wh, wh);
+//            set_internal_wh(wh, wh);
+            set_external_wh(wh, wh);
         }
 
         stage.setMinWidth(0.6 * stage.getWidth());

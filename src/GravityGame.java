@@ -33,6 +33,10 @@ public class GravityGame extends ApplicationX {
         Debug.print(false, DebugJavaFX::JavaFX_node_tree_debug, scene.getRoot(), 0);
 
         stage.show();
+
+        // Due to JavaFX limitations, we cannot calculate the window border info until the window showing
+
+        this.stage.adapt_late_init(stage);
     }
 
     public void build_gui(Stage stage) {
@@ -44,8 +48,6 @@ public class GravityGame extends ApplicationX {
 
         // FIXME: How will stylesheets interact with our JavaFX_Widget mechanism?
 //        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
-
-        this.stage.adapt_late_init(stage);
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {

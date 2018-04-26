@@ -11,8 +11,13 @@ import static lib.debug.Debug.assert_msg;
 public class SceneX extends Scene {
 
     public SceneX(Region root) {
-        // The width and height are hardcoded to 100 as part of a JavaFX workaround hack
-        super(root, 100, 100);
+        // The width and height are hardcoded to 800 as part of a JavaFX workaround hack
+
+        // Note: On my setup, I first tried 100 instead of 800, and I got erroneous results.
+        // I think some sort of bug or limitation is triggered on Windows (and/or JavaFX) when
+        // the scene is too small
+
+        super(root, 800, 800);
     }
 
     public void set_wh(double width, double height) {
