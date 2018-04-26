@@ -1,5 +1,7 @@
 package lib.widget;
 
+import lib.widget.adapters.RootAdapter;
+
 public abstract class Widget {
 
     ParentWidget parent;
@@ -34,11 +36,11 @@ public abstract class Widget {
 
     public void layout() {}
 
-    public RootWidget get_root() {
+    public RootAdapter get_root() {
         return parent.get_root();
     }
 
     public void layout_before_next_frame() {
-        get_root().get_javafx_root().requestLayout();
+        get_root().adapter_region_side.requestLayout();
     }
 }
