@@ -2,12 +2,13 @@ package lib.javafx_api_extensions;
 
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import lib.java_lang_extensions.tuples.Geometry_TL_BR;
+import lib.java_lang_extensions.tuples.WidthHeight;
 
 import static lib.java_lang_extensions.tuples.Geometry_TL_BR.Geometry_TL_BR;
+import static lib.java_lang_extensions.tuples.WidthHeight.WidthHeight;
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.HEIGHT_CHANGED;
 import static lib.javafx_api_extensions.StageX.SizeChangeFlag.WIDTH_CHANGED;
 import static lib.javafx_api_extensions.javafx_api_extensions_support.WinSizeFlagOverloadConst.*;
@@ -20,6 +21,7 @@ public class StageX {
     public enum SizeChangeFlag {WIDTH_CHANGED, HEIGHT_CHANGED}
 
     Geometry_TL_BR<Double> win_borders_px;
+    WidthHeight<Double> win_border_allowances_px;
 
     public Stage stage;
     public SceneX scene;
@@ -40,6 +42,16 @@ public class StageX {
     public StageX(SceneX scene, Geometry_TL_BR<Double> win_borders_px) {
         this.scene = scene;
         this.win_borders_px = win_borders_px;
+
+        stage.sizeToScene();
+
+        // For this JavaFX workaround hack, we need the scene's width and height to be non-zero.
+        // To satisfy this requirement, in the SceneX constructor, we default the scene's size to 100x100.
+
+        double width_allowance = stage.getWidth() - scene.getWidth();
+        double height_allowance = stage.getHeight() - scene.getHeight();
+
+        win_border_allowances_px = WidthHeight(width_allowance, height_allowance);
     }
 
     public void set_underlying_stage(Stage stage) {

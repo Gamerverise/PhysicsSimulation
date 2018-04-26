@@ -13,6 +13,8 @@ public class RootAdapter {
     public RootAdapter(Widget... children) {
         adapter_widget_side = new AdapterWidgetSide(children);
         adapter_region_side = new AdapterRegionSide();
+
+        adapter_region_side.requestLayout();
     }
 
     public class AdapterRegionSide extends Region {

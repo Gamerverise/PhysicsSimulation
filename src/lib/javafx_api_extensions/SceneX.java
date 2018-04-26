@@ -11,7 +11,8 @@ import static lib.debug.Debug.assert_msg;
 public class SceneX extends Scene {
 
     public SceneX(Region root) {
-        super(root);
+        // The width and height are hardcoded to 100 as part of a JavaFX workaround hack
+        super(root, 100, 100);
     }
 
     public void set_wh(double width, double height) {

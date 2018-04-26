@@ -94,10 +94,6 @@ public class GravityGameWidget extends Widget implements AnimatedWidget {
         gc.setFill(Color.rgb(255, 0, 0, 0.5));
     }
 
-    public Node get_javafx_root() {
-        return canvas;
-    }
-
     public void layout(boolean match_aspect_ratios) {
         canvas_device.set_device_geometry(x, y, width, height);
 
