@@ -1,0 +1,15 @@
+tokens {
+    escape_char                     -> \
+    quote_char                      -> "
+    whitespace                      -> "(\ \t\n)+"
+    special_char                    -> ~ ` ! @ # $ % ^ & * ( ) - + = [ ] { } \ | ; : ' " , . < > / ?
+    lex                             -> lex
+    parse                           -> parse
+    id                              -> "[_a-zA-Z][_a-zA-z0-9]*"
+    produces_op                     -> "->"
+}
+
+parse lex {
+    lex "{"
+
+}
