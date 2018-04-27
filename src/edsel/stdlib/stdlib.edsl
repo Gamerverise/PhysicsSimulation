@@ -1,15 +1,4 @@
-previous "previous here if desired.edsl"
-
-primordial_lex {
-    "(::empty::)"
-    "(::tab::)"
-    "(::return::)"
-    "(::whitespace::)"
-    "(::opt_whitespace::)"
-    "meta
-}
-
-key_lex id {
+version 0
 
 key_lex eol_comment {
     "//.*" -> \0
@@ -22,16 +11,12 @@ key_parse switch {
     "}"
 }
 
-key_parse loop {
-    "loop" "{"
-        statement*
-    "while" boolean_expression
-        statement*
-    "}"
+lex differential {
+    d(:id:) -> \2
 }
 
-lex differential {
-    d(::id::) -> \2
+parse native {
+    native 
 }
 
 parse integrate {
@@ -44,3 +29,6 @@ parse integrate {
         rational:id:cur_part = 1;
     while
 }
+
+integrate 0 to 2 iter 5
+    x^2 dx

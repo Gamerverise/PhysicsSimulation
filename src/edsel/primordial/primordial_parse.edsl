@@ -1,0 +1,54 @@
+version 0
+
+target: java
+
+phase 0 {
+
+    lex primitive_decl {
+        type(:namespace)?:id
+    }
+
+    parse parse_list {
+        parse_list list_production_name elem_production separator boolean:empty
+        ->
+        parse list_production_name {
+            elem_production (separator elem_production)*
+        }
+    }
+
+    parse read {
+        "read" file_list
+    }
+
+    parse parse_comma_list {
+        parse_comma_list list_production_name elem_production
+        ->
+        parse_comma_list list_production_name type_name elem_production ","
+    }
+
+    parse_comma_list string_list "(:string:)"
+
+    parse decorations {
+        "(:empty:)"
+        (namespace_decl local_decl)+
+    }
+
+    parse namespace_spec {
+        "(:string:)"
+        "(:string:)" "->" "(:string:)"
+    }
+
+    parse_comma_list namespace_list namespace_spec ("," namespace_spec)*
+
+    parse namespace_decl {
+        "namespace" namespace_list
+    }
+
+    parse block {
+        namespace
+    }
+
+    primordial_parse block {
+        decorations statements
+    }
+}

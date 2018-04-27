@@ -1,0 +1,131 @@
+===== Disambiguation =================================================================
+
+parse disambiguate {
+    "|"
+}
+
+===== Expressions ====================================================================
+
+parse postfix_op {
+    expression "(:op:)"
+}
+
+parse prefix_op {
+     "(:op:)" expression
+}
+
+parse binary_op {
+    expression "(:op:)" expression
+}
+
+parse n_ary_op {
+    "(" expression_list ")"  "(:op:)" "(" expression_list ")"
+}
+
+parse function_call {
+
+}
+
+parse group {
+    "(" expression ")"
+}
+
+parse expression {
+    postfix_op
+    prefix_op
+    binary_op
+    n_ary_op
+    group
+    function_call
+}
+
+===== Statements ======================================================================
+
+parse statement {
+    function_call
+    assignment
+    declaration
+    jump
+    loop
+    block
+}
+
+parse block {
+    "{"
+        statement+
+    "}"
+}
+
+===== Exception Handling ================================================================
+
+parse try_catch {
+    "try"
+        statement+
+    "catch"
+        statement
+}
+
+===== Jumps ===========================================================================
+
+parse if {
+    "if" boolean:expression statement:true ("else" statement_false)?
+    ->
+    native
+        java:
+        c++:
+            if (\expression)
+                \statement_true
+            else
+                \statement_false
+        edsl:
+            if \boolean_expression \statement_true \statement_false
+}
+
+===== Loops ===========================================================================
+
+parse loop {
+    "loop" "{"
+        statement*
+    "while" boolean_expression
+        statement*
+    ("incr"
+        statement*)
+    "}"
+}
+
+parse for {
+    "for"
+        statement*
+    "do"
+        statement*
+    ("incr"
+        statement*)
+}
+
+===== Function Declarations ===========================================================
+
+parse function {
+    "function" id
+        statement
+}
+
+parse function {
+    "function" id "{"
+        statement+
+    "}"
+}
+
+parse function {
+    ( "(" var_list ")" )? id ( "(" param_list ")" )
+        statement
+}
+
+parse function {
+    ( "(" var_list ")" )? id ( "(" param_list ")" ) "{"
+        statement+
+    "}"
+}
+
+===== Variable Declarations ============================================================
+
+===== Native

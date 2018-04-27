@@ -1,0 +1,16 @@
+version 0
+
+lex pos_rational {
+    "(:digit:)*\.?(:digit:)+"
+    "(:starting_digits:)(,(:three_digits:))*\.?(:starting_digits:)(,(:three_digits:))*"
+}
+
+lex neg_rational {
+    "-(:pos_rational:)"
+}
+
+lex rational {
+    "(:neg_rational:)"
+    "0"
+    "(:pos_rational:)"
+}

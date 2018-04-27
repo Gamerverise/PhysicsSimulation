@@ -1,0 +1,80 @@
+*********************************************************************************
+***** Phase 0 Lex
+*********************************************************************************
+
+===== Macros ================================================================
+
+lex macros {
+    "(:empty:)"                     -> ""
+    "(:tab:)"                       -> "\t"
+    "(:newline:)"                   -> "\n"
+    "(:whitespace:)"                -> "( \t\n)+"
+    "(:opt_whitespace:)"            -> "( \t\n)*"
+    "(:non_whitespace:)"            -> "[^ \t\n]+"
+
+    "(:lower_case_letter:)"         -> "[a-z]"
+    "(:upper_case_letter:)"         -> "[A-Z]"
+    "(:letter:)"                    -> "[a-z][A-Z]"
+
+    "(:digit:)"                     -> "[0-9]"
+    "(:non_zero_digit:)"            -> "[1-9]"
+
+    "(:alpha_numeric:)"             -> "[a-z][A-Z][0-9]"
+
+    "(:two_digits:)"                -> "(:digit:)(:digit:)"
+
+    "(:starting_digits:)"           -> "(:non_zero_digit:)"
+                                       "(:non_zero_digit:)(:digit:)"
+                                       "(:non_zero_digit:)(:two_digits:)"
+}
+
+===== Primitives ================================================================
+
+lex primitives {
+
+    ----- Number Types ----------------------------------------------------------
+
+    pos_int                         -> "(:non_zero_digit:)(:digit:)*"
+    neg_int                         -> "-(:pos_int:)"
+    natural                         -> "0" "(:pos_int:)"
+
+    int                             -> "(:pos_int:)"
+                                       "0"
+                                       "(:pos_int:)"
+
+    ----- Boole -----------------------------------------------------------------
+
+    boolean                         -> "true"
+                                       "false"
+}
+
+===== Identifiers ===============================================================
+
+lex identifiers {
+    id                              -> "[_(:alpha_numeric:)]+"
+    std_id                          -> "[_(:letter:)][_(:alpha_numeric:)]*"
+}
+
+===== Keywords ==================================================================
+
+lex keywords {
+    namespace
+    local
+    native
+    version
+    target
+}
+
+===== Target Languages ==========================================================
+
+lex languages {
+    bash
+    java
+    edsl
+}
+
+===== Comments ====================================================================
+
+lex single_line_comment {
+    "(:non_id_char:)(:non_id_char:)(:non_id_char:)(:non_id_char:)+"
+}
