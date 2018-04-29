@@ -18,6 +18,9 @@ phase 0 {
 
     parse read {
         "read" file_list
+        "->"
+        foreach file
+            edsl file
     }
 
     parse parse_comma_list {

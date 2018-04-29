@@ -1,29 +1,3 @@
-version 0
-separator " \t\n"
-
-escape \
-prod_param_escape :
-token_quote ""
-
-disjunction_op |
-star_op *
-pos_repeat_op +
-group_op (
-
-parse {
-    "parse" "{"
-        (production | token)+
-        \"\-\>\"
-        (token)*
-    "}"
-    "->"
-    "parse" :2 "{"
-        :4
-        "->"
-        :6
-    "}"
-}
-
 tokens {
     escape_char                     -> \
     quote_char                      -> "
@@ -33,4 +7,9 @@ tokens {
     parse                           -> parse
     id                              -> "[_a-zA-Z][_a-zA-z0-9]*"
     produces_op                     -> "->"
+}
+
+parse lex {
+    lex "{"
+
 }
