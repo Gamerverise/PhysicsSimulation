@@ -33,28 +33,26 @@ translation_literal                     separated string minus the set of expans
 
 ===== Symbols Reserved from Literals ==================================================================
 
-separator                       [ \t\n]+
-escape                          \
-separator_quotes                " "
-identifier_delims               < >
-option_delims                   [ ]
+separator                               [ \t\n]+
+escape                                  \
+separator_quotes                        " "
+identifier_delims                       < >
+option_delims                           [ ]
 
-disjunction_op                  |
-star_op                         *
-plus_op                         +
-group_op                        ( )
+disjunction_op                          |
+star_op                                 *
+plus_op                                 +
+group_op                                ( )
 
-production_op                   ->
+production_op                           ->
+
+force_reduction_op                      #
 
 ===== Symbols Reserved from Translation =================================================================
 
-escape                          \
-expansion_ref_quotes            " "
-separator_quotes                " "
-expansion_index_op              :
+escape                                  \
+expansion_ref_quotes                    " "
+separator_quotes                        " "
+expansion_index_op                      :
 
-EOS                             ; <EOF>
-
-============================================================================================================
-
-force_reduction_op              #
+EOS                                     ; <EOF>
