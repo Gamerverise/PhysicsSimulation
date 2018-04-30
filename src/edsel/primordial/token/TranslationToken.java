@@ -1,6 +1,6 @@
-package edsel.asm;
+package edsel.primordial.token;
 
-public class EdselAsmTranslationToken {
+public class TranslationToken {
     ExpansionTokenType type;
     String string;
 

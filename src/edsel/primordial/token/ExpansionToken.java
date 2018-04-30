@@ -1,6 +1,6 @@
-package edsel.asm;
+package edsel.primordial.token;
 
-public class EdselAsmExpansionToken {
+public class ExpansionToken {
     ExpansionTokenType type;
     String string;
 
@@ -39,5 +39,9 @@ public class EdselAsmExpansionToken {
         GROUP_OP                   ,
         PRODUCTION_OP              ,
         FORCE_REDUCTION_OP
+    }
+
+    public static ExpansionToken next_token(String buffer) {
+
     }
 }

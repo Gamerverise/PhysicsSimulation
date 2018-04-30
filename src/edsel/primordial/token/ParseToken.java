@@ -1,6 +1,6 @@
-package edsel.asm;
+package edsel.primordial.token;
 
-public class EdselAsmParseToken {
+public class ParseToken {
     ParseTokenType type;
     String string;
 

@@ -1,16 +1,23 @@
-package edsel.asm;
+package edsel.primordial;
+
+import edsel.primordial.token.ExpansionToken;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.CharBuffer;
 
-public class EdselAsmLex {
+import static edsel.primordial.token.SectionToken.SectionTokenType;
+import static edsel.primordial.token.SectionToken.SectionTokenType.*;
+
+public class Edsel {
 
     int src_code_size;
     String src_code;
 
-    public EdselAsmLex(String filename, int max_size) {
+    SectionTokenType cur_section = VERSION_BLOCK;
+
+    public Edsel(String filename, int max_size) {
         try {
             CharBuffer char_buf = CharBuffer.allocate(max_size);
             src_code_size = new FileReader(filename).read(char_buf);
@@ -22,8 +29,7 @@ public class EdselAsmLex {
         }
     }
 
-    public EdselAsmExpansionToken next_expansion_token() {
+    public ExpansionToken next_token() {
 
     }
-
 }
