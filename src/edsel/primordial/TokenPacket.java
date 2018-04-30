@@ -6,18 +6,18 @@ public class TokenPacket {
 
         // ==== EDSEL_PROGRAM ===================================================================
         //
-        // EDSEL_PROGRAM -> BLOCK [BLOCK_SEPARATOR BLOCK]*
+        // EDSEL_PROGRAM -> BLOCK*
 
         EDSEL_PROGRAM                       ,
 
-        // ==== BLOCK ===================================================================
-        //
-        // BLOCK -> VERSION_BLOCK | TOKEN_BLOCK | PRODUCTION_BLOCK | GRAMMAR_BLOCK
-
         BLOCK                               ,
 
+        // ==== BLOCK ===================================================================
+        //
+        // BLOCK -> VERSION_BLOCK | LEX_BLOCK | GRAMMAR_BLOCK | CODE_BLOCK
+
         VERSION_BLOCK                       ,
-        TOKEN_BLOCK                         ,
+        LEX_BLOCK                           ,
         GRAMMAR_BLOCK                       ,
         CODE_BLOCK                          ,
 
@@ -31,16 +31,38 @@ public class TokenPacket {
         THIS_VERSION                        ,   //      THIS_VERSION
         VERSION_SPECIFIER                   ,   //      [^ \t\n]+
 
+        // ==== LEX_BLOCK =======================================================================
+        //
+        // LEX_BLOCK -> LEX_KEYWORD LEX_DEF*
+
+        LEX_KEYWORD                         ,   //      LEX
+        LEX_DEF                             ,
+
+        // ==== LEX_DEF ==========================================================================
+        //
+        // LEX_DEF -> TOKEN_IDENTIFIER MATCH_EXPRESSION
+
+        TOKEN_IDENTIFIER                    ,   // [_A-Za-z0-9]+
+        MATCH_EXPRESSION                    ,   // regular expressions extended to allow sub-expressions
+                                                // defined within an Edsel program, the sub-expressions may
+                                                // be used within (: :)
+
         // ==== GRAMMAR_BLOCK ===================================================================
         //
-        // GRAMMAR_BLOCK -> GRAMMAR_KEYWORD GRAMMAR_OPEN (EXPANSION_BLOCK)+ [PRODUCTION_OP TRANSLATION_BLOCK] GRAMMAR_CLOSE
+        // GRAMMAR_BLOCK -> GRAMMAR_KEYWORD GRAMMAR_LHS
+        //                  PRODUCTION_OP (EXPANSION_BLOCK)+
+        //                  [TRANSLATION_OP TRANSLATION_BLOCK]
 
         GRAMMAR_KEYWORD                     ,   //      GRAMMAR
-        GRAMMAR_OPEN                        ,   //      {
-        EXPANSION_BLOCK                     ,
+        GRAMMAR_LHS                         ,   //      [^ \t\n]+
         PRODUCTION_OP                       ,   //      ->
-        TRANSLATION_BLOCK                   ,
-        GRAMMAR_CLOSE                       ,   //      }
+        EXPANSION                           ,
+        TRANSLATION_OP                      ,   //      :
+        TRANSLATION                         ,
+
+        GRAMMAR_ESCAPE                      ,   //      \
+        GRAMMAR_SEPARATOR                   ,   //      [ \t\n]+
+        GRAMMAR_QUOTE                       ,   //      "
 
         // ==== EXPANSION_BLOCK ==========================================================================
         //
@@ -50,7 +72,7 @@ public class TokenPacket {
                                                 //                      and the symbols reserved from expansion literals,
                                                 //                      with quotations and escapes taken into account
 
-        EXPANSION_IDENTIFIER                ,   //      [_A-Za-z0-9]+
+        EXPANSION_IDENTIFIER                ,   //      <[_A-Za-z0-9]+>
 
         DISJUNCTION_OP                      ,   //      (EXPANSION | EXPANSION)
         STAR_OP                             ,   //      EXPANSION*
@@ -60,9 +82,9 @@ public class TokenPacket {
 
         EXPANSION_ESCAPE                    ,   //      \
         EXPANSION_SEPARATOR                 ,   //      [ \t\n]+
-        EXPANSION_SEPARATOR_QUOTE           ,   //      "
+        EXPANSION_QUOTE                     ,   //      "
 
-        // ==== TRANSLATION ===================================================================
+        // ==== TRANSLATION_BLOCK ===================================================================
         //
         // TRANSLATION -> (TRANSLATION_LITERAL | EXPANSION_REF)*
 
@@ -73,11 +95,25 @@ public class TokenPacket {
 
         TRANSLATION_ESCAPE                  ,    //     \
         TRANSLATION_SEPARATOR               ,    //     [ \t\n]+
-        TRANSLATION_SEPARATOR_QUOTE         ,    //     "
+        TRANSLATION_QUOTE                   ,    //     "
 
-        // ==== Code Block ===================================================================
+        // ==== EXPANSION_REF ==================================================================
+        //
+        // EXPANSION_REF -> INDEX_REF | NAMED_REF
 
-        FORCE_REDUCTION_OP
+        INDEX_REF                           ,    //     :0|([1-9][0-9]*)
+        NAMED_REF                           ,    //     [^ \t\n]+
+
+        // ==== CODE_BLOCK =====================================================================
+        //
+        // CODE_BLOCK -> CODE_KEYWORD (CODE | FORCE_REDUCTION_OP)*
+
+        CODE_KEYWORD                        ,   //     CODE
+        CODE                                ,   //     [^ \t\n]*
+        FORCE_REDUCTION_OP                  ,   //     #
+
+        CODE_ESCAPE                         ,   //     \
+        CODE_QUOTE                              //     "
     }
 
     public TokenType tok_type;
