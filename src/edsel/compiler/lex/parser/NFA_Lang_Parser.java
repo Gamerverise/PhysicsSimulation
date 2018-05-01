@@ -1,6 +1,6 @@
 package edsel.compiler.lex.parser;
 
-import edsel.compiler.lex.automata_state.DFA_State;
+import edsel.compiler.lex.automaton.AutomatonNode;
 import edsel.compiler.lex.automaton.NFA;
 import edsel.compiler.lex.text_io.SeekableCharBuffer;
 
@@ -10,104 +10,228 @@ import static edsel.compiler.lex.parser.NFA_Lang_Parser.StateID.*;
 
 public class NFA_Lang_Parser {
 
+    public static class Invalid_NFA_Description extends Exception {}
+
+    public interface TransitionFunc {
+        void call(Stack<AutomatonNode<StateID>> state_stack)
+                throws Invalid_NFA_Description;
+    }
+
+    // =========================================================================================
+
     public enum StateID {
-        START_SUB_EXPR_ID,
+        SUB_EXPR_ID,
         ESCAPE_ID,
+        
         GROUP_OPEN_ID,
-        GROUP_INLINE_ID,
-        GROUP_REF_ID,
-        GROUP_REF_CLOSE_ID,
+        INLINE_GROUP_ID,
+        REF_GROUP_ID,
+        REF_GROUP_CLOSE_ID,
+        
         CLASS_ID,
-        COMPLIMENT_CLASS_ID,
-        COUNT_ID,
+        COMPLEMENT_CLASS_ID,
+        REPETITION_ID,
         __SIZE__
     }
 
-    public enum TokenType {NO_TYPE}
-
-    public static DFA_State<StateID> START_SUB_EXPR = new DFA_State<>(START_SUB_EXPR_ID, true);
-    public static DFA_State<StateID> ESCAPE = new DFA_State<>(StateID.ESCAPE_ID, false);
-    public static DFA_State<StateID> GROUP_OPEN = new DFA_State<>(StateID.GROUP_OPEN_ID, false);
-    public static DFA_State<StateID> GROUP_INLINE = new DFA_State<>(StateID.GROUP_INLINE_ID, false);
-    public static DFA_State<StateID> GROUP_REF = new DFA_State<>(StateID.GROUP_REF_ID, false);
-    public static DFA_State<StateID> GROUP_REF_CLOSE = new DFA_State<>(StateID.GROUP_REF_CLOSE_ID, false);
-    public static DFA_State<StateID> CLASS = new DFA_State<>(StateID.CLASS_ID, false);
-    public static DFA_State<StateID> COMPLIMENT_CLASS = new DFA_State<>(StateID.COMPLIMENT_CLASS_ID, false);
-    public static DFA_State<StateID> COUNT_OPEN = new DFA_State<>(StateID.COUNT_ID, false);
+    // =========================================================================================
     
-//    @SuppressWarnings("unchecked")
-//    DFA_State<StateID>[][] transition_matrix = new DFA_State[StateID.__SIZE__.ordinal()][];
-//
-//    {
-//        for (int i = 0; i < transition_matrix.length; i++) {
-//            //noinspection unchecked
-//            transition_matrix[i] = new DFA_State[256];
-//
-//            for (int j = 0; j < 256; j++)
-//                transition_matrix[i][j] = START_SUB_EXPR;
-//        }
-//
-//        transition_matrix[START_SUB_EXPR_ID.ordinal()]['\\'].id = START_SUB_EXPR_ID;
-//        transition_matrix[START_SUB_EXPR_ID.ordinal()]['('].id = GROUP_OPEN_ID;
-//        transition_matrix[START_SUB_EXPR_ID.ordinal()]['['].id = CLASS_OPEN_ID;
-//        transition_matrix[START_SUB_EXPR_ID.ordinal()]['{'].id = COUNT_ID;
-//
-//        transition_matrix[GROUP_OPEN_ID.ordinal()][':'].id = GROUP_REF_ID;
-//        transition_matrix[GROUP_OPEN_ID.ordinal()]['\\'].id = ESCAPE_ID;
-//    }
+    public static AutomatonNode<StateID> SUB_EXPR_NODE = new AutomatonNode<>(SUB_EXPR_ID, true);
+    public static AutomatonNode<StateID> ESCAPE_NODE = new AutomatonNode<>(StateID.ESCAPE_ID, false);
+    
+    public static AutomatonNode<StateID> GROUP_OPEN_NODE = new AutomatonNode<>(StateID.GROUP_OPEN_ID, false);
+    public static AutomatonNode<StateID> INLINE_GROUP_NODE = new AutomatonNode<>(StateID.INLINE_GROUP_ID, false);
+    public static AutomatonNode<StateID> REF_GROUP_NODE = new AutomatonNode<>(StateID.REF_GROUP_ID, false);
+    public static AutomatonNode<StateID> REF_GROUP_CLOSE_NODE = new AutomatonNode<>(StateID.REF_GROUP_CLOSE_ID, false);
+    
+    public static AutomatonNode<StateID> CLASS_NODE = new AutomatonNode<>(StateID.CLASS_ID, false);
+    public static AutomatonNode<StateID> COMPLEMENT_CLASS_NODE = new AutomatonNode<>(StateID.COMPLEMENT_CLASS_ID, false);
+    public static AutomatonNode<StateID> REPETITION_OPEN_NODE = new AutomatonNode<>(StateID.REPETITION_ID, false);
 
-    public class Invalid_NFA_Description extends Exception {}
+    // =========================================================================================
+    
+    public int SUB_EXPR_STATE = SUB_EXPR_ID.ordinal();
+    public int ESCAPE_STATE = ESCAPE_ID.ordinal();
+    
+    public int GROUP_OPEN_STATE = GROUP_OPEN_ID.ordinal();
+    public int INLINE_GROUP_STATE = INLINE_GROUP_ID.ordinal();
+    public int REF_GROUP_STATE = REF_GROUP_ID.ordinal();
+    public int REF_GROUP_CLOSE_STATE = REF_GROUP_CLOSE_ID.ordinal();
+    
+    public int CLASS_STATE = CLASS_ID.ordinal();
+    public int COMPLEMENT_CLASS_STATE = COMPLEMENT_CLASS_ID.ordinal();
+    public int REPETITION_STATE = REPETITION_ID.ordinal();
 
-    public <U> NFA<U> parse_dfa_description(SeekableCharBuffer expr)
+    // =========================================================================================
+
+    @SuppressWarnings("unchecked")
+    public static TransitionFunc[][] transition_matrix = new TransitionFunc[StateID.__SIZE__.ordinal()][];
+
+    public static int DEFAULT_CHAR = 257;
+    
+    {
+        for (int i = 0; i < transition_matrix.length; i++) {
+            //noinspection unchecked
+            transition_matrix[i] = new TransitionFunc[DEFAULT_CHAR];
+        }
+
+        transition_matrix[SUB_EXPR_STATE]['.'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[SUB_EXPR_STATE]['\\'] = NFA_Lang_Parser::start_escape;
+        transition_matrix[SUB_EXPR_STATE]['?'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[SUB_EXPR_STATE]['+'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[SUB_EXPR_STATE]['*'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[SUB_EXPR_STATE]['('] = NFA_Lang_Parser::start_group;
+        transition_matrix[SUB_EXPR_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[SUB_EXPR_STATE][')'] = NFA_Lang_Parser::error;
+        transition_matrix[SUB_EXPR_STATE]['['] = NFA_Lang_Parser::start_class;
+        transition_matrix[SUB_EXPR_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[SUB_EXPR_STATE]['<'] = NFA_Lang_Parser::start_complement_class;
+        transition_matrix[SUB_EXPR_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[SUB_EXPR_STATE]['{'] = NFA_Lang_Parser::start_repetition;
+        transition_matrix[SUB_EXPR_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[SUB_EXPR_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::finish_sub_expr;
+
+        transition_matrix[ESCAPE_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::finish_escape;
+
+        transition_matrix[GROUP_OPEN_STATE]['.'] = NFA_Lang_Parser::start_inline_group;
+        transition_matrix[GROUP_OPEN_STATE]['\\'] = NFA_Lang_Parser::start_escape;
+        transition_matrix[GROUP_OPEN_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE]['('] = NFA_Lang_Parser::start_inline_group;
+        transition_matrix[GROUP_OPEN_STATE][':'] = NFA_Lang_Parser::start_ref_group;
+        transition_matrix[GROUP_OPEN_STATE][')'] = NFA_Lang_Parser::finish_inline_group;
+        transition_matrix[GROUP_OPEN_STATE]['['] = NFA_Lang_Parser::start_class;
+        transition_matrix[GROUP_OPEN_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE]['<'] = NFA_Lang_Parser::start_complement_class;
+        transition_matrix[GROUP_OPEN_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE]['{'] = NFA_Lang_Parser::start_repetition;
+        transition_matrix[GROUP_OPEN_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[GROUP_OPEN_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::start_inline_group;
+
+        transition_matrix[INLINE_GROUP_STATE]['.'] = NFA_Lang_Parser::start_sub_expr;
+        transition_matrix[INLINE_GROUP_STATE]['\\'] = NFA_Lang_Parser::start_escape;
+        transition_matrix[INLINE_GROUP_STATE]['?'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[INLINE_GROUP_STATE]['+'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[INLINE_GROUP_STATE]['*'] = NFA_Lang_Parser::finish_sub_expr;
+        transition_matrix[INLINE_GROUP_STATE]['('] = NFA_Lang_Parser::start_group;
+        transition_matrix[INLINE_GROUP_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[INLINE_GROUP_STATE][')'] = NFA_Lang_Parser::finish_inline_group;
+        transition_matrix[INLINE_GROUP_STATE]['['] = NFA_Lang_Parser::start_class;
+        transition_matrix[INLINE_GROUP_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[INLINE_GROUP_STATE]['<'] = NFA_Lang_Parser::start_complement_class;
+        transition_matrix[INLINE_GROUP_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[INLINE_GROUP_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[INLINE_GROUP_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[INLINE_GROUP_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::start_sub_expr;
+
+        transition_matrix[REF_GROUP_STATE]['.'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['\\'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['('] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE][':'] = NFA_Lang_Parser::finish_ref_group;
+        transition_matrix[REF_GROUP_STATE][')'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['['] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['<'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::continue_ref_group;
+
+        transition_matrix[REF_GROUP_CLOSE_STATE]['.'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['\\'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['('] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE][')'] = NFA_Lang_Parser::finish_ref_group;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['['] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['<'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[REF_GROUP_CLOSE_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::error;
+
+        transition_matrix[CLASS_STATE]['.'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['\\'] = NFA_Lang_Parser::start_escape;
+        transition_matrix[CLASS_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['('] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE][')'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['['] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE][']'] = NFA_Lang_Parser::finish_class;
+        transition_matrix[CLASS_STATE]['<'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[CLASS_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::continue_class;
+
+        transition_matrix[COMPLEMENT_CLASS_STATE]['.'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['\\'] = NFA_Lang_Parser::start_escape;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['('] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE][')'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['['] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['<'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['>'] = NFA_Lang_Parser::finish_complement_class;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE]['}'] = NFA_Lang_Parser::error;
+        transition_matrix[COMPLEMENT_CLASS_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::continue_complement_class;
+
+        transition_matrix[REPETITION_STATE]['.'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['\\'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['?'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['+'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['*'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['('] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE][':'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE][')'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['['] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE][']'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['<'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['>'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['{'] = NFA_Lang_Parser::error;
+        transition_matrix[REPETITION_STATE]['}'] = NFA_Lang_Parser::finish_repetition;
+        transition_matrix[REPETITION_STATE][DEFAULT_CHAR] = NFA_Lang_Parser::error;
+
+        transition_matrix[REPETITION_STATE]['0'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['1'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['2'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['3'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['4'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['5'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['6'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['7'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['8'] = NFA_Lang_Parser::continue_repetition;
+        transition_matrix[REPETITION_STATE]['9'] = NFA_Lang_Parser::continue_repetition;
+    }
+
+    // =========================================================================================
+
+    public static <U> NFA<U> parse_dfa_description(SeekableCharBuffer expr)
             throws Invalid_NFA_Description
     {
-        Stack<DFA_State<StateID>> state_stack = new Stack<>();
+        Stack<AutomatonNode<StateID>> state_stack = new Stack<>();
         
-        state_stack.push(START_SUB_EXPR);
+        state_stack.push(SUB_EXPR_NODE);
 
         while (true) {
             int chr = expr.next();
+            
+            transition_matrix[state_stack.peek()][chr].call(state_stack);
 
-            switch (state_stack.peek().id) {
-
-                case START_SUB_EXPR_ID:
-                    sub_expr_start_transition(state_stack, chr);
-                    break;
-
-                case ESCAPE_ID:
-                    escape_transition(state_stack, chr);
-                    break;
-
-                case GROUP_OPEN_ID:
-                    group_open_transition(state_stack, chr);
-                    break;
-
-                case GROUP_INLINE_ID:
-                    group_inline_transition(state_stack, chr);
-                    break;
-
-                case GROUP_REF_ID:
-                    group_ref_transition(state_stack, chr);
-                    break;
-
-                case GROUP_REF_CLOSE_ID:
-                    group_ref_close_transition(state_stack, chr);
-                    break;
-
-                case CLASS_ID:
-                    class_transition(state_stack, chr);
-                    break;
-
-                case COMPLIMENT_CLASS_ID:
-                    compliment_class_transition(state_stack, chr);
-                    break;
-
-                case COUNT_ID:
-                    count_transition(state_stack, chr);
-                    break;
-            }
-
-            DFA_State<StateID> state = state_stack.peek();
+            AutomatonNode<StateID> state = state_stack.peek();
 
             if (chr == -1) {
                 if (state_stack.size() == 1)
@@ -118,155 +242,38 @@ public class NFA_Lang_Parser {
         }
     }
 
-    public void sub_expr_start_transition(Stack<DFA_State<StateID>> state_stack, int chr)
+    // =========================================================================================
+
+    public static void start_sub_expr(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_sub_expr(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_escape(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_escape(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_group(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_inline_group(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_inline_group(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_ref_group(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void continue_ref_group(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_ref_group(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_class(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void continue_class(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_class(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_complement_class(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void continue_complement_class(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_complement_class(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void start_repetition(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void continue_repetition(Stack<AutomatonNode<StateID>> state_stack) {}
+    public static void finish_repetition(Stack<AutomatonNode<StateID>> state_stack) {}
+
+    public static void error(Stack<AutomatonNode<StateID>> state_stack)
             throws Invalid_NFA_Description
     {
-        switch (chr) {
-            case '\\':
-                state_stack.push(ESCAPE);
-                break;
-
-            case '(':
-                state_stack.push(GROUP_OPEN);
-                break;
-
-            case ')':
-                throw new Invalid_NFA_Description();
-
-            case '[':
-                state_stack.push(CLASS);
-                break;
-
-            case ']':
-                throw new Invalid_NFA_Description();
-
-            case '<':
-                state_stack.push(CLASS);
-                break;
-
-            case '>':
-                throw new Invalid_NFA_Description();
-
-            case '{':
-                state_stack.push(COUNT_OPEN);
-                break;
-
-            case '}':
-                throw new Invalid_NFA_Description();
-
-            default:
-                break;
-        }
-    }
-
-    public void escape_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        state_stack.pop();
-    }
-
-    public void group_open_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        state_stack.pop();
-
-        switch (chr) {
-            case ':':
-                state_stack.push(GROUP_REF);
-                break;
-
-            case ')':
-                state_stack.pop();
-                break;
-
-            default:
-                state_stack.push(GROUP_INLINE);
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void group_inline_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case ')':
-                state_stack.pop();
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void group_ref_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case ':':
-                state_stack.push(GROUP_REF_CLOSE);
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void group_ref_close_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case ')':
-                state_stack.pop();
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void class_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case ']':
-                state_stack.pop();
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void compliment_class_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case '>':
-                state_stack.pop();
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
-    }
-
-    public void count_transition(Stack<DFA_State<StateID>> state_stack, int chr)
-            throws Invalid_NFA_Description
-    {
-        switch (chr) {
-            case '}':
-                state_stack.pop();
-                break;
-
-            default:
-                sub_expr_start_transition(state_stack, chr);
-                break;
-        }
+        throw new Invalid_NFA_Description();
     }
 }
