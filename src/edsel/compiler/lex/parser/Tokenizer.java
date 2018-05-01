@@ -1,6 +1,6 @@
 package edsel.compiler.lex.parser;
 
-import edsel.compiler.lex.automaton.AutomatonNode;
+import edsel.compiler.lex.automaton.DFA_State;
 import edsel.compiler.lex.automaton.DFA;
 import edsel.compiler.lex.text_io.SeekableCharBuffer;
 import edsel.compiler.lex.text_io.VarLengthString;
@@ -19,7 +19,7 @@ public class Tokenizer<T> {
     public Token<T> next_tok() {
         VarLengthString token = new VarLengthString();
 
-        AutomatonNode<T> cur_state = dfa.start;
+        DFA_State<T> cur_state = dfa.start;
 
         while (true) {
             int chr = input.next();

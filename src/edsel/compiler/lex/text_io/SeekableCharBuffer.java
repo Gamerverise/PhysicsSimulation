@@ -6,7 +6,7 @@ public class SeekableCharBuffer {
 
     public int next() {
         if (cur_pos < buf.length)
-            return buf[cur_pos];
+            return buf[cur_pos++];
 
         return -1;
     }
