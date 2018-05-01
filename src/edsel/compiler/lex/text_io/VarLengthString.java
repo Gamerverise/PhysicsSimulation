@@ -1,8 +1,8 @@
-package edsel.compiler.lex;
+package edsel.compiler.lex.text_io;
 
 import java.util.LinkedList;
 
-public class LexString {
+public class VarLengthString {
 
     public LinkedList<Integer> chars = new LinkedList<>();
 

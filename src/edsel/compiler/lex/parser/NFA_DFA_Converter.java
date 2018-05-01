@@ -1,8 +1,9 @@
-package edsel.compiler.lex;
+package edsel.compiler.lex.parser;
 
-import static edsel.compiler.lex.DFA_Expr_To_NFA.State.*;
+import edsel.compiler.lex.text_io.SeekableCharBuffer;
+import edsel.compiler.lex.automaton.NFA;
 
-public class DFA_Expr_To_NFA {
+public class NFA_DFA_Converter {
 
     public enum State {
         START,
@@ -18,7 +19,7 @@ public class DFA_Expr_To_NFA {
         EXPECTING_COUNT_CLOSE
     }
 
-    public <U> NFA<U> dfa_expr_to_nfa(LexBuffer expr) {
+    public <U> NFA<U> dfa_expr_to_nfa(SeekableCharBuffer expr) {
         State cur_state = START;
 
         while (true) {
@@ -156,7 +157,7 @@ public class DFA_Expr_To_NFA {
 
             if (chr == -1) {
                 if (cur_state.is_finish)
-                    return new AutomatonToken<>(cur_state.tok_type, token.toString());
+                    return new Token<>(cur_state.tok_type, token.toString());
                 else
                     return null;
             }
@@ -170,7 +171,7 @@ public class DFA_Expr_To_NFA {
 
             if (cur_state.is_finish) {
                 input.backup();
-                return new AutomatonToken<>(cur_state.tok_type, token.convert());
+                return new Token<>(cur_state.tok_type, token.convert());
             }
         }
     }

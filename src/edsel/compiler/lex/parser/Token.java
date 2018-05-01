@@ -1,10 +1,10 @@
-package edsel.compiler.lex;
+package edsel.compiler.lex.parser;
 
-public class AutomatonToken<T> {
+public class Token<T> {
     public T tok_type;
     public String token;
 
-    public AutomatonToken(T tok_type, String token) {
+    public Token(T tok_type, String token) {
         this.tok_type = tok_type;
         this.token = token;
     }

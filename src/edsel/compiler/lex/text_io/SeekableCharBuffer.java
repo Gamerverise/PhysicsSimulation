@@ -1,6 +1,6 @@
-package edsel.compiler.lex;
+package edsel.compiler.lex.text_io;
 
-public class LexBuffer {
+public class SeekableCharBuffer {
     public char[] buf;
     public int cur_pos;
 
