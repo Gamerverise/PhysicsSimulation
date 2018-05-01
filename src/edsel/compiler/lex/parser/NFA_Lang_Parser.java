@@ -1,7 +1,7 @@
 package edsel.compiler.lex.parser;
 
-import edsel.compiler.lex.automaton.DFA_State;
-import edsel.compiler.lex.automaton.NFA;
+import edsel.compiler.lex.automaton.FiniteAutomaton;
+import edsel.compiler.lex.automaton.FiniteAutomatonState;
 import edsel.compiler.lex.text_io.SeekableCharBuffer;
 
 import java.util.Stack;
@@ -39,18 +39,31 @@ public class NFA_Lang_Parser {
     }
 
     // =========================================================================================
+
+    public static class ParseState<ID_TYPE> {
+
+        SeekableCharBuffer input;
+        Stack<FiniteAutomatonState<ID_TYPE>> state_stack = new Stack<>();
+        FiniteAutomaton<ID_TYPE> nfa = new FiniteAutomaton<>();
+
+        ParseState(SeekableCharBuffer input) {
+            this.input = input;
+        }
+    }
+
+    // =========================================================================================
+
+    public static FiniteAutomatonState<StateID> SUB_EXPR_STATE = new FiniteAutomatonState<>(SUB_EXPR_ID, true);
+    public static FiniteAutomatonState<StateID> ESCAPE_STATE = new FiniteAutomatonState<>(StateID.ESCAPE_ID, false);
     
-    public static DFA_State<StateID> SUB_EXPR_STATE = new DFA_State<>(SUB_EXPR_ID, true);
-    public static DFA_State<StateID> ESCAPE_STATE = new DFA_State<>(StateID.ESCAPE_ID, false);
+    public static FiniteAutomatonState<StateID> GROUP_OPEN_STATE = new FiniteAutomatonState<>(StateID.GROUP_OPEN_ID, false);
+    public static FiniteAutomatonState<StateID> INLINE_GROUP_STATE = new FiniteAutomatonState<>(StateID.INLINE_GROUP_ID, false);
+    public static FiniteAutomatonState<StateID> REF_GROUP_STATE = new FiniteAutomatonState<>(StateID.REF_GROUP_ID, false);
+    public static FiniteAutomatonState<StateID> REF_GROUP_CLOSE_STATE = new FiniteAutomatonState<>(StateID.REF_GROUP_CLOSE_ID, false);
     
-    public static DFA_State<StateID> GROUP_OPEN_STATE = new DFA_State<>(StateID.GROUP_OPEN_ID, false);
-    public static DFA_State<StateID> INLINE_GROUP_STATE = new DFA_State<>(StateID.INLINE_GROUP_ID, false);
-    public static DFA_State<StateID> REF_GROUP_STATE = new DFA_State<>(StateID.REF_GROUP_ID, false);
-    public static DFA_State<StateID> REF_GROUP_CLOSE_STATE = new DFA_State<>(StateID.REF_GROUP_CLOSE_ID, false);
-    
-    public static DFA_State<StateID> CLASS_STATE = new DFA_State<>(StateID.CLASS_ID, false);
-    public static DFA_State<StateID> COMPLEMENT_CLASS_STATE = new DFA_State<>(StateID.COMPLEMENT_CLASS_ID, false);
-    public static DFA_State<StateID> REPETITION_STATE = new DFA_State<>(StateID.REPETITION_ID, false);
+    public static FiniteAutomatonState<StateID> CLASS_STATE = new FiniteAutomatonState<>(StateID.CLASS_ID, false);
+    public static FiniteAutomatonState<StateID> COMPLEMENT_CLASS_STATE = new FiniteAutomatonState<>(StateID.COMPLEMENT_CLASS_ID, false);
+    public static FiniteAutomatonState<StateID> REPETITION_STATE = new FiniteAutomatonState<>(StateID.REPETITION_ID, false);
 
     // =========================================================================================
     
@@ -59,7 +72,7 @@ public class NFA_Lang_Parser {
     @SuppressWarnings("unchecked")
     public static TransitionFunc[][] transition_matrix = new TransitionFunc[StateID.__SIZE__.ordinal()][];
 
-    public void set_transition(DFA_State<StateID> state, int chr, TransitionFunc tf) {
+    public void set_transition(FiniteAutomatonState<StateID> state, int chr, TransitionFunc tf) {
         transition_matrix[state.id.ordinal()][chr] = tf;
     }
 
@@ -213,11 +226,11 @@ public class NFA_Lang_Parser {
 
     // =========================================================================================
 
-    public static <U> NFA<U> parse_dfa_description(SeekableCharBuffer expr)
+    public static <U> FiniteAutomaton<U> parse_dfa_description(SeekableCharBuffer expr)
             throws Invalid_NFA_Description
     {
         ParseState<StateID> parse_state = new ParseState<>(expr);
-        Stack<DFA_State<StateID>> state_stack = parse_state.state_stack;
+        Stack<FiniteAutomatonState<StateID>> state_stack = new Stack<>();
 
         state_stack.push(SUB_EXPR_STATE);
 
@@ -226,7 +239,7 @@ public class NFA_Lang_Parser {
             
             transition_matrix[state_stack.peek().id.ordinal()][chr].call(parse_state);
 
-            DFA_State<StateID> state = state_stack.peek();
+            FiniteAutomatonState<StateID> state = state_stack.peek();
 
             if (chr == -1) {
                 if (state_stack.size() == 1)

@@ -1,7 +1,6 @@
 package edsel.compiler.lex.parser;
 
 import edsel.compiler.lex.text_io.SeekableCharBuffer;
-import edsel.compiler.lex.automaton.NFA;
 
 public class NFA_DFA_Converter {
 
