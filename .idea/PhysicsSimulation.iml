@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/output" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/jflex" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/jflex/test" />
+      <excludeFolder url="file://$MODULE_DIR$/src/edsel/primordial/token/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/exclude" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/jfx_extensions/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/widgets/widget_support/old" />

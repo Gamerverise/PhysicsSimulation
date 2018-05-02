@@ -1,6 +1,6 @@
-package edsel.compiler.lex.parser;
+package edsel.lib.lex.parser;
 
-import edsel.compiler.lex.text_io.SeekableCharBuffer;
+import edsel.lib.lex.text_io.SeekableCharBuffer;
 
 public class NFA_DFA_Converter {
 

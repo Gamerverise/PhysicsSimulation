@@ -1,4 +1,4 @@
-package edsel.compiler.parser;
+package edsel.lib.parser;
 
 import edsel.primordial.token.ExpansionToken;
 

@@ -1,4 +1,4 @@
-package edsel.compiler.lex.text_io;
+package edsel.lib.lex.text_io;
 
 import java.util.LinkedList;
 
