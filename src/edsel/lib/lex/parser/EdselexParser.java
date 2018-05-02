@@ -2,7 +2,7 @@ package edsel.lib.lex.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
 import edsel.lib.lex.automaton.FiniteAutomatonState;
-import edsel.lib.lex.text_io.SeekableCharBuffer;
+import edsel.lib.data_structure.SeekableCharBuffer;
 
 import java.util.Stack;
 
@@ -37,11 +37,11 @@ public abstract class EdselexParser<REDUCTION> {
 
     public static class ParseState<ID_TYPE, REDUCTION> {
 
-        SeekableCharBuffer input;
-        Stack<FiniteAutomatonState<ID_TYPE, REDUCTION>> state_stack = new Stack<>();
-        FiniteAutomaton<ID_TYPE, REDUCTION> nfa = new FiniteAutomaton<>();
+        public SeekableCharBuffer input;
+        public Stack<FiniteAutomatonState<ID_TYPE, REDUCTION>> state_stack = new Stack<>();
+        public FiniteAutomaton<ID_TYPE, REDUCTION> nfa = new FiniteAutomaton<>();
 
-        ParseState(SeekableCharBuffer input) {
+        public ParseState(SeekableCharBuffer input) {
             this.input = input;
         }
     }
@@ -226,7 +226,7 @@ public abstract class EdselexParser<REDUCTION> {
 
     // =========================================================================================
 
-    public FiniteAutomaton<StateID, REDUCTION> parse_dfa_description(SeekableCharBuffer expr)
+    public REDUCTION parse_edselex(SeekableCharBuffer expr)
             throws Invalid_NFA_Description
     {
         ParseState<StateID, REDUCTION> parse_state = new ParseState<>(expr);
@@ -236,14 +236,15 @@ public abstract class EdselexParser<REDUCTION> {
 
         while (true) {
             int chr = expr.next();
-            
+
+            //noinspection unchecked
             transition_matrix[state_stack.peek().id.ordinal()][chr].call(parse_state);
 
             FiniteAutomatonState<StateID, REDUCTION> state = state_stack.peek();
 
             if (chr == -1) {
                 if (state_stack.size() == 1)
-                    return ;
+                    return state_stack.pop().reduction;
                 else
                     return null;
             }

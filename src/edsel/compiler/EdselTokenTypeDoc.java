@@ -98,5 +98,6 @@ public enum EdselTokenTypeDoc {
 
     CODE_KEYWORD                        ,   //     CODE
     CODE                                ,   //     [^ \t\n]*
-    FORCE_REDUCTION_OP                  ,   //     #
+    FORCE_PRODUCTION                    ,   //     ->
+    FORCE_REDUCTION                         //     #
 }

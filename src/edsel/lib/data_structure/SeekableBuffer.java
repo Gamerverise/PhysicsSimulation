@@ -1,14 +1,15 @@
-package edsel.lib.lex.text_io;
+package edsel.lib.data_structure;
 
-public class SeekableCharBuffer {
-    public char[] buf;
+public class SeekableBuffer<T> {
+    public T[] buf;
+    public T eof;
     public int cur_pos;
 
-    public int next() {
+    public T next() {
         if (cur_pos < buf.length)
             return buf[cur_pos++];
 
-        return -1;
+        return eof;
     }
 
     public void backup() {

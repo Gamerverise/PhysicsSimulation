@@ -1,4 +1,4 @@
-package edsel.compiler;
+package edsel.compiler.old;
 
 public enum EdselLexTokenType {
 
