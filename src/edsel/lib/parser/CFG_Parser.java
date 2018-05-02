@@ -3,7 +3,7 @@ package edsel.lib.parser;
 import edsel.lib.data_structure.SeekableBuffer;
 import edsel.lib.data_structure.graph.Vertex;
 
-public class  Parser_CFG<EXPANSIONS, TERMINALS extends GrammarSymbol, REDUCTIONS> {
+public class CFG_Parser<EXPANSIONS, TERMINALS extends GrammarSymbol, REDUCTIONS> {
 
     public CFG_Vertex<EXPANSIONS> grammar;
     public EXPANSIONS expansions;

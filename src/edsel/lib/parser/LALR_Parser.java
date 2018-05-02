@@ -10,14 +10,14 @@ import java.nio.CharBuffer;
 import static edsel.primordial.token.SectionToken.SectionTokenType;
 import static edsel.primordial.token.SectionToken.SectionTokenType.VERSION_BLOCK;
 
-public class Parser_LALR {
+public class LALR_Parser {
 
     int src_code_size;
     String src_code;
 
     SectionTokenType cur_section = VERSION_BLOCK;
 
-    public Parser_LALR(String filename, int max_size) {
+    public LALR_Parser(String filename, int max_size) {
         try {
             CharBuffer char_buf = CharBuffer.allocate(max_size);
             src_code_size = new FileReader(filename).read(char_buf);
