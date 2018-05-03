@@ -113,5 +113,4 @@ lex mlc_end {
 
 lex multi_line_comment {
     "(:mlc_start:).*(:mlc_end:)"
-    "(:non_id_char:)(:non_id_char:)(:non_id_char:)(:non_id_char:)+"}
 }
