@@ -1,8 +1,8 @@
 package edsel.compiler.edselex_grammar;
 
-import edsel.lib.parser.grammar.GrammarTerminalSet;
+import edsel.lib.cfg.data_structure.CFG_TerminalSet;
 
-public class EdselexTerminalSetSet extends GrammarTerminalSet<EdselexTerminal> {
+public class EdselexTerminalSetSet extends CFG_TerminalSet<EdselexTerminal> {
 
     public static EdselexTerminalSetSet EDSELEX_TERMINALS = new EdselexTerminalSetSet();
 

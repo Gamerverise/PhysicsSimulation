@@ -1,4 +1,4 @@
-package edsel.lib.data_structure;
+package edsel.lib.io;
 
 import java.util.LinkedList;
 

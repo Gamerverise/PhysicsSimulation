@@ -1,8 +1,8 @@
 package edsel.lib.lex.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
-import edsel.lib.data_structure.SeekableCharBuffer;
-import edsel.lib.data_structure.VarLengthString;
+import edsel.lib.io.SeekableCharBuffer;
+import edsel.lib.io.VarLengthString;
 
 import static edsel.lib.lex.parser.TokenizerLangParser.DFA_ExprLexStates.*;
 

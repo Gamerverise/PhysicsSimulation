@@ -1,8 +1,8 @@
 package edsel.compiler.edselex_grammar;
 
-import edsel.lib.parser.grammar.GrammarSymbol;
+import edsel.lib.cfg.data_structure.CFG_Symbol;
 
-public class EdselexSymbolSet extends GrammarSymbol<EdselexProduction, EdselexTerminal> {
+public class EdselexSymbolSet extends CFG_Symbol<EdselexProduction, EdselexTerminal> {
 
     public static EdselexSymbolSet EDSELEX_GRAMMAR_SYMBOL;
 

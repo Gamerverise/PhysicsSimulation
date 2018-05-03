@@ -1,10 +1,14 @@
 package edsel.lib.parser.cfg;
 
-import edsel.lib.data_structure.SeekableBuffer;
+import edsel.lib.io.SeekableBuffer;
 import edsel.lib.data_structure.graph.Vertex;
-import edsel.lib.parser.grammar.GrammarTerminalSet;
 
-public class CFG_Parser<PRODUCTION_SET, TERMINAL_SET extends GrammarTerminalSet<TERMINAL_SET>, REDUCTION_SET> {
+public class CFG_Parser
+        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+                TERMINAL_VALUE_TYPE,
+                ENUM_PRODUCTION_ID,
+                REDUCTION_TYPE>
+{
 
     public CFG_Vertex<PRODUCTION_SET> grammar;
     public PRODUCTION_SET productions;

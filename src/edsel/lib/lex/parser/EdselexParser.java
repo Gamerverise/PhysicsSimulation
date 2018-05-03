@@ -2,7 +2,7 @@ package edsel.lib.lex.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
 import edsel.lib.lex.automaton.FiniteAutomatonState;
-import edsel.lib.data_structure.SeekableCharBuffer;
+import edsel.lib.io.SeekableCharBuffer;
 
 import java.util.Stack;
 
