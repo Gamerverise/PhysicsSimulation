@@ -1,4 +1,4 @@
-package edsel.lib.lex.parser;
+package edsel.lib.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
 import edsel.lib.lex.automaton.FiniteAutomatonState;
@@ -6,7 +6,7 @@ import edsel.lib.io.SeekableCharBuffer;
 
 import java.util.Stack;
 
-import static edsel.lib.lex.parser.EdselexParser.StateID.*;
+import static edsel.lib.parser.EdselexParser.StateID.*;
 
 public abstract class EdselexParser<REDUCTION> {
 

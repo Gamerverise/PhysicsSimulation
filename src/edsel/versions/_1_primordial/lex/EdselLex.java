@@ -1,6 +1,6 @@
 package edsel.versions._1_primordial.lex;
 
-import edsel.lib.lex.parser.EdselexParser;
+import edsel.lib.parser.EdselexParser;
 
 public class EdselLex extends EdselexParser<EdselLexTokenExpr> {
 

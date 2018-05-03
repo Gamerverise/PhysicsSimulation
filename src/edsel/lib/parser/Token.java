@@ -1,4 +1,4 @@
-package edsel.lib.lex.parser;
+package edsel.lib.parser;
 
 public class Token<T> {
     public T tok_type;

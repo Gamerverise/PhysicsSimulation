@@ -1,4 +1,4 @@
-package edsel.lib.lex.parser;
+package edsel.lib.parser;
 
 import edsel.lib.io.SeekableCharBuffer;
 

@@ -1,10 +1,10 @@
-package edsel.lib.lex.parser;
+package edsel.lib.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
 import edsel.lib.io.SeekableCharBuffer;
 import edsel.lib.io.VarLengthString;
 
-import static edsel.lib.lex.parser.TokenizerLangParser.DFA_ExprLexStates.*;
+import static edsel.lib.parser.TokenizerLangParser.DFA_ExprLexStates.*;
 
 public class TokenizerLangParser<T> {
 
