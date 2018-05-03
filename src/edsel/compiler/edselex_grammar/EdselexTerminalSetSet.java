@@ -1,10 +1,10 @@
 package edsel.compiler.edselex_grammar;
 
-import edsel.lib.parser.GrammarTerminal;
+import edsel.lib.parser.grammar.GrammarTerminalSet;
 
-public class EdselexTerminalSet extends GrammarTerminal<EdselexTerminal> {
+public class EdselexTerminalSetSet extends GrammarTerminalSet<EdselexTerminal> {
 
-    public static EdselexTerminalSet EDSELEX_TERMINALS = new EdselexTerminalSet();
+    public static EdselexTerminalSetSet EDSELEX_TERMINALS = new EdselexTerminalSetSet();
 
     // ======================================================================================
 

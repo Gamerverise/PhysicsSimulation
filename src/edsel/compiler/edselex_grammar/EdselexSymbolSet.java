@@ -1,6 +1,6 @@
 package edsel.compiler.edselex_grammar;
 
-import edsel.lib.parser.GrammarSymbol;
+import edsel.lib.parser.grammar.GrammarSymbol;
 
 public class EdselexSymbolSet extends GrammarSymbol<EdselexProduction, EdselexTerminal> {
 
