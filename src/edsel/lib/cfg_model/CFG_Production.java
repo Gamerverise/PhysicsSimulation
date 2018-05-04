@@ -7,14 +7,11 @@ public class CFG_Production
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-    extends CFG_Symbol<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID> {
-
-    public enum TransitionType {
-        SHIFT,
-        REDUCE,
-        SHIFT_OR_REDUCE,
-        NOT_APPLICABLE
-    }
+        extends CFG_Symbol
+        <ENUM_TERMINAL_ID,
+                TERMINAL_VALUE_TYPE,
+                ENUM_PRODUCTION_ID>
+{
 
     public ENUM_PRODUCTION_ID id;
 

@@ -4,7 +4,6 @@ import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Terminal;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class CFG_NonDeterministicTransition
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,

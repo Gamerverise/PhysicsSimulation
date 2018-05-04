@@ -3,9 +3,7 @@ package edsel.lib.cfg_parser.transitions;
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
-import edsel.lib.cfg_parser.reductions.CFG_DetReduction;
 
-import java.util.LinkedList;
 import java.util.Stack;
 
 public class CFG_DeterministicTransition

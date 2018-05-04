@@ -56,14 +56,14 @@ public class CFG_NonDetParser
     parse(CFG_Production
                   <ENUM_TERMINAL_ID,
                           TERMINAL_VALUE_TYPE,
-                          ENUM_PRODUCTION_ID>       start_production,
+                          ENUM_PRODUCTION_ID>               start_production,
           SeekableBuffer<CFG_Terminal
                   <ENUM_TERMINAL_ID,
                           TERMINAL_VALUE_TYPE,
-                          ENUM_PRODUCTION_ID>>      input,
+                          ENUM_PRODUCTION_ID>>              input,
           CFG_DetReduction<ENUM_TERMINAL_ID,
                                     TERMINAL_VALUE_TYPE,
-                                    ENUM_PRODUCTION_ID> output_reduction)
+                                    ENUM_PRODUCTION_ID>     output_reduction)
     throws InvalidCFG_Input
     {
         while (true) {
