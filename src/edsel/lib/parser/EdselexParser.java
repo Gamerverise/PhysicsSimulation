@@ -2,7 +2,7 @@ package edsel.lib.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
 import edsel.lib.lex.automaton.FiniteAutomatonState;
-import edsel.lib.io.SeekableCharBuffer;
+import edsel.lib.io.SeekableCharArrayBuffer;
 
 import java.util.Stack;
 
@@ -37,11 +37,11 @@ public abstract class EdselexParser<REDUCTION> {
 
     public static class ParseState<ID_TYPE, REDUCTION> {
 
-        public SeekableCharBuffer input;
+        public SeekableCharArrayBuffer input;
         public Stack<FiniteAutomatonState<ID_TYPE, REDUCTION>> state_stack = new Stack<>();
         public FiniteAutomaton<ID_TYPE, REDUCTION> nfa = new FiniteAutomaton<>();
 
-        public ParseState(SeekableCharBuffer input) {
+        public ParseState(SeekableCharArrayBuffer input) {
             this.input = input;
         }
     }
@@ -226,7 +226,7 @@ public abstract class EdselexParser<REDUCTION> {
 
     // =========================================================================================
 
-    public REDUCTION parse_edselex(SeekableCharBuffer expr)
+    public REDUCTION parse_edselex(SeekableCharArrayBuffer expr)
             throws Invalid_NFA_Description
     {
         ParseState<StateID, REDUCTION> parse_state = new ParseState<>(expr);

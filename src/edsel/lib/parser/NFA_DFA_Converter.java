@@ -1,6 +1,6 @@
 package edsel.lib.parser;
 
-import edsel.lib.io.SeekableCharBuffer;
+import edsel.lib.io.SeekableCharArrayBuffer;
 
 public class NFA_DFA_Converter {
 
@@ -18,7 +18,7 @@ public class NFA_DFA_Converter {
         EXPECTING_COUNT_CLOSE
     }
 
-    public <U> NFA<U> dfa_expr_to_nfa(SeekableCharBuffer expr) {
+    public <U> NFA<U> dfa_expr_to_nfa(SeekableCharArrayBuffer expr) {
         State cur_state = START;
 
         while (true) {

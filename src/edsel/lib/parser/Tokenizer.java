@@ -1,7 +1,7 @@
 package edsel.lib.parser;
 
 import edsel.lib.lex.automaton.FiniteAutomaton;
-import edsel.lib.io.SeekableCharBuffer;
+import edsel.lib.io.SeekableCharArrayBuffer;
 import edsel.lib.io.VarLengthString;
 
 import static edsel.lib.parser.TokenizerLangParser.DFA_ExprLexStates.*;
@@ -9,7 +9,7 @@ import static edsel.lib.parser.TokenizerLangParser.DFA_ExprLexStates.*;
 public class Tokenizer<T> {
 
     public FiniteAutomaton<T> dfa;
-    public SeekableCharBuffer input;
+    public SeekableCharArrayBuffer input;
 
     public Tokenizer(FiniteAutomaton<T> dfa) {
         this.dfa = dfa;
@@ -44,7 +44,7 @@ public class Tokenizer<T> {
         }
     }
 
-    public FiniteAutomaton<T> nfa_to_dfa(SeekableCharBuffer expr) {
+    public FiniteAutomaton<T> nfa_to_dfa(SeekableCharArrayBuffer expr) {
 
     }
 }

@@ -30,11 +30,18 @@ public class CFG_Production
             start_terminals;
 
     public void
-    transition(Stack<CFG_Symbol
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>>
-                           state_stack)
+    transition(Stack
+                       <CFG_Symbol
+                               <ENUM_TERMINAL_ID,
+                                       TERMINAL_VALUE_TYPE,
+                                       ENUM_PRODUCTION_ID>>
+                       state_stack,
+               CFG_Symbol
+                       <ENUM_TERMINAL_ID,
+                               TERMINAL_VALUE_TYPE,
+                               ENUM_PRODUCTION_ID>
+                       sym)
+
     {
 
     }
