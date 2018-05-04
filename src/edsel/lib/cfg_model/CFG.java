@@ -1,23 +1,34 @@
 package edsel.lib.cfg_model;
 
+import java.util.LinkedList;
+
 public class CFG
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
-                REDUCTION_TYPE extends CFG_Reduction
-                        <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID, REDUCTION_TYPE>>
+                ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
 {
-    CFG_TerminalSet
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID,
-                    REDUCTION_TYPE>
+    public LinkedList<
+            CFG_Terminal
+                    <ENUM_TERMINAL_ID,
+                            TERMINAL_VALUE_TYPE,
+                            ENUM_PRODUCTION_ID>>
             terminals;
 
-    CFG_ProductionSet
+    public CFG_Terminal
             <ENUM_TERMINAL_ID,
                     TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID,
-                    REDUCTION_TYPE>
+                    ENUM_PRODUCTION_ID>
+            eof;
+
+    public LinkedList<
+            CFG_Production<ENUM_TERMINAL_ID,
+                    TERMINAL_VALUE_TYPE,
+                    ENUM_PRODUCTION_ID>>
             productions;
+
+    public CFG_Production
+            <ENUM_TERMINAL_ID,
+                    TERMINAL_VALUE_TYPE,
+                    ENUM_PRODUCTION_ID>
+            root_production;
 }
