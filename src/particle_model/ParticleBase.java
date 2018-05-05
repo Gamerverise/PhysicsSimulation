@@ -1,9 +1,9 @@
 package particle_model;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
-public abstract class ParticleBase<T extends ParticleBase<T>> implements Constructable<T> {
+public abstract class ParticleBase<T extends ParticleBase<T>> implements ConstructableBase<T> {
 
     public String name;
     public double x;

@@ -1,4 +1,4 @@
-package lib.java_lang_extensions.parametrized_class;
+package lib.java_lang_extensions.parametrized_types;
 
 import java.util.Iterator;
 

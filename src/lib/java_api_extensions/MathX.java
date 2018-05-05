@@ -2,7 +2,7 @@ package lib.java_api_extensions;
 
 import lib.java_lang_extensions.function_types.FunctionR1;
 import lib.java_lang_extensions.function_types.Identity;
-import lib.java_lang_extensions.parametrized_class.AtomicArrayIterator_double;
+import lib.java_lang_extensions.parametrized_types.AtomicArrayIterator_double;
 
 import java.util.Arrays;
 import java.util.Iterator;

@@ -1,16 +1,16 @@
 package lib.data_structures.list;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.data_structures.list.link.DoubleLink;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
 
-public class DoublyLinkedList<T extends Constructable<T>>
+public class DoublyLinkedList<T extends ConstructableBase<T>>
     extends LinkedList<D>
     implements Iterable<DoubleLink<T>>
 {
-    public static class LinkedListIterator<T extends Constructable<T>>
+    public static class LinkedListIterator<T extends ConstructableBase<T>>
         implements Iterator<DoubleLink<T>>
     {
         public DoubleLink<T> cur;

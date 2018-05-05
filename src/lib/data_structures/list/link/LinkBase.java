@@ -1,17 +1,17 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract
 class LinkBase
-        <T extends CONSTRUCTABLE_TYPE,
-                CONSTRUCTABLE_TYPE extends Constructable<T, CONSTRUCTABLE_TYPE>,
-                LINK_TYPE extends LinkBase<T, CONSTRUCTABLE_TYPE, LINK_TYPE>>
+        <T extends Constructable<T>,
+                LINK_TYPE extends LinkBase<T, LINK_TYPE>>
         implements
-        Constructable<LINK_TYPE, LinkBase<T, CONSTRUCTABLE_TYPE, LINK_TYPE>>
+        Constructable<LINK_TYPE>
 {
     public T elem;
     public LINK_TYPE next;
@@ -35,4 +35,3 @@ class LinkBase
         this.next = null;
     }
 }
-

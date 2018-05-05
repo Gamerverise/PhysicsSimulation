@@ -1,8 +1,8 @@
 package lib.data_structures.container;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 
-public interface UnderlyingDataStructure<DT> extends Constructable<UnderlyingDataStructure<DT>>
+public interface UnderlyingDataStructure<DT> extends ConstructableBase<UnderlyingDataStructure<DT>>
 {
     void add(DT datum);
 }

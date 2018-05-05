@@ -1,10 +1,13 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
-public class DoubleLink<T extends Constructable<T>>
-    extends LinkBase<T, DoubleLink<T>>
+public class DoubleLink
+        <T extends Constructable<T>>
+        extends
+        LinkBase<T, DoubleLink<T>>
 {
     public DoubleLink<T> prev;
 
@@ -39,4 +42,3 @@ public class DoubleLink<T extends Constructable<T>>
         return new DoubleLink<>(this.elem, copy_type);
     }
 }
-

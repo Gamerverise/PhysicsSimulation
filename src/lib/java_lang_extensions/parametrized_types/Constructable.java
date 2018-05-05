@@ -1,8 +1,7 @@
-package lib.java_lang_extensions.parametrized_class;
+package lib.java_lang_extensions.parametrized_types;
 
 
 import lib.debug.MethodNameHack;
-import lib.tokens.enums.CopyType;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,17 +10,12 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
 public interface
-Constructable
-        <T extends CONSTRUCTABLE_TYPE,
-                CONSTRUCTABLE_TYPE extends Constructable<T, CONSTRUCTABLE_TYPE>>
+Constructable<T extends ConstructableBase<T, T>>
+    extends ConstructableBase<T, T>
 {
-    T new_copy(CopyType copy_type);
-
-    // =========================================================================================
-
-    static <STE extends ST, ST extends Constructable<ST>>
-    STE new_instance(Class<STE> runtime_type, Object... args) {
-        STE copy;
+    static <ST extends Constructable<ST>>
+    ST new_instance(Class<ST> runtime_type, Object... args) {
+        ST copy;
 
         Class[] arg_types = new Class[args.length];
 
@@ -29,7 +23,7 @@ Constructable
             arg_types[i] = args[i].getClass();
 
         try {
-            Constructor<STE> constructor = runtime_type.getDeclaredConstructor(arg_types);
+            Constructor<ST> constructor = runtime_type.getDeclaredConstructor(arg_types);
             copy = constructor.newInstance(args);
 
         } catch (NoSuchMethodException

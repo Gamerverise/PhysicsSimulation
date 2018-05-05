@@ -1,17 +1,17 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.link.SingleLink;
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
-public class LinkedList<T extends Constructable<T>>
+public class LinkedList<T extends ConstructableBase<T>>
     implements Iterable<SingleLink<T>>
 {
-    public static class LinkedListIterator<T extends Constructable<T>>
+    public static class LinkedListIterator<T extends ConstructableBase<T>>
         implements Iterator<SingleLink<T>>
     {
         public SingleLink<T> cur;

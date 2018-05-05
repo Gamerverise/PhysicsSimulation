@@ -1,6 +1,7 @@
 package lib.data_structures.list;
 
-import lib.java_lang_extensions.parametrized_class.Constructable;
+import lib.java_lang_extensions.parametrized_types.Constructable;
+import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.data_structures.list.link.LinkBase;
 import lib.tokens.enums.CopyType;
 
@@ -10,23 +11,23 @@ import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract
 class LinkedListBase
-        <T extends CONSTRUCTABLE_TYPE,
-                CONSTRUCTABLE_TYPE extends Constructable<T, CONSTRUCTABLE_TYPE>,
-                LINK_TYPE extends LinkBase<CONSTRUCTABLE_TYPE, LINK_TYPE>,
-                LIST_TYPE extends LinkedListBase<CONSTRUCTABLE_TYPE, LINK_TYPE, LIST_TYPE>>
+        <T extends Constructable<T>,
+                LINK_TYPE extends LinkBase<T, LINK_TYPE>,
+                LIST_TYPE extends LinkedListBase<T, LINK_TYPE, LIST_TYPE>>
         implements
-        Constructable<LIST_TYPE, LinkedListBase<CONSTRUCTABLE_TYPE, LINK_TYPE, LIST_TYPE>>, Iterable<LINK_TYPE>
+        Constructable<LIST_TYPE>, Iterable<LINK_TYPE>
 {
-    public static class ListBaseIterator
-            <CONSTRUCTABLE_TYPE extends T, T extends <CONSTRUCTABLE_TYPE, T>,
-                    LINK_TYPE extends LinkBase<CONSTRUCTABLE_TYPE, LINK_TYPE>,
-                    LIST_TYPE extends LinkedListBase<CONSTRUCTABLE_TYPE, LINK_TYPE, LIST_TYPE>>
+    public static class LinkedListIterator
+            <T extends Constructable<T>,
+                    LINK_TYPE extends LinkBase<T, LINK_TYPE>>
             implements
             Iterator<LINK_TYPE>
     {
         public LINK_TYPE cur;
 
-        public ListBaseIterator(LinkedListBase<T, LINK_TYPE, LIST_TYPE> list) {
+        public
+        <LIST_TYPE extends LinkedListBase<T, LINK_TYPE, LIST_TYPE>>
+        LinkedListIterator(LinkedListBase<T, LINK_TYPE, LIST_TYPE> list) {
             cur = list.head;
         }
 
@@ -63,11 +64,15 @@ class LinkedListBase
         }
     }
 
-    public LinkedListBase(LIST_TYPE list, CopyType copy_type) {
+    public LinkedListBase(LinkedListBase<T, LINK_TYPE, LIST_TYPE> list, CopyType copy_type) {
         this();
 
         for(LINK_TYPE link : list)
             append(link.elem.new_copy(copy_type));
+    }
+
+    public LIST_TYPE new_copy(CopyType copy_type) {
+        return new_instance(this, copy_type);
     }
 
     public abstract LINK_TYPE new_link(T elem, CopyType copy_type);
@@ -93,18 +98,14 @@ class LinkedListBase
         for (i = 1; i < n; i++)
             new_tail = new_tail.next;
 
-        LIST_TYPE list = Constructable.new_instance(this.getClass(), tail.next);
+        LIST_TYPE list = new_instance(tail.next);
         new_tail.next = null;
         length = i;
 
         return list;
     }
 
-    public LinkedListBase<T, LINK_TYPE, LIST_TYPE> new_copy(CopyType copy_type) {
-        return Constructable.new_instance(this.getClass(), copy_type);
-    }
-
-    public ListBaseIterator<T, LINK_TYPE, LIST_TYPE> iterator() {
-        return new ListBaseIterator<>(this);
+    public Iterator<LINK_TYPE> iterator() {
+        return new LinkedListIterator<>(this);
     }
 }
