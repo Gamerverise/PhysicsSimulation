@@ -75,8 +75,6 @@ class LinkedListBase
         return new_instance(this, copy_type);
     }
 
-    public abstract LINK_TYPE new_link(T elem, CopyType copy_type);
-
     public void append(T elem) {
         tail.next = Constructable.new_instance(link_type, elem, COPY_SHALLOW);
         length += 1;
