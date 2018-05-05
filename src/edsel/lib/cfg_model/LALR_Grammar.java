@@ -80,9 +80,9 @@ public class LALR_Grammar
             if (transition instanceof LALR_ParseTable.SHIFT_TypeParseTableEntry)
                 state_stack.push(terminal);
             else {
-                REDUCE_TypeParseTableEntry reduce_transition = (LALR_ParseTable.REDUCE_TypeParseTableEntry) transition;
+                REDUCE_TypeParseTableEntry reduce_transition = (REDUCE_TypeParseTableEntry) transition;
 
-                PRODUCTION_TYPE parse_tree =
+                PRODUCTION_TYPE parse_tree = new CFG_Production<>()
             }
         }
     }

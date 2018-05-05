@@ -1,6 +1,6 @@
 package particle_model;
 
-import lib.data_structures.Copyable;
+import lib.java_lang_extensions.parametrized_class.Constructable;
 import lib.data_structures.container.ContainerCopyableData;
 import lib.tokens.enums.CopyType;
 
@@ -12,7 +12,7 @@ import static lib.java_api_extensions.MathX.max;
 
 public class Universe
         extends ContainerCopyableData<RenderableParticle, LinkedList<RenderableParticle>>
-        implements Copyable<Universe>
+        implements Constructable<Universe>
 {
     public double acceleration_constant;
     public double max_velocity;

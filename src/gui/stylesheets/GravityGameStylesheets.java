@@ -12,7 +12,7 @@ public class GravityGameStylesheets {
              ****
             */
 
-//            "Node",
+//            "BinaryNode",
 //            "Parent",
             "Region",
 //

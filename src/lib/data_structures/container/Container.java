@@ -1,13 +1,13 @@
 package lib.data_structures.container;
 
-import lib.data_structures.Copyable;
+import lib.java_lang_extensions.parametrized_class.Constructable;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
 
-public abstract class Container<DT extends Copyable<DT>>
+public abstract class Container<DT extends Constructable<DT>>
     extends ContainerCopyableDataStructure<DT>
-    implements Copyable<Container<DT>>
+    implements Constructable<Container<DT>>
 {
     public Container(UnderlyingDataStructure<DT> data_src, CopyType copy_type) {
         super(data_src, copy_type);

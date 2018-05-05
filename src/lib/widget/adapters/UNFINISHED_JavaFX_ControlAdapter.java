@@ -13,18 +13,18 @@ public class UNFINISHED_JavaFX_ControlAdapter extends Widget {
 
 // FIXME: Gotta think about the uses for this code
 //
-//    public static void set_node_geometry(Node node, double x, double y, double width, double height) {
-//        if (node.getContentBias() == HORIZONTAL) {
-//            node.minHeight(height);
-//            node.prefHeight(height);
-//            node.maxHeight(height);
-//        } else if (node.getContentBias() == VERTICAL) {
-//            node.minWidth(width);
-//            node.minWidth(width);
-//            node.minWidth(width);
+//    public static void set_node_geometry(BinaryNode link, double x, double y, double width, double height) {
+//        if (link.getContentBias() == HORIZONTAL) {
+//            link.minHeight(height);
+//            link.prefHeight(height);
+//            link.maxHeight(height);
+//        } else if (link.getContentBias() == VERTICAL) {
+//            link.minWidth(width);
+//            link.minWidth(width);
+//            link.minWidth(width);
 //        }
 //
-//        node.resizeRelocate(x, y, width, height);
+//        link.resizeRelocate(x, y, width, height);
 //    }
 //
 //    public static void set_region_geometry(Region r, double x, double y, double width, double height) {

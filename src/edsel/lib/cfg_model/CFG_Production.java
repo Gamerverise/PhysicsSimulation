@@ -12,6 +12,14 @@ public class CFG_Production
                 TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID>
 {
+    public CFG_Production(
+        CFG_Production<ENUM_TERMINAL_ID,
+                TERMINAL_VALUE_TYPE,
+                ENUM_PRODUCTION_ID>
+        production)
+    {
+
+    }
 
     public ENUM_PRODUCTION_ID id;
 
@@ -19,27 +27,27 @@ public class CFG_Production
             CFG_Symbol<ENUM_TERMINAL_ID,
                     TERMINAL_VALUE_TYPE,
                     ENUM_PRODUCTION_ID>>
-            rhs;
+            rhs = new LinkedList<>();
 
-    public LinkedList
-            <CFG_Terminal
-                    <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>>
-            start_terminals;
-
-    public void
-    transition(Stack
-                       <CFG_Symbol
-                               <ENUM_TERMINAL_ID,
-                                       TERMINAL_VALUE_TYPE,
-                                       ENUM_PRODUCTION_ID>>
-                       state_stack,
-               CFG_Symbol
-                       <ENUM_TERMINAL_ID,
-                               TERMINAL_VALUE_TYPE,
-                               ENUM_PRODUCTION_ID>
-                       sym)
-
-    {
-
-    }
+//    public DoublyLinkedList
+//            <CFG_Terminal
+//                    <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>>
+//            start_terminals;
+//
+//    public void
+//    transition(Stack
+//                       <CFG_Symbol
+//                               <ENUM_TERMINAL_ID,
+//                                       TERMINAL_VALUE_TYPE,
+//                                       ENUM_PRODUCTION_ID>>
+//                       state_stack,
+//               CFG_Symbol
+//                       <ENUM_TERMINAL_ID,
+//                               TERMINAL_VALUE_TYPE,
+//                               ENUM_PRODUCTION_ID>
+//                       sym)
+//
+//    {
+//
+//    }
 }
