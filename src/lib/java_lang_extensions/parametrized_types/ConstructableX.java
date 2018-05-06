@@ -11,12 +11,15 @@ import static lib.debug.Debug.assert_msg;
 
 public interface
 ConstructableX
-        <T,
-                RAW_DATA_STRUCTURE_TYPE,
-                PARAMETRIZED_DATA_STRUCTURE_TYPE extends RAW_DATA_STRUCTURE_TYPE, CONSTRUCTABLE_TYPE,
-                CONSTRUCTABLE_TYPE
+        <T_RAW_DATA_STRUCTURE_TYPE,
+                T_PARAMETRIZED_DATA_STRUCTURE_TYPE,
+                RAW_DATA_STRUCTURE_TYPE
                         extends ConstructableX
-                                <T, RAW_DATA_STRUCTURE_TYPE, PARAMETRIZED_DATA_STRUCTURE_TYPE, CONSTRUCTABLE_TYPE>>
+                                <T,
+                                        RAW_DATA_STRUCTURE_TYPE,
+                                        PARAMETRIZED_DATA_STRUCTURE_TYPE>,
+                PARAMETRIZED_DATA_STRUCTURE_TYPE
+                        extends RAW_DATA_STRUCTURE_TYPE>
 {
     static <ST extends ConstructableX>
     ST new_instance(Class<ST> runtime_type, Object... args) {
