@@ -1,7 +1,6 @@
 package edsel.lib.cfg_model;
 
 import java.util.LinkedList;
-import java.util.Stack;
 
 public class CFG_Production
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,

@@ -1,7 +1,6 @@
 package lib.data_structures.list.link;
 
 import lib.java_lang_extensions.parametrized_types.Constructable;
-import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
 public class SingleLink
@@ -21,8 +20,8 @@ public class SingleLink
 
     // =========================================================================================
 
-    public SingleLink<T> new_instance() {
-        return new SingleLink<>();
+    public SingleLink<T> new_instance(Object... args) {
+        return Constructable.new_instance(getClass(), args);
     }
 
     public SingleLink<T> new_instance(SingleLink<T> link, CopyType copy_type) {
