@@ -2,34 +2,34 @@ package lib.java_lang_extensions.parametrized_types;
 
 public class ConstructableFinal {
 
-    public interface ConstructablePrecondition
-            <A extends ConstructablePrecondition> {}
+    public interface Precondition_RawConstructable
+            <A extends Precondition_RawConstructable> {}
 
-    public interface ParametrizedConstructable
-            <A extends ParametrizedConstructable<A>> {}
+    public interface Precondition_ParametrizedConstructable
+            <A extends Precondition_ParametrizedConstructable<A>> {}
 
-    public interface ConstructableBasis
-            <A extends ConstructablePrecondition & ParametrizedConstructable<A>,
+    public interface ___Constructable___
+            <A extends Precondition_RawConstructable & Precondition_ParametrizedConstructable<A>,
                     B extends A>
-            extends ConstructablePrecondition, ParametrizedConstructable<A> {}
+            extends Precondition_RawConstructable, Precondition_ParametrizedConstructable<A> {}
 
-    public interface ConstructableWrapper_1<A>
+    public interface ConstructableEncapsulation_1<A>
             extends
-            ConstructableBasis<ConstructableWrapper_1<A>, ConstructableWrapper_1<A>> {}
+            ___Constructable___<ConstructableEncapsulation_1<A>, ConstructableEncapsulation_1<A>> {}
 
-    public interface ConstructableWrapper_2
+    public interface ConstructableEncapsulation_2
             <T,
-                    A extends ConstructableWrapper_2,
-                    B extends ConstructableWrapper_2<T, A, B>>
+                    A extends ConstructableEncapsulation_2,
+                    B extends ConstructableEncapsulation_2<T, A, B>>
             extends
-            ConstructableWrapper_1<ConstructableWrapper_2<T, A, B>>
+            ConstructableEncapsulation_1<ConstructableEncapsulation_2<T, A, B>>
     {}
 
-    public interface Constructable
+    public interface Constructable          // aka ConstructableEncapsulation_3
             <T,
-                    DS extends ConstructableWrapper_2<T, DS, Constructable<T, DS>>>
+                    DS extends ConstructableEncapsulation_2<T, DS, Constructable<T, DS>>>
             extends
-            ConstructableWrapper_2<T, DS, Constructable<T, DS>> {}
+            ConstructableEncapsulation_2<T, DS, Constructable<T, DS>> {}
 
     public class Link<T>
             implements Constructable<T, Link<T>> {}
