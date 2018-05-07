@@ -1,22 +1,20 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableDataStructureX;
-import lib.java_lang_extensions.parametrized_types.ConstructableElementX;
+import lib.java_lang_extensions.parametrized_types.ConstructableRawType;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract
 class LinkBaseX
-        <T_RAW_TYPE extends ConstructableElementX,
+        <T_RAW_TYPE extends ConstructableRawType,
                 T_PARAMETRIZED_TYPE extends T_RAW_TYPE,
                 LINK_BASE_TYPE
                         extends LinkBaseX<T_RAW_TYPE, T_PARAMETRIZED_TYPE, LINK_BASE_TYPE>>
         implements
-        ConstructableElementX
-                <T_RAW_TYPE,
-                        T_PARAMETRIZED_TYPE,
-                        LINK_BASE_TYPE>
+        ConstructableRawType<T_RAW_TYPE,
+                                        T_PARAMETRIZED_TYPE,
+                                        LINK_BASE_TYPE>
 
 //        ConstructableDataStructureX
 //                <T_RAW_TYPE,

@@ -10,15 +10,9 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
 public interface
-ConstructableElementX
-<T_RAW_TYPE
-        extends ConstructableElementX,
-        T_PARAMETRIZED_TYPE
-                extends T_RAW_TYPE,
-        T_CONSTRUCTABLE_TYPE
-                extends ConstructableElementX<T_RAW_TYPE, T_PARAMETRIZED_TYPE, T_CONSTRUCTABLE_TYPE>>
+ConstructableType<A, B extends A, C extends ConstructableType<>, D extends C>
 {
-    static <ST extends ConstructableElementX>
+    static <ST extends ConstructableType>
     ST new_instance(Class<ST> runtime_type, Object... args) {
         ST copy;
 

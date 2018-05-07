@@ -12,8 +12,7 @@ import static lib.debug.Debug.assert_msg;
 public interface
 ConstructableDataStructureX
         <T_RAW_TYPE
-                extends ConstructableElementX
-                        <T_RAW_TYPE, T_PARAMETRIZED_TYPE>,
+                extends ConstructableRawType<T_RAW_TYPE, T_PARAMETRIZED_TYPE>,
                 T_PARAMETRIZED_TYPE
                         extends T_RAW_TYPE,
                 CONTAINER_RAW_DATA_STRUCTURE_TYPE

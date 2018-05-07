@@ -1,13 +1,13 @@
 package lib.data_structures.container;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableBase;
+import lib.java_lang_extensions.parametrized_types.ConstructableParametrizedType;
 import lib.tokens.enums.CopyType;
 
 import java.util.Collection;
 import java.util.Iterator;
 
 public abstract class ContainerCopyableData
-        <DT extends ConstructableBase<DT>, DS extends Collection<DT>>
+        <DT extends ConstructableParametrizedType<DT>, DS extends Collection<DT>>
     extends ContainerAdapter<DT, DS>
 {
     public ContainerCopyableData() {}

@@ -1,7 +1,5 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_types.Constructable;
-import lib.java_lang_extensions.parametrized_types.ConstructableBase;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;

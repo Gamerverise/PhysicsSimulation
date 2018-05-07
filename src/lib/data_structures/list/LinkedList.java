@@ -1,7 +1,6 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.link.SingleLink;
-import lib.java_lang_extensions.parametrized_types.Constructable;
 import lib.tokens.enums.CopyType;
 
 public class LinkedList<T extends Constructable<T>>
@@ -37,7 +36,7 @@ public class LinkedList<T extends Constructable<T>>
     }
 
     public LinkedList<T> new_instance(Object... args) {
-//        return Constructable.class.new_instance(this.getClass(), args);
+//        return ConstructableRawType.class.new_instance(this.getClass(), args);
         return Constructable.class.new_instance((Class<LinkedList>) null, args);
     }
 

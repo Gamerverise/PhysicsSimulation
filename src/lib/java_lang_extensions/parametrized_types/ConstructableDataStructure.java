@@ -11,12 +11,12 @@ import static lib.debug.Debug.assert_msg;
 
 public interface
 ConstructableDataStructure
-        <T extends Constructable<T>,
+        <T extends ConstructableRawType<T>,
                 DS extends ConstructableDataStructure<T, DS>>
-    extends Constructable<ConstructableDataStructure<T, DS>>
+    extends ConstructableRawType<ConstructableDataStructure<T, DS>>
 {
     static
-    <ST extends Constructable<ST>,
+    <ST extends ConstructableRawType<ST>,
             SDS extends ConstructableDataStructure<ST, SDS>>
     SDS new_instance(Class<ST> runtime_type, Object... args) {
         SDS copy;
