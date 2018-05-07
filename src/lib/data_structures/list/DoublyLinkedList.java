@@ -1,6 +1,5 @@
 package lib.data_structures.list;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableParametrizedType;
 import lib.data_structures.list.link.DoubleLink;
 import lib.tokens.enums.CopyType;
 

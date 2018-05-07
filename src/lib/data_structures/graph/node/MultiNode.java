@@ -1,6 +1,5 @@
 package lib.data_structures.graph.node;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableParametrizedType;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;

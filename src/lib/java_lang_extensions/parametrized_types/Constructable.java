@@ -1,7 +1,7 @@
 package lib.java_lang_extensions.parametrized_types;
 
-
 import lib.debug.MethodNameHack;
+import lib.java_lang_extensions.parametrized_types.constructable_support.ConstructableEncapsulation_2;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -9,12 +9,15 @@ import java.lang.reflect.InvocationTargetException;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public interface
-ConstructableRawType<T_RAW_TYPE extends ConstructableRawType, T_PARAMETRIZED_TYPE extends T_RAW_TYPE>
+public interface Constructable          // aka ConstructableEncapsulation_3
+        <T,
+                DS extends ConstructableEncapsulation_2<T, DS, Constructable<T, DS>>>
+        extends
+        ConstructableEncapsulation_2<T, DS, Constructable<T, DS>>
 {
-    static <ST extends ConstructableRawType>
-    ST new_instance(Class<ST> runtime_type, Object... args) {
-        ST copy;
+    static <T, DS extends Constructable<T, DS>>
+    DS new_instance(Class<DS> runtime_type, Object... args) {
+        DS copy;
 
         Class[] arg_types = new Class[args.length];
 
@@ -22,7 +25,7 @@ ConstructableRawType<T_RAW_TYPE extends ConstructableRawType, T_PARAMETRIZED_TYP
             arg_types[i] = args[i].getClass();
 
         try {
-            Constructor<ST> constructor = runtime_type.getDeclaredConstructor(arg_types);
+            Constructor<DS> constructor = runtime_type.getDeclaredConstructor(arg_types);
             copy = constructor.newInstance(args);
 
         } catch (NoSuchMethodException

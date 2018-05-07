@@ -1,6 +1,5 @@
 package lib.data_structures.container;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableParametrizedType;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;

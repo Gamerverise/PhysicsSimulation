@@ -1,6 +1,5 @@
 package particle_model;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableParametrizedType;
 import lib.data_structures.container.ContainerCopyableData;
 import lib.tokens.enums.CopyType;
 
