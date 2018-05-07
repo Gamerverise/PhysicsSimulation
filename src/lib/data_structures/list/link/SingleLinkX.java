@@ -3,10 +3,9 @@ package lib.data_structures.list.link;
 import lib.java_lang_extensions.parametrized_types.Constructable;
 import lib.tokens.enums.CopyType;
 
-public class SingleLinkX
-        <T extends Constructable<T>>
-        extends
-        LinkBase<T, SingleLinkX<T>>
+public class
+SingleLinkX<T_RAW_TYPE, T_PARAMTRIZED_TYPE extends T_RAW_TYPE>
+    extends LinkBaseX
 {
     public SingleLinkX() {}
 

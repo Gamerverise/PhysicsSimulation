@@ -1,40 +1,43 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_types.ConstructableX;
+import lib.java_lang_extensions.parametrized_types.ConstructableDataStructureX;
+import lib.java_lang_extensions.parametrized_types.ConstructableElementX;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract
 class LinkBaseX
-        <T_RAW_TYPE,
-                T_PARAMETRIZED_TYPE
-                    extends ConstructableX
-                <T_RAW_TYPE, T_PARAMETRIZED_TYPE>,
-                RAW_LINK_TYPE
-                        extends ConstructableX
-<T,
-                                RAW_LINK_TYPE,
-                                PARAMETRIZED_LINK_TYPE>,
-                PARAMETRIZED_LINK_TYPE
-                        extends RAW_LINK_TYPE>
+        <T_RAW_TYPE extends ConstructableElementX,
+                T_PARAMETRIZED_TYPE extends T_RAW_TYPE,
+                LINK_BASE_TYPE
+                        extends LinkBaseX<T_RAW_TYPE, T_PARAMETRIZED_TYPE, LINK_BASE_TYPE>>
         implements
-        ConstructableX<T, RAW_LINK_TYPE, PARAMETRIZED_LINK_TYPE>
+        ConstructableElementX
+                <T_RAW_TYPE,
+                        T_PARAMETRIZED_TYPE,
+                        LINK_BASE_TYPE>
+
+//        ConstructableDataStructureX
+//                <T_RAW_TYPE,
+//                        T_PARAMETRIZED_TYPE,
+//                        LinkBaseX<T_RAW_TYPE, T_PARAMETRIZED_TYPE, LINK_BASE_PARAMETRIZED_TYPE>,
+//                        LINK_BASE_PARAMETRIZED_TYPE>
 {
-    public T elem;
-    public LINK_TYPE next;
+    public T_PARAMETRIZED_TYPE elem;
+    public LinkBaseX<T_RAW_TYPE, T_PARAMETRIZED_TYPE> next;
 
     public LinkBaseX() {
         elem = null;
         next = null;
     }
 
-    public LinkBaseX(T elem, LINK_TYPE next) {
+    public LinkBaseX(T_PARAMETRIZED_TYPE elem, LinkBaseX<T_RAW_TYPE, T_PARAMETRIZED_TYPE> next) {
         this.elem = elem;
         this.next = next;
     }
 
-    public LinkBaseX(T elem, CopyType copy_type) {
+    public LinkBaseX(T_PARAMETRIZED_TYPE elem, CopyType copy_type) {
         if (copy_type == COPY_SHALLOW)
             this.elem = elem;
         else
