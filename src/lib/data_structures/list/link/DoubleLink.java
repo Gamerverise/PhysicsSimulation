@@ -1,9 +1,9 @@
 package lib.data_structures.list.link;
 
+import lib.java_lang_extensions.parametrized_types.Constructor;
 import lib.tokens.enums.CopyType;
 
-public class DoubleLink
-        <T extends Constructable<T>>
+public class DoubleLink <T extends Constructor<T>>
         extends
         LinkBase<T, DoubleLink<T>>
 {
@@ -28,8 +28,8 @@ public class DoubleLink
 
     // =========================================================================================
 
-    public DoubleLink<T> new_instance() {
-        return new DoubleLink<>();
+    public DoubleLink<T> new_instance(Object... args) {
+        return Constructor.new_instance(DoubleLink.class, args);
     }
 
     public DoubleLink<T> new_instance(DoubleLink<T> link, CopyType copy_type) {

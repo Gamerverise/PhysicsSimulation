@@ -1,10 +1,11 @@
 package lib.data_structures.list.link;
 
+import lib.java_lang_extensions.parametrized_types.Constructor;
 import lib.tokens.enums.CopyType;
 
 public class SingleLink
-        <T extends Constructable<T>>
-        extends
+        <T extends Constructor<T>>
+    extends
         LinkBase<T, SingleLink<T>>
 {
     public SingleLink() {}
@@ -20,7 +21,7 @@ public class SingleLink
     // =========================================================================================
 
     public SingleLink<T> new_instance(Object... args) {
-        return Constructable.new_instance(getClass(), args);
+        return Constructor.new_instance(SingleLink.class, args);
     }
 
     public SingleLink<T> new_instance(SingleLink<T> link, CopyType copy_type) {

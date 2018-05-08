@@ -1,23 +1,22 @@
 package lib.java_lang_extensions.parametrized_types;
 
 import lib.debug.MethodNameHack;
-import lib.java_lang_extensions.parametrized_types.constructable_support.ConstructableEncapsulation_2;
+import lib.tokens.enums.CopyType;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public interface ConstructableDataStructure          // aka ConstructableEncapsulation_3
-        <T,
-                DS extends ConstructableEncapsulation_2<T, DS, ConstructableDataStructure<T, DS>>>
-        extends
-        ConstructableEncapsulation_2<T, DS, ConstructableDataStructure<T, DS>>
+public interface Constructor<T>
 {
-    static <T, DS extends ConstructableDataStructure<T, DS>>
-    DS new_instance(Class<DS> runtime_type, Object... args) {
-        DS copy;
+    T new_instance(Object... args);
+
+    T new_copy(CopyType copy_type);
+
+    static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>
+    PARAMETRIZED_TYPE new_instance(Class<RAW_TYPE> runtime_type, Object... args) {
+        PARAMETRIZED_TYPE copy;
 
         Class[] arg_types = new Class[args.length];
 
@@ -25,8 +24,8 @@ public interface ConstructableDataStructure          // aka ConstructableEncapsu
             arg_types[i] = args[i].getClass();
 
         try {
-            Constructor<DS> constructor = runtime_type.getDeclaredConstructor(arg_types);
-            copy = constructor.newInstance(args);
+            java.lang.reflect.Constructor<RAW_TYPE> constructor = runtime_type.getDeclaredConstructor(arg_types);
+            copy = (PARAMETRIZED_TYPE) constructor.newInstance(args);
 
         } catch (NoSuchMethodException
                 | IllegalAccessException
