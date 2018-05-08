@@ -12,25 +12,25 @@ class LinkBase
         implements
         Constructor<LINK_TYPE>
 {
-        public T elem;
-        public LINK_TYPE next;
+    public T elem;
+    public LINK_TYPE next;
 
-        public LinkBase() {
-            elem = null;
-            next = null;
-        }
+    public LinkBase() {
+        elem = null;
+        next = null;
+    }
 
-        public LinkBase(T elem, LINK_TYPE next) {
+    public LinkBase(T elem, LINK_TYPE next) {
+        this.elem = elem;
+        this.next = next;
+    }
+
+    public LinkBase(T elem, CopyType copy_type) {
+        if (copy_type == COPY_SHALLOW)
             this.elem = elem;
-            this.next = next;
-        }
+        else
+            this.elem = elem.new_copy(copy_type);
 
-        public LinkBase(T elem, CopyType copy_type) {
-            if (copy_type == COPY_SHALLOW)
-                this.elem = elem;
-            else
-                this.elem = elem.new_copy(copy_type);
-
-            this.next = null;
-        }
+        this.next = null;
+    }
 }
