@@ -1,10 +1,10 @@
 package particle_model;
 
-import lib.java_lang_extensions.parametrized_types.ConstructorShallow;
+import lib.java_lang_extensions.parametrized_types.ConstructorShallowDataStructure;
 
 public abstract
 class ParticleBase
-        implements ConstructorShallow<ParticleBase>
+        implements ConstructorShallowDataStructure<ParticleBase>
 {
     public String name;
     public double x;

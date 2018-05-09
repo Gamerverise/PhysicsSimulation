@@ -2,21 +2,22 @@ package lib.data_structures.list;
 
 import lib.data_structures.list.iter.LinkedListIterator;
 import lib.data_structures.list.link.LinkBase;
-import lib.java_lang_extensions.overload_constants.CopyTypeOverloadConstants;
 import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorBaseDataStructure;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
-
-import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract
 class LinkedListBase
         <T extends Constructor<T>,
                 LINK_TYPE extends LinkBase<T, LINK_TYPE>,
                 LIST_TYPE extends LinkedListBase<T, LINK_TYPE, LIST_TYPE>>
+        extends
+        ConstructorBaseDataStructure<T, LIST_TYPE>
         implements
-        Constructor<LIST_TYPE>, Iterable<LINK_TYPE>
+        Iterable<LINK_TYPE>
 {
     public LINK_TYPE head;
     public LINK_TYPE tail;

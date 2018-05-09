@@ -2,6 +2,7 @@ package lib.data_structures.list;
 
 import lib.data_structures.list.link.SingleLink;
 import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 import lib.tokens.enums.CopyType;
 
 public class LinkedList<T extends Constructor<T>>
@@ -23,7 +24,7 @@ public class LinkedList<T extends Constructor<T>>
     // =========================================================================================
 
     public LinkedList<T> new_instance(Object... args) {
-        return Constructor.new_instance(LinkedList.class, args);
+        return ConstructorDataStructure.new_instance(LinkedList.class, args);
     }
 
     public SingleLink<T> new_link(T elem) {

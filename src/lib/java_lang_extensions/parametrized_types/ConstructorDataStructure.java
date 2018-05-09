@@ -9,12 +9,12 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
 public interface
-Constructor<T extends Constructor<T>>
-    extends ConstructorShallow<T>
+ConstructorDataStructure
+        <T extends Constructor<T>,
+                CONSTRUCTOR_TYPE extends ConstructorShallowDataStructure<T, CONSTRUCTOR_TYPE>>
+    extends ConstructorShallowDataStructure<T, CONSTRUCTOR_TYPE>
 {
-    T new_copy(CopyType copy_type);
-
-    // =========================================================================================
+    CONSTRUCTOR_TYPE new_copy(CopyType copy_type);
 
     static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>
     PARAMETRIZED_TYPE new_instance(Class<RAW_TYPE> runtime_type, Object... args) {

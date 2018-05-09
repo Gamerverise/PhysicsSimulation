@@ -1,14 +1,14 @@
 package lib.data_structures.graph.node;
 
 import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorBaseDataStructure;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 import lib.tokens.enums.CopyType;
-
-import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public class
 BinaryNode <T extends Constructor<T>>
-        implements
-        Constructor<BinaryNode<T>>
+        extends
+        ConstructorBaseDataStructure<T, BinaryNode<T>>
 {
     T elem;
     BinaryNode<T> left;
@@ -38,15 +38,11 @@ BinaryNode <T extends Constructor<T>>
 
     // =========================================================================================
 
+    public BinaryNode<T> self() {
+        return this;
+    }
+
     public BinaryNode<T> new_instance(Object... args) {
-        return Constructor.new_instance(BinaryNode.class, args);
-    }
-
-    public BinaryNode<T> new_copy() {
-        return new_instance(COPY_SHALLOW);
-    }
-
-    public BinaryNode<T> new_copy(CopyType copy_type) {
-        return new_instance(copy_type);
+        return ConstructorDataStructure.new_instance(BinaryNode.class, args);
     }
 }

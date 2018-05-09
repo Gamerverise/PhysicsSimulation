@@ -1,6 +1,6 @@
 package particle_model;
 
-import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 
 public class Particle
         extends ParticleBase<Particle>
@@ -24,7 +24,7 @@ public class Particle
     }
 
     Particle new_instance(Object... args) {
-        return Constructor.new_instance(args);
+        return ConstructorDataStructure.new_instance(args);
     }
 
     public Particle new_copy() {

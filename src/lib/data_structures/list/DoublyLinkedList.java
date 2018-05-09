@@ -1,11 +1,9 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.link.DoubleLink;
-import lib.data_structures.list.link.SingleLink;
 import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 import lib.tokens.enums.CopyType;
-
-import java.util.Iterator;
 
 public class DoublyLinkedList<T extends Constructor<T>>
         extends LinkedListBase<T, DoubleLink<T>, DoublyLinkedList<T>>
@@ -26,7 +24,7 @@ public class DoublyLinkedList<T extends Constructor<T>>
     // =========================================================================================
 
     public DoublyLinkedList<T> new_instance(Object... args) {
-        return Constructor.new_instance(DoublyLinkedList.class, args);
+        return ConstructorDataStructure.new_instance(DoublyLinkedList.class, args);
     }
 
     public DoubleLink<T> new_link(T elem) {

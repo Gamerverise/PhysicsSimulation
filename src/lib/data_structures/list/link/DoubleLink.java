@@ -1,6 +1,7 @@
 package lib.data_structures.list.link;
 
 import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
 import lib.tokens.enums.CopyType;
 
 public class DoubleLink <T extends Constructor<T>>
@@ -33,7 +34,11 @@ public class DoubleLink <T extends Constructor<T>>
 
     // =========================================================================================
 
+    public DoubleLink<T> self() {
+        return this;
+    }
+
     public DoubleLink<T> new_instance(Object... args) {
-        return Constructor.new_instance(DoubleLink.class, args);
+        return ConstructorDataStructure.new_instance(DoubleLink.class, args);
     }
 }

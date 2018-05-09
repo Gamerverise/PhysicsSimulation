@@ -1,7 +1,8 @@
 package lib.data_structures.list.link;
 
 import lib.java_lang_extensions.parametrized_types.Constructor;
-import lib.java_lang_extensions.parametrized_types.ConstructorBase;
+import lib.java_lang_extensions.parametrized_types.ConstructorDataStructure;
+import lib.java_lang_extensions.parametrized_types.ConstructorBaseDataStructure;
 import lib.tokens.enums.CopyType;
 
 public abstract
@@ -9,7 +10,7 @@ class LinkBase
         <T extends Constructor<T>,
                 LINK_TYPE extends LinkBase<T, LINK_TYPE>>
         extends
-        ConstructorBase<LINK_TYPE>
+        ConstructorBaseDataStructure<T, LINK_TYPE>
 {
     public T elem;
     public LINK_TYPE next;

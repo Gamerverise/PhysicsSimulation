@@ -6,10 +6,6 @@ public abstract
 class ConstructorBase<T extends ConstructorBase<T>>
         implements Constructor<T>
 {
-    T self() {
-        return this;
-    }
-
     public T new_copy() {
         return new_instance();
     }
