@@ -10,8 +10,13 @@ import static lib.debug.Debug.assert_msg;
 
 public interface
 Constructor<T extends Constructor<T>>
-    extends ConstructorShallow<T>
 {
+    T self();
+
+    T new_instance(Object... args);
+
+    T new_copy();
+
     T new_copy(CopyType copy_type);
 
     // =========================================================================================
