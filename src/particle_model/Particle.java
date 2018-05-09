@@ -1,9 +1,10 @@
 package particle_model;
 
-import lib.tokens.enums.CopyType;
+import lib.java_lang_extensions.parametrized_types.Constructor;
 
-public class Particle extends ParticleBase<Particle> {
-
+public class Particle
+        extends ParticleBase<Particle>
+{
     public String name;
     public double x;
     public double y;
@@ -22,11 +23,11 @@ public class Particle extends ParticleBase<Particle> {
         super(p.name, p.x, p.y, p.vx, p.vy, p.ax, p.ay, p.mass, p.radius);
     }
 
-    public Particle new_copy() {
-        return new Particle(this);
+    Particle new_instance(Object... args) {
+        return Constructor.new_instance(args);
     }
 
-    public Particle new_copy(CopyType copy_type) {
+    public Particle new_copy() {
         return new Particle(this);
     }
 }

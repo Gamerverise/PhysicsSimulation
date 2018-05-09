@@ -5,9 +5,8 @@ import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
-public abstract
-class BinaryNode
-        <T extends Constructor<T>>
+public class
+BinaryNode <T extends Constructor<T>>
         implements
         Constructor<BinaryNode<T>>
 {
@@ -22,26 +21,19 @@ class BinaryNode
     }
 
     public BinaryNode(T elem) {
-        this(elem, null, null, COPY_SHALLOW);
+        this(elem, null, null);
     }
 
-    public BinaryNode(T elem, BinaryNode<T> left, BinaryNode<T> right, CopyType copy_type) {
+    public BinaryNode(T elem, BinaryNode<T> left, BinaryNode<T> right) {
         this.elem = elem;
         this.left = left;
         this.right = right;
     }
 
-    public BinaryNode(T elem, CopyType copy_type) {
-        if (copy_type == COPY_SHALLOW)
-            this.elem = elem;
-        else
-            this.elem = elem.new_copy(copy_type);
-
-        this.next = null;
-    }
-
-    public BinaryNode(T elem, CopyType copy_type) {
-        super(list, copy_type);
+    public BinaryNode(BinaryNode<T> node, CopyType copy_type) {
+        elem = node.elem.new_copy(copy_type);
+        left = node.left.new_copy(copy_type);
+        right = node.right.new_copy(copy_type);
     }
 
     // =========================================================================================
@@ -50,7 +42,11 @@ class BinaryNode
         return Constructor.new_instance(BinaryNode.class, args);
     }
 
-    public BinaryNode<T> new_copy(CopyType copy_type) {
+    public BinaryNode<T> new_copy() {
+        return new_instance(COPY_SHALLOW);
+    }
 
+    public BinaryNode<T> new_copy(CopyType copy_type) {
+        return new_instance(copy_type);
     }
 }

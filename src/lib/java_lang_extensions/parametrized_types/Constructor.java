@@ -8,10 +8,10 @@ import java.lang.reflect.InvocationTargetException;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public interface Constructor<T>
+public interface
+Constructor<T extends Constructor<T>>
+    extends ConstructorShallowSelf<T>
 {
-    T new_instance(Object... args);
-
     T new_copy(CopyType copy_type);
 
     static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>

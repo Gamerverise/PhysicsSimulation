@@ -22,14 +22,8 @@ public class SimulationStatic<T extends ParticleBase<T>> {
     }
 
     public SimulationStatic(SimulationStatic<T> s, CopyType copy_type) {
-        copy_in(s, copy_type);
-    }
 
-    public void copy_in(SimulationStatic<T> s, CopyType copy_type) {
-        if (copy_type == CopyType.COPY_SHALLOW)
-            universe = s.universe;
-        else
-            universe = new Universe(s.universe, COPY_DEEP);
+        universe = s.universe.new_copy(copy_type);
 
         dt_real = s.dt_real;
         dt_sim = s.dt_sim;

@@ -11,6 +11,11 @@ public class LinkedList<T extends Constructor<T>>
         super();
     }
 
+    @SafeVarargs
+    public LinkedList(T... elems) {
+        super(elems);
+    }
+
     public LinkedList(LinkedList<T> list, CopyType copy_type) {
         super(list, copy_type);
     }
@@ -21,8 +26,8 @@ public class LinkedList<T extends Constructor<T>>
         return Constructor.new_instance(LinkedList.class, args);
     }
 
-    public SingleLink<T> new_link(T elem, CopyType copy_type) {
-        return new SingleLink<>(elem, copy_type);
+    public SingleLink<T> new_link(T elem) {
+        return new SingleLink<>(elem);
     }
 
     // =========================================================================================

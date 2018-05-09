@@ -14,6 +14,11 @@ public class DoublyLinkedList<T extends Constructor<T>>
         super();
     }
 
+    @SafeVarargs
+    public DoublyLinkedList(T... elems) {
+        super(elems);
+    }
+
     public DoublyLinkedList(DoublyLinkedList<T> list, CopyType copy_type) {
         super(list, copy_type);
     }
@@ -24,8 +29,8 @@ public class DoublyLinkedList<T extends Constructor<T>>
         return Constructor.new_instance(DoublyLinkedList.class, args);
     }
 
-    public DoubleLink<T> new_link(T elem, CopyType copy_type) {
-        return new DoubleLink<>(elem, copy_type);
+    public DoubleLink<T> new_link(T elem) {
+        return new DoubleLink<>(elem);
     }
 
     // =========================================================================================

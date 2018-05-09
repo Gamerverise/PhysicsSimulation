@@ -1,9 +1,11 @@
 package particle_model;
 
-import lib.tokens.enums.CopyType;
+import lib.java_lang_extensions.parametrized_types.ConstructorShallow;
 
-public abstract class ParticleBase<T extends ParticleBase<T>> implements ConstructableParametrizedType<T> {
-
+public abstract
+class ParticleBase
+        implements ConstructorShallow<ParticleBase>
+{
     public String name;
     public double x;
     public double y;
@@ -32,10 +34,6 @@ public abstract class ParticleBase<T extends ParticleBase<T>> implements Constru
         this.ay = ay;
         this.mass = mass;
         this.radius = radius;
-    }
-
-    public void copy_in(ParticleBase src, CopyType copy_type) {
-        init(src.name, src.x, src.y, src.vx, src.vy, src.ax, src.ay, src.mass, src.radius);
     }
 
     public double velocity() {

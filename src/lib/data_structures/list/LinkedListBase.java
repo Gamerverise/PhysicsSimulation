@@ -28,25 +28,28 @@ class LinkedListBase
         length = 0;
     }
 
+    public LinkedListBase(T... elems) {
+        this();
+
+        for(T elem : elems)
+            append(elem);
+    }
+
     public LinkedListBase(LinkedListBase<T, LINK_TYPE, LIST_TYPE> list, CopyType copy_type) {
         this();
 
         for(LINK_TYPE link : list)
-            append(link.elem.new_copy(copy_type), copy_type);
+            append(link.elem.new_copy(copy_type));
     }
 
     // =========================================================================================
 
-    public LIST_TYPE new_copy(CopyType copy_type) {
-        return new_instance(this, copy_type);
-    }
-
-    public abstract LINK_TYPE new_link(T elem, CopyType copy_type);
+    public abstract LINK_TYPE new_link(T elem);
 
     // =========================================================================================
 
-    public void append(T elem, CopyType copy_type) {
-        append(new_link(elem, copy_type));
+    public void append(T elem) {
+        append(new_link(elem));
     }
 
     public void append(LINK_TYPE link) {
@@ -94,6 +97,6 @@ class LinkedListBase
     // =========================================================================================
 
     public Iterator<LINK_TYPE> iterator() {
-        return new LinkedListIterator<>(this);
+        return new LinkedListIterator<>(self());
     }
 }

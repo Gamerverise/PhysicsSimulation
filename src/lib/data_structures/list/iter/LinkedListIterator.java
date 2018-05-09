@@ -15,7 +15,7 @@ public class LinkedListIterator
 {
     public LINK_TYPE cur;
 
-    public LinkedListIterator(LinkedListBase<T, LINK_TYPE, LIST_TYPE> list) {
+    public LinkedListIterator(LIST_TYPE list) {
         cur = list.head;
     }
 
