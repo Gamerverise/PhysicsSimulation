@@ -1,27 +1,25 @@
 package lib.data_structures.container;
 
+import lib.java_lang_extensions.parametrized_types.Constructor;
 import lib.tokens.enums.CopyType;
 
 import java.util.Iterator;
 
-public abstract class Container<DT extends ConstructableParametrizedType<DT>>
-    extends ContainerCopyableDataStructure<DT>
-    implements ConstructableParametrizedType<Container<DT>>
+public abstract class
+Container
+        <DT extends Constructor<DT>,
+                UDS extends ContainerUnderlyingDataStructure<DT, UDS>,
+                DS extends Container<DT, UDS, DS>>
+    extends ContainerCopyableDataStructure<DT, UDS, DS>
 {
-    public Container(UnderlyingDataStructure<DT> data_src, CopyType copy_type) {
-        super(data_src, copy_type);
+    @SafeVarargs
+    public Container(DT... elems) {
+        for (DT elem : elems)
+            contents.add(elem);
     }
 
-    public void add_data(Iterator<DT> data_src, CopyType copy_type) {
-        switch (copy_type) {
-            case COPY_SHALLOW:
-                while (data_src.hasNext())
-                    this.contents.add(data_src.next());
-                break;
-            case COPY_DEEP:
-                while (data_src.hasNext())
-                    this.contents.add(data_src.next().new_copy(copy_type));
-                break;
-        }
+    public Container(DS container, CopyType copy_type)
+    {
+        contents = container.contents.new_copy(copy_type);
     }
 }

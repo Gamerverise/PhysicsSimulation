@@ -2,14 +2,22 @@ package lib.data_structures.container;
 
 import lib.tokens.enums.CopyType;
 
-public abstract class ContainerCopyableDataStructure<DT>
-    extends ContainerAdapter<DT, UnderlyingDataStructure<DT>>
+public abstract class
+ContainerCopyableDataStructure
+        <DT,
+                UDS extends ContainerUnderlyingDataStructure<DT, UDS>,
+                DS extends ContainerCopyableDataStructure<DT, UDS, DS>>
+    extends
+        ContainerAdapter<DT, UDS, DS>
 {
-    public ContainerCopyableDataStructure(UnderlyingDataStructure<DT> contents) {
-        super(contents);
+    @SafeVarargs
+    public ContainerCopyableDataStructure(DT... elems) {
+        for (DT elem : elems)
+            contents.add(elem);
     }
 
-    public ContainerCopyableDataStructure(UnderlyingDataStructure<DT> data_src, CopyType copy_type) {
-        contents = data_src.new_copy(copy_type);
+    public ContainerCopyableDataStructure(DS container, CopyType copy_type)
+    {
+        contents = container.contents.new_copy(copy_type);
     }
 }
