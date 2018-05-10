@@ -1,32 +1,70 @@
 package edsel.lib.cfg_model;
 
-import java.util.LinkedList;
-
 public class CFG_Production
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+        <TERMINAL_TYPE
+                extends CFG_Terminal
+                        <TERMINAL_TYPE,
+                                PRODUCTION_TYPE,
+                                SYMBOL_TYPE,
+                                ENUM_TERMINAL_ID,
+                                TERMINAL_VALUE_TYPE,
+                                ENUM_PRODUCTION_ID>,
+                PRODUCTION_TYPE
+                        extends CFG_Production
+                                <TERMINAL_TYPE,
+                                        PRODUCTION_TYPE,
+                                        SYMBOL_TYPE,
+                                        ENUM_TERMINAL_ID,
+                                        TERMINAL_VALUE_TYPE,
+                                        ENUM_PRODUCTION_ID>,
+                SYMBOL_TYPE
+                        extends CFG_Symbol
+                                <TERMINAL_TYPE,
+                                        PRODUCTION_TYPE,
+                                        SYMBOL_TYPE,
+                                        ENUM_TERMINAL_ID,
+                                        TERMINAL_VALUE_TYPE,
+                                        ENUM_PRODUCTION_ID>,
+                ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-        extends CFG_Symbol
-        <ENUM_TERMINAL_ID,
-                TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID>
+        implements
+        CFG_Symbol
+                <TERMINAL_TYPE,
+                        PRODUCTION_TYPE,
+                        SYMBOL_TYPE,
+                        ENUM_TERMINAL_ID,
+                        TERMINAL_VALUE_TYPE,
+                        ENUM_PRODUCTION_ID>
 {
-    public CFG_Production(
-        CFG_Production<ENUM_TERMINAL_ID,
-                TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID>
-        production)
-    {
+    public ENUM_PRODUCTION_ID
+            id;
 
-    }
-
-    public ENUM_PRODUCTION_ID id;
-
-    public LinkedList<
-            CFG_Symbol<ENUM_TERMINAL_ID,
+    public CFG_Symbol
+            <TERMINAL_TYPE,
+                    PRODUCTION_TYPE,
+                    SYMBOL_TYPE,
+                    ENUM_TERMINAL_ID,
                     TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>>
-            rhs = new LinkedList<>();
+                    ENUM_PRODUCTION_ID>[]
+            rhs;
+
+    @SafeVarargs
+    public CFG_Production(
+            ENUM_PRODUCTION_ID
+                    id,
+            CFG_Symbol
+                    <TERMINAL_TYPE,
+                            PRODUCTION_TYPE,
+                            SYMBOL_TYPE,
+                            ENUM_TERMINAL_ID,
+                            TERMINAL_VALUE_TYPE,
+                            ENUM_PRODUCTION_ID>...
+                    rhs)
+    {
+        this.id = id;
+        this.rhs = rhs;
+    }
 
 //    public DoublyLinkedList
 //            <CFG_Terminal

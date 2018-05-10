@@ -7,6 +7,8 @@
       <excludeFolder url="file://$MODULE_DIR$/output" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/jflex" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/jflex/test" />
+      <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/non_deterministic" />
+      <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/parser" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/versions/_1_primordial/token/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/exclude" />
       <excludeFolder url="file://$MODULE_DIR$/src/gui/jfx_extensions/unfinished" />
@@ -19,6 +21,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/lib/javafx_api_extensions/unfinished" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_2/java_lang_extensions/multi_class" />
       <excludeFolder url="file://$MODULE_DIR$/src/lib_unfinished" />
+      <excludeFolder url="file://$MODULE_DIR$/src/particle_model" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
