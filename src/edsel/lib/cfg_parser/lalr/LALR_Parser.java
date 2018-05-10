@@ -12,9 +12,17 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class LALR_Parser
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+        <TERMINAL_TYPE extends CFG_Terminal
+                <ENUM_TERMINAL_ID,
+                        TERMINAL_VALUE_TYPE,
+                        ENUM_PRODUCTION_ID>,
+                PRODUCTION_TYPE extends CFG_Production
+                        <ENUM_TERMINAL_ID,
+                                TERMINAL_VALUE_TYPE,
+                                ENUM_PRODUCTION_ID>,
+                ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID extends  Enum<ENUM_PRODUCTION_ID>>
+                ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
 {
     public static class InvalidCFG_Input extends Exception {}
 
@@ -44,7 +52,9 @@ public class LALR_Parser
             TERMINAL_VALUE_TYPE,
             ENUM_PRODUCTION_ID>
     parse(CFG
-                  <ENUM_TERMINAL_ID,
+                  <TERMINAL_TYPE,
+                          PRODUCTION_TYPE,
+                          ENUM_TERMINAL_ID,
                           TERMINAL_VALUE_TYPE,
                           ENUM_PRODUCTION_ID>               lalr_cfg,
           SeekableBuffer<CFG_Terminal
@@ -88,4 +98,3 @@ public class LALR_Parser
         }
     }
 }
-
