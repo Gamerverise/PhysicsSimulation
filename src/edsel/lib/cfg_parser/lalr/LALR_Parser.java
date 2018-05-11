@@ -3,9 +3,11 @@ package edsel.lib.cfg_parser.lalr;
 import edsel.lib.cfg_model.CFG;
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Terminal;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Production;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Symbol;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_model.RCFG_Symbol;
+import edsel.lib.cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_parser.InputNotAccepted;
+import edsel.lib.cfg_parser.transitions.AbstractStateStackEntry;
 import edsel.lib.io.SeekableBuffer;
 
 import java.util.Stack;
@@ -40,7 +42,6 @@ public class LALR_Parser
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 REDUCTION_TYPE>
 {
-    public static class InputNotAccepted extends Exception {}
 
     public LALR_ParseTable
             <TERMINAL_TYPE,
@@ -69,14 +70,13 @@ public class LALR_Parser
                                     TERMINAL_VALUE_TYPE,
                                     ENUM_PRODUCTION_ID>>      input,
             Stack
-                    <StateStackEntry
-                            <TERMINAL_TYPE,
-                                    PRODUCTION_TYPE,
-                                    SYMBOL_TYPE,
-                                    ENUM_TERMINAL_ID,
-                                    TERMINAL_VALUE_TYPE,
-                                    ENUM_PRODUCTION_ID,
-                                    REDUCTION_TYPE>>          state_stack)
+                    <AbstractStateStackEntry<TERMINAL_TYPE,
+                                                                            PRODUCTION_TYPE,
+                                                                            SYMBOL_TYPE,
+                                                                            ENUM_TERMINAL_ID,
+                                                                            TERMINAL_VALUE_TYPE,
+                                                                            ENUM_PRODUCTION_ID,
+                                                                            REDUCTION_TYPE>>          state_stack)
             throws InputNotAccepted
     {
         while (true) {

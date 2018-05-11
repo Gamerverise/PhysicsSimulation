@@ -1,7 +1,4 @@
-package edsel.lib.cfg_parser.reducing_cfg_model;
-
-import edsel.lib.cfg_model.CFG_Production;
-import edsel.lib.cfg_model.CFG_Terminal;
+package edsel.lib.cfg_model;
 
 public abstract
 class RCFG_Terminal

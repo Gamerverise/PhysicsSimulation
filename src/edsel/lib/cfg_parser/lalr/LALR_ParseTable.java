@@ -1,9 +1,10 @@
 package edsel.lib.cfg_parser.lalr;
 
 import edsel.lib.cfg_model.CFG;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Production;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Symbol;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_model.RCFG_Symbol;
+import edsel.lib.cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_parser.transitions.AbstractStateStackEntry;
 
 public class
 LALR_ParseTable
@@ -37,14 +38,13 @@ LALR_ParseTable
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 REDUCTION_TYPE>
 {
-    public StateStackEntry
-            <TERMINAL_TYPE,
-                    PRODUCTION_TYPE,
-                    SYMBOL_TYPE,
-                    ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID,
-                    REDUCTION_TYPE>
+    public AbstractStateStackEntry<TERMINAL_TYPE,
+                            PRODUCTION_TYPE,
+                            SYMBOL_TYPE,
+                            ENUM_TERMINAL_ID,
+                            TERMINAL_VALUE_TYPE,
+                            ENUM_PRODUCTION_ID,
+                            REDUCTION_TYPE>
             start_state;
 
     public LALR_ParseTable

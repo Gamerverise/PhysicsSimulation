@@ -1,4 +1,4 @@
-package edsel.lib.cfg_parser.transitions;
+package edsel.lib.cfg_parser.transitions.old;
 
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Terminal;

@@ -1,11 +1,13 @@
-package edsel.lib.cfg_parser.lalr.transitions;
+package edsel.lib.cfg_parser.transitions;
 
-import edsel.lib.cfg_parser.lalr.StateStackEntry;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Production;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Symbol;
-import edsel.lib.cfg_parser.reducing_cfg_model.RCFG_Terminal;
 
-public class StateTransition
+import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_model.RCFG_Symbol;
+import edsel.lib.cfg_model.RCFG_Terminal;
+
+import java.util.LinkedList;
+
+public class AbstractStateStackEntry
         <TERMINAL_TYPE
                 extends RCFG_Terminal<TERMINAL_TYPE,
                         PRODUCTION_TYPE,
@@ -33,18 +35,21 @@ public class StateTransition
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
-                REDUCTION_TYPE>
+                REDUCTION_TYPE,
+                STATE_STACK_ENTRY_TYPE
+                        extends AbstractStateStackEntry
+                                <TERMINAL_TYPE,
+                                        PRODUCTION_TYPE,
+                                        SYMBOL_TYPE,
+                                        ENUM_TERMINAL_ID,
+                                        TERMINAL_VALUE_TYPE,
+                                        ENUM_PRODUCTION_ID,
+                                        REDUCTION_TYPE,
+                                        STATE_STACK_ENTRY_TYPE>>
 {
-    public RCFG_Terminal
-            <TERMINAL_TYPE,
-                    PRODUCTION_TYPE,
-                    SYMBOL_TYPE,
-                    ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID,
-                    REDUCTION_TYPE>
-            terminal;
+    public AbstractStateStackEntry(STATE_STACK_ENTRY_TYPE... transitions) {
+        this.transitions = transitions;
+    }
 
-    public StateStackEntry
-            new_state;
+    public STATE_STACK_ENTRY_TYPE[] transitions;
 }
