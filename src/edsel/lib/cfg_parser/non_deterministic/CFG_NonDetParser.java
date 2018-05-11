@@ -1,102 +1,56 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
-import edsel.lib.cfg_model.*;
-import edsel.lib.cfg_parser.lalr.LALR_ParseTable;
-import edsel.lib.cfg_parser.reductions.CFG_DetReduction;
+import edsel.cfgs.regex_cfg.RegexCFG;
+import edsel.cfgs.regex_cfg.RegexProduction;
+import edsel.cfgs.regex_cfg.RegexTerminal;
+import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_parser.InputNotAccepted;
+import edsel.lib.cfg_parser.ProductionBranchEntry;
+import edsel.lib.cfg_parser.ParseStateEntry;
 import edsel.lib.io.SeekableBuffer;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+//public enum TransitionType {
+//    SHIFT,
+//    REDUCE,
+//    SHIFT_OR_REDUCE,
+//    NOT_APPLICABLE
+//}
 
 public class CFG_NonDetParser
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID extends  Enum<ENUM_PRODUCTION_ID>>
+        <PRODUCTION_TYPE extends RCFG_Production<ENUM_PRODUCTION_ID, REDUCTION_TYPE>,
+                ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
+                REDUCTION_TYPE>
 {
-    public static class InvalidCFG_Input extends Exception {}
-
-    public CFG
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>
-            cfg;
-
-    public SeekableBuffer<CFG_Terminal<ENUM_TERMINAL_ID,
-                        TERMINAL_VALUE_TYPE,
-                        ENUM_PRODUCTION_ID>>
-            input;
-
-
-    public enum TransitionType {
-        SHIFT,
-        REDUCE,
-        SHIFT_OR_REDUCE,
-        NOT_APPLICABLE
-    }
-
-
-    public
-    CFG_DetReduction<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-    shift(LinkedList<CFG_DetReduction
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>>
-                  sub_reductions)
+    public REDUCTION_TYPE
+    parse_recursive(
+            RegexCFG                            regex_cfg,
+            SeekableBuffer<RegexTerminal>       input,
+            ParseStateEntry state_entry
+    )
+            throws InputNotAccepted
     {
+        if (state_entry instanceof ProductionBranchEntry) {
+            ProductionBranchEntry transition = (ProductionBranchEntry) state_entry;
 
-    }
+            for (int i = 0; i < transition.production.rhs.length; i++)
+                parse_recursive(regex_cfg, input, new Red);
 
-    public
-    CFG_DetReduction<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-    reduce(LinkedList
-                   <CFG_DetReduction
-                           <ENUM_TERMINAL_ID,
-                                   TERMINAL_VALUE_TYPE,
-                                   ENUM_PRODUCTION_ID>>
-                   sub_reductions)
-    {
 
-    }
-
-    public CFG_DetReduction<ENUM_TERMINAL_ID,
-                            TERMINAL_VALUE_TYPE,
-                            ENUM_PRODUCTION_ID>
-    parse(CFG_Production
-                  <ENUM_TERMINAL_ID,
-                          TERMINAL_VALUE_TYPE,
-                          ENUM_PRODUCTION_ID>               start_production,
-          SeekableBuffer<CFG_Terminal
-                  <ENUM_TERMINAL_ID,
-                          TERMINAL_VALUE_TYPE,
-                          ENUM_PRODUCTION_ID>>              input,
-          CFG_DetReduction<ENUM_TERMINAL_ID,
-                                    TERMINAL_VALUE_TYPE,
-                                    ENUM_PRODUCTION_ID>     output_reduction)
-    throws InvalidCFG_Input
-    {
         while (true) {
-            CFG_Terminal
-                    <ENUM_TERMINAL_ID,
-                            TERMINAL_VALUE_TYPE,
-                            ENUM_PRODUCTION_ID>
-                    sym = input.next();
+            RegexTerminal sym = input.next();
 
-            if (sym == cfg.eof) {
-                if (state_stack.peek() == cfg.root_production)
+            if (sym == regex_cfg.eof) {
+                if (state_stack.empty())
                     return;
                 else
-                    throw new InvalidCFG_Input();
+                    throw new InputNotAccepted();
             }
 
-            Iterator
-                    <CFG_Production
-                            <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>>
-                    production_iter = cfg.productions.iterator();
+            Iterator<RegexProduction<REDUCTION_TYPE>> production_iter = regex_cfg.productions.iterator();
 
             while (production_iter.hasNext()) {
 
-                CFG_Production<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-                        cur_production = production_iter.next();
+                RegexProduction<REDUCTION_TYPE> cur_production = production_iter.next();
 
                 if (cur_production.start_terminals.contains(sym))
                     return parse(cur_production, input, output_reduction);
@@ -106,77 +60,43 @@ public class CFG_NonDetParser
         }
     }
 
+    // =========================================================================================
 
-    public
-    CFG_Production
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>
-    parse_non_det(SeekableBuffer<CFG_Terminal
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>> input,
-                  LinkedList<CFG_Symbol
-                          <ENUM_TERMINAL_ID,
-                                  TERMINAL_VALUE_TYPE,
-                                  ENUM_PRODUCTION_ID>>              state_stack)
-            throws CFG_NonDetParser.InvalidCFG_Input
-    {
-        while (true) {
-            CFG_Terminal
-                    <ENUM_TERMINAL_ID,
-                            TERMINAL_VALUE_TYPE,
-                            ENUM_PRODUCTION_ID>
-                    sym = input.next();
-
-            if (sym == lalr_cfg.eof) {
-                if (state_stack.peek() == lalr_cfg.root_production)
-                    return;
-                else
-                    throw new CFG_NonDetParser.InvalidCFG_Input();
-            }
-
-            Iterator<CFG_Production
-                    <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>>
-                    production_iter = cfg.productions.iterator();
-
-            while (production_iter.hasNext()) {
-
-                CFG_Production<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-                        cur_production = production_iter.next();
-
-                if (cur_production.start_terminals.contains(sym))
-                    return parse(cur_production, input, output_reduction);
-                else
-                    cur_
-            }
-        }
-    }
-
-    public CFG_DetReduction<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-    shift(LinkedList<CFG_DetReduction
-            <ENUM_TERMINAL_ID,
-                    TERMINAL_VALUE_TYPE,
-                    ENUM_PRODUCTION_ID>>
-                  sub_reductions)
-    {
-
-    }
-
-    public
-    CFG_DetReduction<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-    reduce(LinkedList
-                   <CFG_DetReduction
-                           <ENUM_TERMINAL_ID,
-                                   TERMINAL_VALUE_TYPE,
-                                   ENUM_PRODUCTION_ID>>
-                   sub_reductions)
-    {
-
-    }
-
-    public LALR_ParseTable<> build_lalr_parse_table(){
-        return LALR_ParseTable.build_parse_table(this);
-    }
-
+//    public LinkedList<Character>
+//    parse_iterative(
+//            RegexCFG                            regex_cfg,
+//            SeekableBuffer<RegexTerminal>       input,
+//            Stack<ProductionBranchEntry>               state_stack
+//    )
+//            throws InputNotAccepted
+//    {
+//        ProductionBranchEntry<PRODUCTION_TYPE, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
+//                start_state = new ProductionBranchEntry<RegexProduction, RegexProductionID, LinkedList<Character>>
+//                (START, regex_cfg.root_production, 0, 0);
+//
+//        state_stack.push(new ProductionBranchEntry<>(regex_cfg.root_production);
+//
+//        while (true) {
+//            RegexTerminal<REDUCTION_TYPE> sym = input.next();
+//
+//            if (sym == regex_cfg.eof) {
+//                if (state_stack.empty())
+//                    return;
+//                else
+//                    throw new InputNotAccepted();
+//            }
+//
+//            Iterator<RegexProduction<REDUCTION_TYPE>> production_iter = regex_cfg.productions.iterator();
+//
+//            while (production_iter.hasNext()) {
+//
+//                RegexProduction<REDUCTION_TYPE> cur_production = production_iter.next();
+//
+//                if (cur_production.start_terminals.contains(sym))
+//                    return parse(cur_production, input, output_reduction);
+//                else
+//                    cur_
+//            }
+//        }
+//    }
 }

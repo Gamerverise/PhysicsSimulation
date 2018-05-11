@@ -1,6 +1,6 @@
 package edsel.lib.io;
 
-import edsel.lib.cfg_model.CFG_Symbol;
+import edsel.lib.cfg_model.CFG_Terminal;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -10,23 +10,18 @@ import java.util.LinkedList;
 
 public class
 SeekableCFG_TerminalBuffer
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
+        <TERMINAL_TYPE extends CFG_Terminal<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE>,
+                ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+                TERMINAL_VALUE_TYPE>
     extends SeekableBufferBase
 {
     byte[] input;
 
-    CFG_Symbol
-            <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-            eof;
-
-    LinkedList<Integer> token_starts = new LinkedList<>();
+    TERMINAL_TYPE eof;
 
     public SeekableCFG_TerminalBuffer(
             String filename,
-            CFG_Symbol<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>
-                    eof)
+            TERMINAL_TYPE eof)
     {
         try {
             Path path = FileSystems.getDefault().getPath(filename);
@@ -43,12 +38,7 @@ SeekableCFG_TerminalBuffer
         this.eof = eof;
     }
 
-    public
-    CFG_Symbol
-            <ENUM_TERMINAL_ID,
-                TERMINAL_VALUE_TYPE,
-                ENUM_PRODUCTION_ID>
-    next() {
+    public TERMINAL_TYPE next() {
         return null;
     }
 }

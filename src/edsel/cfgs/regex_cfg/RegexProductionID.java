@@ -1,4 +1,4 @@
-package edsel.lib.cfg_parser.regex_cfg;
+package edsel.cfgs.regex_cfg;
 
 public enum RegexProductionID {
     START,

@@ -1,3 +1,5 @@
+package GravityGame;
+
 import gui.debug.DebugJavaFX;
 import gui.stylesheets.GravityGameStylesheets;
 import gui.widget.GravityGameStage;
@@ -47,7 +49,7 @@ public class GravityGame extends ApplicationX {
         this.stage = new GravityGameStage(scene);
 
         // FIXME: How will stylesheets interact with our JavaFX_Widget mechanism?
-//        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.css");
+//        this.scene.getStylesheets().addAll(user_dir + "\\src\\gui\\stylesheets\\GravityGame.GravityGame.css");
 
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {

@@ -19,7 +19,6 @@ class RegexProduction<REDUCTION_TYPE>
                         REDUCTION_TYPE>
 implements RegexSymbol<REDUCTION_TYPE>
 {
-    @SafeVarargs
     public RegexProduction(
             RegexProductionID                   id,
             RegexSymbol<REDUCTION_TYPE>...      rhs)
