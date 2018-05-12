@@ -1,4 +1,4 @@
-package edsel.lib.io;
+package edsel.lib.io.seekable;
 
 public class SeekableArrayBuffer<T> extends SeekableBuffer<T> {
     public T[] buf;

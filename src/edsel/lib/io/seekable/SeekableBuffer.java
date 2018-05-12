@@ -1,4 +1,4 @@
-package edsel.lib.io;
+package edsel.lib.io.seekable;
 
 public abstract class SeekableBuffer<T> extends SeekableBufferBase {
     public T eof;
