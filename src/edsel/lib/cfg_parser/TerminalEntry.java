@@ -7,19 +7,16 @@ public class TerminalEntry
                 TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 REDUCTION_TYPE>
-        extends
-        ParseStateEntry<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
+        implements
+        ParseStateEntry
 {
     public CFG_Terminal<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE>
             terminal;
 
     public TerminalEntry(
             CFG_Terminal<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE>
-                    terminal,
-            ParseStateEntry<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
-                    prev_state)
+                    terminal)
     {
-        super(prev_state);
         this.terminal = terminal;
     }
 }

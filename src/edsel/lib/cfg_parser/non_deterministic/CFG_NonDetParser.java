@@ -25,64 +25,67 @@ public class CFG_NonDetParser
     @SuppressWarnings("unchecked")
     public REDUCTION_TYPE
     parse_recursive(
-            CFG<ENUM_TERMINAL_ID, Range_int, ENUM_PRODUCTION_ID> regex_cfg,
-            CFG_TerminalBuffer<ENUM_TERMINAL_ID> input,
-            ParseStateEntry state_entry
+            RCFG_Production<ENUM_TERMINAL_ID, Range_int, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
+                    production,
+            CFG_TerminalBuffer<ENUM_TERMINAL_ID>
+                    input,
+            CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
+                    eof
     )
-            throws InputNotAccepted, AmbiguousParserInput
+            throws AmbiguousParserInput
     {
-        if (state_entry instanceof ProductionEntry) {
 
-            ProductionEntry<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
-                    production_entry 
-                    = (ProductionEntry<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>)
-                    state_entry;
+        REDUCTION_TYPE reduction = null;
 
-            RCFG_Production<ENUM_PRODUCTION_ID, REDUCTION_TYPE> production = production_entry.production;
+        for (int i = 0; i < production.rhs.length; i++) {
+            CFG_Symbol[] cur_branch = production.rhs[i];
 
-            REDUCTION_TYPE reduction = null;
-            
-            for (int i = 0; i < production.rhs.length; i++) {
-                REDUCTION_TYPE tmp_reduction
-                        = parse_recursive(
-                                regex_cfg,
-                                input,
-                                new ProductionBranchEntry(state_entry, production, i, 0));
-                
-                if (tmp_reduction != null) {
-                    if (reduction == null)
-                        reduction = tmp_reduction;
+            REDUCTION_TYPE[] sub_reductions = (REDUCTION_TYPE[]) new Object[cur_branch.length];
+
+            for (int j = 0; j < cur_branch.length; j++) {
+                CFG_Symbol cur_expected_symbol = cur_branch[j];
+
+                REDUCTION_TYPE tmp_reduction = null;
+
+                if (cur_expected_symbol instanceof RCFG_Production) {
+                    RCFG_Production rhs_production = (RCFG_Production) cur_expected_symbol;
+
+                    tmp_reduction = parse_recursive(rhs_production, input, eof);
+
+                    if (tmp_reduction != null) {
+                        if (reduction == null)
+                            reduction = tmp_reduction;
+                        else
+                            throw new AmbiguousParserInput();
+                    }
+                } else if (cur_expected_symbol instanceof CFG_Terminal) {
+                    CFG_Terminal<ENUM_TERMINAL_ID, Range_int> next_input;
+
+                    if (input.not_empty())
+                        next_input = input.peek();
                     else
-                        throw new AmbiguousParserInput();
+                        return null;
+
+                    CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
+                            cur_expected_terminal
+                            =
+                            (CFG_Terminal<ENUM_TERMINAL_ID, Range_int>) cur_expected_symbol;
+
+                    if (next_input != cur_expected_terminal)
+                        return null;
+                    else {
+                        tmp_reduction = production.reduce(next_input);
+                        input.next();
+                    }
                 }
-            }
-            
-            if (reduction == null)
-                throw new InputNotAccepted();
-            
-            return reduction;
-            
-        } else if (state_entry instanceof ProductionBranchEntry) {
-            
-            ProductionBranchEntry branch = (ProductionBranchEntry) state_entry;
 
-            CFG_Symbol expected_symbol = branch.production.rhs[branch.cur_alternative][branch.cur_alternative_index];
-            
-            if (expected_symbol instanceof CFG_Terminal) {
-                ENUM_TERMINAL_ID expected_id = ((CFG_Terminal<ENUM_TERMINAL_ID, Range_int>) expected_symbol).id;
-                
-                if(input.peek().id == expected_id)
-                    recurse
+                sub_reductions[i] = tmp_reduction;
             }
-            
-            CFG_Terminal<ENUM_TERMINAL_ID, Range_int> terminal;
-            
-            for (int i = 0; i < transition.production.rhs.length; i++)
-                parse_recursive(regex_cfg, input, new Red);
 
-        } else if (state_entry instanceof TerminalEntry) {
-            
+            return production.reduce(production.rhs[i], sub_reductions);
         }
+
+        return null;
     }
 
     // =========================================================================================
