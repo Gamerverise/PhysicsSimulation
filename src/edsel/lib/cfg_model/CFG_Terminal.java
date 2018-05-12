@@ -9,4 +9,9 @@ CFG_Terminal
 {
     public ENUM_TERMINAL_ID id;
     public TERMINAL_VALUE_TYPE value;
+
+    public CFG_Terminal(ENUM_TERMINAL_ID id, TERMINAL_VALUE_TYPE value) {
+        this.id = id;
+        this.value = value;
+    }
 }
