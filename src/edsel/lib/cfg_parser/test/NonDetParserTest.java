@@ -1,7 +1,7 @@
 package edsel.lib.cfg_parser.test;
 
 import edsel.cfgs.regex_cfg.RegexProductionID;
-import edsel.cfgs.regex_cfg.io.RegexTerminalBuffer;
+import edsel.cfgs.regex_cfg.io.RegexTokenBuffer;
 import edsel.cfgs.regex_cfg.RegexTerminalID;
 import edsel.lib.cfg_parser.non_deterministic.CFG_NonDetParser;
 import lib.java_lang_extensions.tuples.Range_int;
@@ -15,7 +15,7 @@ public class NonDetParserTest {
         String filename = "C:\\home\\dad\\Gravity_Game\\Gravity_Game_IDEA\\src\\edsel\\lib\\cfg_parser\\test"
                 + "\\RegexParserTestData.txt";
 
-        RegexTerminalBuffer input = new RegexTerminalBuffer(filename);
+        RegexTokenBuffer input = new RegexTokenBuffer(filename);
         CFG_NonDetParser<RegexTerminalID, RegexProductionID, Range_int> parser = new CFG_NonDetParser<>();
 
         try {

@@ -1,6 +1,5 @@
 package edsel.lib.io;
 
-import edsel.lib.cfg_model.CFG_Terminal;
 import lib.java_lang_extensions.tuples.Range_int;
 
 import java.io.IOException;
@@ -8,20 +7,21 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public abstract class
-CFG_TerminalBuffer
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
+public abstract
+class TokenBuffer
+        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+                TOKEN_VALUE_TYPE>
 {
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public CFG_Terminal<ENUM_TERMINAL_ID, Range_int> next_terminal;
+    public Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token;
     
     public int cur_tok_start;
     public int cur_tok_end;
     
     public byte[] buf;
 
-    public CFG_TerminalBuffer(String filename)
+    public TokenBuffer(String filename)
     {
         try {
             Path path = FileSystems.getDefault().getPath(filename);
@@ -40,18 +40,18 @@ CFG_TerminalBuffer
     }
     
     public
-    CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
+    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     next()
     {
         eat_separators();
-        return next_terminal;
+        return next_token;
     }
 
     public
-    CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
+    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     peek()
     {
-        return next_terminal;
+        return next_token;
     }
 
     public boolean not_empty() {

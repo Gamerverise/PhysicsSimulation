@@ -3,7 +3,7 @@ package edsel.lib.cfg_parser.non_deterministic;
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_model.RCFG_Production;
-import edsel.lib.io.CFG_TerminalBuffer;
+import edsel.lib.io.TokenBuffer;
 import lib.java_lang_extensions.tuples.Range_int;
 
 //public enum TransitionType {
@@ -25,7 +25,7 @@ public class CFG_NonDetParser
     parse_recursive(
             RCFG_Production<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
                     production,
-            CFG_TerminalBuffer<ENUM_TERMINAL_ID>
+            TokenBuffer<ENUM_TERMINAL_ID>
                     input,
             int num_branches_explored
     )

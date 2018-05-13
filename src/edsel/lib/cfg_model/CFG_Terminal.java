@@ -2,21 +2,14 @@ package edsel.lib.cfg_model;
 
 public class
 CFG_Terminal
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TERMINAL_VALUE_TYPE>
-        implements
-        CFG_Symbol
+        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
+        implements CFG_Symbol
 {
     public ENUM_TERMINAL_ID id;
-    public TERMINAL_VALUE_TYPE value;
+    public String pattern;
 
-    public CFG_Terminal() {
-        this.id = null;
-        this.value = null;
-    }
-
-    public CFG_Terminal(ENUM_TERMINAL_ID id, TERMINAL_VALUE_TYPE value) {
+    public CFG_Terminal(ENUM_TERMINAL_ID id, String pattern) {
         this.id = id;
-        this.value = value;
+        this.pattern = pattern;
     }
 }
