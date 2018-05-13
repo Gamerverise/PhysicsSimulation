@@ -32,8 +32,12 @@ public class SubVarArgs<T> {
         return array[i].getClass();
     }
 
-    @SafeVarargs
-    public static <V> SubVarArgs<V> V(V... sub_var_args) {
-        return new SubVarArgs<>(sub_var_args);
+//    @SafeVarargs
+//    public static <V> SubVarArgs<V> V(V... sub_var_args) {
+//        return new SubVarArgs<>(sub_var_args);
+//    }
+
+    public static <V> V[] V(V... args) {
+        return args;
     }
 }

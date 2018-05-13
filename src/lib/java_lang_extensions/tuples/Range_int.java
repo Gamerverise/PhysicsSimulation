@@ -12,4 +12,8 @@ public class Range_int {
     public static Range_int Range_int(int start, int end) {
         return new Range_int(start, end);
     }
+
+    public int size() {
+        return end - start;
+    }
 }

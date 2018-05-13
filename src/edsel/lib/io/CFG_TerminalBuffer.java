@@ -11,8 +11,6 @@ import java.nio.file.Path;
 public class
 CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
 {
-    public CFG_Terminal<ENUM_TERMINAL_ID, Range_int> eof;
-
     public byte[] separator_chars = {' ', '\n', '\t'};
 
     public ENUM_TERMINAL_ID cur_id;
@@ -21,10 +19,8 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
     
     public byte[] buf;
 
-    public CFG_TerminalBuffer(String filename, CFG_Terminal<ENUM_TERMINAL_ID, Range_int> eof)
+    public CFG_TerminalBuffer(String filename)
     {
-        this.eof = eof;
-
         try {
             Path path = FileSystems.getDefault().getPath(filename);
             long input_size = Files.size(path);
@@ -36,8 +32,6 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
         } catch (IOException e) {
             throw new RuntimeException();
         }
-
-        this.eof = eof;
 
         cur_tok_start = 0;
         eat_separators();
@@ -86,5 +80,9 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
                 return true;
 
         return false;
+    }
+
+    public String get_str(Range_int range) {
+        return new String(buf, range.start, range.size());
     }
 }

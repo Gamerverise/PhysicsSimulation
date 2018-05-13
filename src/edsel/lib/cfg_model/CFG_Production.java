@@ -15,27 +15,3 @@ CFG_Production
         this.rhs = rhs;
     }
 }
-
-// =========================================================================================
-
-//    public DoublyLinkedList
-//            <CFG_Terminal
-//                    <ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE, ENUM_PRODUCTION_ID>>
-//            start_terminals;
-//
-//    public void
-//    transition(Stack
-//                       <CFG_Symbol
-//                               <ENUM_TERMINAL_ID,
-//                                       TERMINAL_VALUE_TYPE,
-//                                       ENUM_PRODUCTION_ID>>
-//                       state_stack,
-//               CFG_Symbol
-//                       <ENUM_TERMINAL_ID,
-//                               TERMINAL_VALUE_TYPE,
-//                               ENUM_PRODUCTION_ID>
-//                       sym)
-//
-//    {
-//
-//    }
