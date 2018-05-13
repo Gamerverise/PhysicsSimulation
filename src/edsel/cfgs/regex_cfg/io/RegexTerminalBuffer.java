@@ -1,6 +1,9 @@
-package edsel.cfgs.regex_cfg;
+package edsel.cfgs.regex_cfg.io;
 
+import edsel.cfgs.regex_cfg.RegexTerminalID;
+import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.io.CFG_TerminalBuffer;
+import lib.java_lang_extensions.tuples.Range_int;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
@@ -17,24 +20,29 @@ RegexTerminalBuffer extends CFG_TerminalBuffer<RegexTerminalID>
             return;
         }
 
+        RegexTerminalID new_id;
+        Range_int new_range = new Range_int(cur_tok_start, cur_tok_end);
+
         Character next_value = (char) buf[cur_tok_start];
 
         if (next_value == OP.value)
-            next_terminal.id = OP.id;
+            new_id = OP.id;
 
         else if (next_value == CP.value)
-            next_terminal.id = CP.id;
+            new_id = CP.id;
 
         else if (next_value == VB.value)
-            next_terminal.id = VB.id;
+            new_id = VB.id;
 
         else if (next_value == ST.value)
-            next_terminal.id = ST.id;
+            new_id = ST.id;
 
         else if (next_value == UB.value)
-            next_terminal.id = UB.id;
+            new_id = UB.id;
 
         else
-            next_terminal.id = LITERAL.id;
+            new_id = LITERAL.id;
+
+        next_terminal = new CFG_Terminal<>(new_id, new_range);
     }
 }

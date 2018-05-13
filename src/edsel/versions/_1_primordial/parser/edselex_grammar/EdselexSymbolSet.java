@@ -6,7 +6,7 @@ public class EdselexSymbolSet extends CFG_Symbol<EdselexProduction, EdselexTermi
 
     public static EdselexSymbolSet EDSELEX_GRAMMAR_SYMBOL;
 
-    {
+    static {
         EDSELEX_GRAMMAR_SYMBOL.expansions = EDSELEX_GRAMMAR_EXPANSIONS;
         EDSELEX_GRAMMAR_SYMBOL.terminals = EDSELEX_GRAMMAR_TERMINALS;
     }

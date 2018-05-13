@@ -76,7 +76,7 @@ public abstract class EdselexParser<REDUCTION> {
         transition_matrix[state.id.ordinal()][chr] = tf;
     }
 
-    {
+    static {
         for (int i = 0; i < transition_matrix.length; i++) {
             //noinspection unchecked
             transition_matrix[i] = new TransitionFunc[star];

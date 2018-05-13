@@ -10,7 +10,17 @@ CFG_Production
 
     public CFG_Symbol[][] rhs;
 
+    public CFG_Production() {
+        this.id = null;
+        this.rhs = null;
+    }
+
     public CFG_Production(ENUM_PRODUCTION_ID id, CFG_Symbol[]... rhs) {
+        this.id = id;
+        this.rhs = rhs;
+    }
+
+    public void init(ENUM_PRODUCTION_ID id, CFG_Symbol[]... rhs) {
         this.id = id;
         this.rhs = rhs;
     }

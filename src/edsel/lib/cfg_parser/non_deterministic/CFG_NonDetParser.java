@@ -16,7 +16,7 @@ import lib.java_lang_extensions.tuples.Range_int;
 public class CFG_NonDetParser
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
-                REDUCTION_TYPE>
+                REDUCTION_TYPE extends ReductionNonDetTerminal>
 {
     public static class AmbiguousParserInput extends Exception {}
     
@@ -26,10 +26,13 @@ public class CFG_NonDetParser
             RCFG_Production<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
                     production,
             CFG_TerminalBuffer<ENUM_TERMINAL_ID>
-                    input
+                    input,
+            int num_branches_explored
     )
             throws AmbiguousParserInput
     {
+        num_branches_explored++;
+
         for (int i = 0; i < production.rhs.length; i++) {
             CFG_Symbol[] cur_branch = production.rhs[i];
 
@@ -45,14 +48,16 @@ public class CFG_NonDetParser
                             <ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
                             rhs_production = (RCFG_Production) cur_expected_symbol;
 
-                    tmp_reduction = parse_recursive(rhs_production, input);
+                    tmp_reduction = parse_recursive(rhs_production, input, num_branches_explored);
 
                     if (tmp_reduction != null) {
                         if (reduction == null)
                             reduction = tmp_reduction;
                         else
                             throw new AmbiguousParserInput();
-                    }
+                    } else
+                        continue;
+
                 } else if (cur_expected_symbol instanceof CFG_Terminal) {
                     CFG_Terminal<ENUM_TERMINAL_ID, Range_int> next_input;
 

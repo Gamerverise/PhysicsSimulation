@@ -29,7 +29,7 @@ public class RegexTerminal
 
     public static RegexTerminal LITERAL;
 
-    {
+    static {
         OP = new RegexTerminal(OP_ID, '(');
         CP = new RegexTerminal(CP_ID, ')');
 

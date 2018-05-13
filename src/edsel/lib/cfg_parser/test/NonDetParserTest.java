@@ -1,7 +1,7 @@
 package edsel.lib.cfg_parser.test;
 
 import edsel.cfgs.regex_cfg.RegexProductionID;
-import edsel.cfgs.regex_cfg.RegexTerminalBuffer;
+import edsel.cfgs.regex_cfg.io.RegexTerminalBuffer;
 import edsel.cfgs.regex_cfg.RegexTerminalID;
 import edsel.lib.cfg_parser.non_deterministic.CFG_NonDetParser;
 import lib.java_lang_extensions.tuples.Range_int;
@@ -19,8 +19,10 @@ public class NonDetParserTest {
         CFG_NonDetParser<RegexTerminalID, RegexProductionID, Range_int> parser = new CFG_NonDetParser<>();
 
         try {
-            Range_int reduction = parser.parse_recursive(START, input);
-            System.out.print(input.get_substr(reduction));
+            Range_int reduction = parser.parse_recursive(START, input, 0);
+
+            if (reduction != null)
+                System.out.print(input.get_substr(reduction));
 
         } catch (AmbiguousParserInput e) {
             throw new RuntimeException();
