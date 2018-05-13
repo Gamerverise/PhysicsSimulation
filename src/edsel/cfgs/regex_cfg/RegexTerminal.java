@@ -9,6 +9,10 @@ public class RegexTerminal
         extends CFG_Terminal<RegexTerminalID, Character>
         implements CFG_Symbol
 {
+    public RegexTerminal() {
+        super();
+    }
+
     public RegexTerminal(RegexTerminalID id, Character value) {
         super(id, value);
     }

@@ -8,12 +8,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class
-CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
+public abstract class
+CFG_TerminalBuffer
+        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
 {
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public ENUM_TERMINAL_ID cur_id;
+    public CFG_Terminal<ENUM_TERMINAL_ID, Range_int> next_terminal;
+    
     public int cur_tok_start;
     public int cur_tok_end;
     
@@ -41,17 +43,15 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
     CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
     next()
     {
-        CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
-                range = new CFG_Terminal<>(cur_id, new Range_int(cur_tok_start, cur_tok_end));
         eat_separators();
-        return range;
+        return next_terminal;
     }
 
     public
     CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
     peek()
     {
-        return new CFG_Terminal<>(cur_id, new Range_int(cur_tok_start, cur_tok_end));
+        return next_terminal;
     }
 
     public boolean not_empty() {
@@ -72,8 +72,10 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
                 cur_tok_end++;
             else
                 break;
+            
+        update_next();
     }
-
+    
     public boolean is_separator(byte chr) {
         for(byte cur : separator_chars)
             if (chr == cur)
@@ -82,7 +84,13 @@ CFG_TerminalBuffer<ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>>
         return false;
     }
 
-    public String get_str(Range_int range) {
-        return new String(buf, range.start, range.size());
+    public String get_substr(Range_int range) {
+        return get_substr(range.start, range.end);
     }
+
+    public String get_substr(int start, int end) {
+        return new String(buf, start, end);
+    }
+    
+    public abstract void update_next();
 }

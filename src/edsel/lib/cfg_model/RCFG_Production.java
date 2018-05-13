@@ -1,9 +1,10 @@
 package edsel.lib.cfg_model;
 
+import lib.java_lang_extensions.tuples.Range_int;
+
 public abstract
 class RCFG_Production
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TERMINAL_VALUE_TYPE,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 REDUCTION_TYPE>
         extends
@@ -15,5 +16,5 @@ class RCFG_Production
 
     public abstract REDUCTION_TYPE reduce(CFG_Symbol[] branch, REDUCTION_TYPE[] sub_reductions);
 
-    public abstract REDUCTION_TYPE reduce(CFG_Terminal<ENUM_TERMINAL_ID, TERMINAL_VALUE_TYPE> terminal);
+    public abstract REDUCTION_TYPE reduce(CFG_Terminal<ENUM_TERMINAL_ID, Range_int> terminal);
 }

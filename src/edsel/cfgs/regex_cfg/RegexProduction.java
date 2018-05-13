@@ -10,7 +10,7 @@ import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexProduction
-        extends RCFG_Production<RegexTerminalID, Range_int, RegexProductionID, Range_int>
+        extends RCFG_Production<RegexTerminalID, RegexProductionID, Range_int>
 {
     public RegexProduction(RegexProductionID id, CFG_Symbol[]... rhs)
     {
@@ -26,7 +26,7 @@ public class RegexProduction
     }
 
     public Range_int reduce(CFG_Terminal<RegexTerminalID, Range_int> terminal) {
-        return terminal.value;
+        return new Range_int(terminal.value.start, terminal.value.end);
     }
 
     // =========================================================================================

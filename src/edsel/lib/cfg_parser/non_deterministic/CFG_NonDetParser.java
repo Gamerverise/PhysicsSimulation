@@ -23,7 +23,7 @@ public class CFG_NonDetParser
     @SuppressWarnings("unchecked")
     public REDUCTION_TYPE
     parse_recursive(
-            RCFG_Production<ENUM_TERMINAL_ID, Range_int, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
+            RCFG_Production<ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
                     production,
             CFG_TerminalBuffer<ENUM_TERMINAL_ID>
                     input
@@ -42,7 +42,7 @@ public class CFG_NonDetParser
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
                     RCFG_Production
-                            <ENUM_TERMINAL_ID, Range_int, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
+                            <ENUM_TERMINAL_ID, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
                             rhs_production = (RCFG_Production) cur_expected_symbol;
 
                     tmp_reduction = parse_recursive(rhs_production, input);
@@ -66,10 +66,10 @@ public class CFG_NonDetParser
                             =
                             (CFG_Terminal<ENUM_TERMINAL_ID, Range_int>) cur_expected_symbol;
 
-                    if (next_input != cur_expected_terminal)
+                    if (next_input.id != cur_expected_terminal.id)
                         return null;
                     else {
-                        tmp_reduction = production.reduce(next_input);
+                        sub_reductions[j] = production.reduce(next_input);
                         input.next();
                     }
                 }
