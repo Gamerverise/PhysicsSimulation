@@ -6,7 +6,7 @@ import edsel.lib.io.TokenBuffer;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
 public class
-RegexTokenBuffer extends TokenBuffer<RegexTerminalID, RegexToken>
+RegexTokenBuffer extends TokenBuffer<RegexToken>
 {
     public RegexTokenBuffer(String filename) {
         super(filename);

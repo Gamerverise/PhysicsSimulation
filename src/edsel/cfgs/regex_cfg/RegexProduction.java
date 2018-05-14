@@ -1,35 +1,33 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.cfgs.regex_cfg.reductions.RegexReduction;
 import edsel.lib.cfg_model.CFG_Symbol;
-import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_model.RCFG_Production;
-import lib.java_lang_extensions.tuples.Range_int;
+import edsel.lib.cfg_parser.reductions.Reduction;
+import edsel.lib.cfg_parser.reductions.ReductionProduction;
+import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 import static edsel.cfgs.regex_cfg.RegexProductionID.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexProduction
-        extends RCFG_Production<RegexTerminalID, RegexProductionID, RegexReduction>
+        extends RCFG_Production<RegexProductionID, ReductionProduction<RegexProduction>>
 {
-    public RegexProduction() {}
+    public RegexProduction() {
+        super();
+    }
 
-    public RegexProduction(RegexProductionID id, CFG_Symbol[]... rhs)
+    public RegexProduction(RegexProductionID id, CFG_Symbol[]... rhs) {
+        super.init(id, rhs);
+    }
+
+    public ReductionProduction reduce (
+            int branch_num,
+            Reduction[] sub_reductions,
+            int num_branches_explored,
+            TokenBufferString src_string)
     {
-        super(id, rhs);
-    }
-
-    // =========================================================================================
-
-    public RegexReduction reduce(CFG_Symbol[] branch, Range_int[] sub_reductions) {
-        Range_int last_sub_reduction = sub_reductions[sub_reductions.length - 1];
-
-        return new Range_int(sub_reductions[0].start, last_sub_reduction.end);
-    }
-
-    public RegexReduction reduce(CFG_Terminal<RegexTerminalID, Range_int> terminal) {
-        return new Range_int(terminal.value.start, terminal.value.end);
+        return new ReductionProduction(this, branch_num, sub_reductions, num_branches_explored, src_string);
     }
 
     // =========================================================================================

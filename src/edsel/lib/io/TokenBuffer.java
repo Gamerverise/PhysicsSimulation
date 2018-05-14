@@ -1,20 +1,32 @@
 package edsel.lib.io;
 
-import lib.java_lang_extensions.tuples.Range_int;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract
-class TokenBuffer
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+class TokenBuffer<TOKEN extends Token>
 {
+    public class TokenBufferString
+    {
+        public int src_start;
+        public int src_end;
+
+        public TokenBufferString(int src_start, int src_end) {
+            this.src_start = src_start;
+            this.src_end = src_end;
+        }
+
+        public String get_string()
+        {
+            return new String(buf, src_start, src_end);
+        }
+    }
+
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token;
+    public TOKEN next_token;
     
     public int cur_tok_start;
     public int cur_tok_end;
@@ -39,18 +51,13 @@ class TokenBuffer
         eat_separators();
     }
     
-    public
-    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    next()
-    {
+    public TOKEN next() {
         eat_separators();
         return next_token;
     }
 
     public
-    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    peek()
-    {
+    TOKEN peek() {
         return next_token;
     }
 
@@ -84,13 +91,14 @@ class TokenBuffer
         return false;
     }
 
-    public String get_substr(Range_int range) {
-        return get_substr(range.start, range.end);
+    public TokenBufferString get_buffer_string(int start, int end)
+    {
+        return new TokenBufferString(start, end);
     }
 
-    public String get_substr(int start, int end) {
+    public String get_string(int start, int end) {
         return new String(buf, start, end);
     }
-    
+
     public abstract void update_next();
 }

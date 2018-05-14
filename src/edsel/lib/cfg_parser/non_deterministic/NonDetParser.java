@@ -13,7 +13,7 @@ import lib.java_lang_extensions.tuples.Range_int;
 //    NOT_APPLICABLE
 //}
 
-public class CFG_NonDetParser
+public class NonDetParser
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 REDUCTION_TYPE extends ReductionNonDetTerminal>
