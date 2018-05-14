@@ -4,18 +4,14 @@ import edsel.lib.cfg_parser.reductions.ReductionBase;
 import edsel.lib.cfg_parser.reductions.Reduction;
 import edsel.lib.io.TokenBuffer.TokenBufferString;
 
-public abstract
-class RCFG_Production
-        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-        extends
-        CFG_Production<ENUM_PRODUCTION_ID>
+public class RCFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
+        extends CFG_Production<ENUM_PRODUCTION_ID>
 {
-    public RCFG_Production() {
-        super();
-    }
+    public String name;
 
-    public RCFG_Production(ENUM_PRODUCTION_ID id, CFG_Symbol[]... rhs) {
-        init(id, rhs);
+    public void init(ENUM_PRODUCTION_ID id, String name, CFG_Symbol[]... rhs) {
+        super.init(id, rhs);
+        this.name = name;
     }
 
     public Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>

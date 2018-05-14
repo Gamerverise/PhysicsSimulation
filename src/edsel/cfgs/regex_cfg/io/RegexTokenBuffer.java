@@ -5,10 +5,13 @@ import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
+import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
 public class
 RegexTokenBuffer extends TokenBuffer<RegexTerminalID, Character>
 {
+    int restricted_mode_nesting = 0;
+
     public RegexTokenBuffer(String filename) {
         super(filename);
     }
@@ -18,8 +21,45 @@ RegexTokenBuffer extends TokenBuffer<RegexTerminalID, Character>
             return null;
         }
 
-        RegexTerminalID next_id;
         char next_char = (char) buf[cursor_pos];
+
+        if (next_char == '(') {
+
+            if (cursor_pos + 1 < buf.length) {
+
+                char next_next_char = (char) buf[cursor_pos + 1];
+
+                if (next_next_char == '*') {
+
+                    int restriction_name_start = cursor_pos;
+
+                    while (cursor_pos < buf.length && buf[cursor_pos] != ':')
+                        cursor_pos++;
+
+                    TokenBufferString restriction_name
+                            = new TokenBufferString(restriction_name_start, cursor_pos);
+
+                    cursor_pos++;
+                    restricted_mode_nesting++;
+
+                    return new RegexToken(RESTRICT_ID, (char) -1 , restriction_name);
+                }
+            }
+        } else if (restricted_mode_nesting > 0 && next_char == '*')
+
+            if (cursor_pos + 1 < buf.length) {
+
+                char next_next_char = (char) buf[cursor_pos];
+
+                if (next_next_char == ')') {
+                    TokenBufferString tok_string = new TokenBufferString(cursor_pos, cursor_pos + 1);
+                    cursor_pos++;
+                    restricted_mode_nesting--;
+                    return new RegexToken(UNRESTRICT_ID, (char) -1, tok_string);
+                }
+            }
+
+        RegexTerminalID next_id;
 
         if (next_char == OP.character)
             next_id = OP.id;
@@ -36,11 +76,14 @@ RegexTokenBuffer extends TokenBuffer<RegexTerminalID, Character>
         else if (next_char == UB.character)
             next_id = UB.id;
 
+        else if (next_char == GATE.character)
+            next_id = GATE.id;
+
         else
             next_id = LITERAL.id;
 
-        TokenBufferString string = new TokenBufferString(cursor_pos, cursor_pos + 1);
+        TokenBufferString tok_string = new TokenBufferString(cursor_pos, cursor_pos + 1);
 
-        return new RegexToken(next_id, next_char, string);
+        return new RegexToken(next_id, next_char, tok_string);
     }
 }

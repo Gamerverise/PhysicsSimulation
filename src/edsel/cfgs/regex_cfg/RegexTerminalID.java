@@ -8,7 +8,12 @@ public enum RegexTerminalID {
 
     UB_ID,         // under bar
 
-    LITERAL_ID     // under bar
+    LITERAL_ID,    // under bar
+
+    RESTRICT_ID,
+    UNRESTRICT_ID,
+
+    GATE_ID
 
 //    _0, _1, _2, _3, _4, _5, _6, _7, _8, _9,
 //

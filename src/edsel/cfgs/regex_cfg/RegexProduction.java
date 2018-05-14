@@ -1,9 +1,8 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.RCFG_Production;
-import edsel.lib.cfg_parser.reductions.ReductionBase;
 import edsel.lib.cfg_parser.reductions.Reduction;
+import edsel.lib.cfg_parser.reductions.ReductionBase;
 import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 import static edsel.cfgs.regex_cfg.RegexProductionID.*;
@@ -13,17 +12,6 @@ import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 public class RegexProduction
         extends RCFG_Production<RegexProductionID>
 {
-    public Reduction reduce (
-            int branch_num,
-            ReductionBase[] sub_reductions,
-            int num_branches_explored,
-            TokenBufferString src_string)
-    {
-        return new Reduction(this, branch_num, sub_reductions, num_branches_explored, src_string);
-    }
-
-    // =========================================================================================
-
     public static RegexProduction START         = new RegexProduction();
     public static RegexProduction SUB_EXPR      = new RegexProduction();
     public static RegexProduction GROUP         = new RegexProduction();
@@ -35,23 +23,23 @@ public class RegexProduction
         START.init(START_ID,
                 V(SUB_EXPR));
 
-        SUB_EXPR.init(SUB_EXPR_ID,
+        SUB_EXPR.init(SUB_EXPR_ID, "subexpr",
+                V(LITERAL),
                 V(GROUP),
                 V(AND),
                 V(OR),
-                V(REPEAT),
-                V(LITERAL));
+                V(REPEAT));
 
-        GROUP.init(GROUP_ID,
+        GROUP.init(GROUP_ID, "group",
                 V(OP, SUB_EXPR, CP));
 
-        AND.init(AND_ID,
+        AND.init(AND_ID, "and",
                 V(SUB_EXPR, SUB_EXPR));
 
-        OR.init(OR_ID,
+        OR.init(OR_ID, "or",
                 V(SUB_EXPR, OR, SUB_EXPR));
 
-        REPEAT.init(REPEAT_ID,
+        REPEAT.init(REPEAT_ID, "star",
                 V(SUB_EXPR, REPEAT));
     }
 }

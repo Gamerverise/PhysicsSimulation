@@ -31,4 +31,9 @@ public class RegexTerminal
     public static RegexTerminal UB = new RegexTerminal(UB_ID, "_");
 
     public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]");
+
+    public static RegexTerminal RESTRICT = new RegexTerminal(RESTRICT_ID, "(*");
+    public static RegexTerminal UNRESTRICT = new RegexTerminal(UNRESTRICT_ID, "*)");
+
+    public static RegexTerminal GATE = new RegexTerminal(GATE_ID, "#");
 }
