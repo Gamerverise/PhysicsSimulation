@@ -11,7 +11,9 @@ import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexProduction
-        extends RCFG_Production<RegexProductionID, ReductionProduction<RegexProduction>>
+        extends RCFG_Production
+        <RegexProductionID,
+                ReductionProduction<RegexProductionID, RegexProduction>>
 {
     public RegexProduction() {
         super();

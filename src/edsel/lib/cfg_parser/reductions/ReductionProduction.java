@@ -6,10 +6,12 @@ import edsel.lib.io.TokenBuffer.TokenBufferString;
 import static lib.text_io.FormattedText.spaces;
 
 public class ReductionProduction
-        <ENUM_PRODUCTION_ID, PRODUCTION extends RCFG_Production<ENUM_PRODUCTION_ID>>
+        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
+                PRODUCTION_TYPE extends
+                        RCFG_Production<ENUM_PRODUCTION_ID>>
     extends Reduction
 {
-    public PRODUCTION production;
+    public PRODUCTION_TYPE production;
     public int branch_num;
 
     public Reduction[] sub_reductions;
@@ -17,7 +19,7 @@ public class ReductionProduction
     public int num_branches_explored = 0;
 
     public ReductionProduction(
-            PRODUCTION production,
+            PRODUCTION_TYPE production,
             int branch_num,
             Reduction[] sub_reductions,
             int num_branches_explored,

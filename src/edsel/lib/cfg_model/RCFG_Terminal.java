@@ -1,12 +1,10 @@
 package edsel.lib.cfg_model;
 
-import edsel.lib.cfg_parser.reductions.ReductionTerminal;
 import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 public abstract
 class RCFG_Terminal
-        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                REDUCTION_TYPE extends ReductionTerminal>
+        <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>
         extends
         CFG_Terminal<ENUM_TERMINAL_ID>
 {
@@ -14,5 +12,7 @@ class RCFG_Terminal
         super(id, pattern);
     }
 
-    public abstract REDUCTION_TYPE reduce(TokenBufferString string);
+    public abstract
+    RCFG_Terminal<ENUM_TERMINAL_ID>
+    reduce(TokenBufferString string);
 }

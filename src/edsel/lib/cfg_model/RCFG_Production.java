@@ -1,13 +1,12 @@
 package edsel.lib.cfg_model;
 
+import edsel.lib.cfg_parser.reductions.Reduction;
 import edsel.lib.cfg_parser.reductions.ReductionProduction;
+import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 public abstract
 class RCFG_Production
-        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
-                REDUCTION_TYPE extends
-                        ReductionProduction
-                                <RCFG_Production<ENUM_PRODUCTION_ID, REDUCTION_TYPE>>>
+        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
         extends
         CFG_Production<ENUM_PRODUCTION_ID>
 {
@@ -19,5 +18,14 @@ class RCFG_Production
         init(id, rhs);
     }
 
-    public abstract REDUCTION_TYPE reduce(CFG_Symbol[] branch, REDUCTION_TYPE[] sub_reductions);
+    public
+    ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+    reduce(int branch_num,
+           Reduction[] sub_reductions,
+           int num_branches_explored,
+           TokenBufferString src_string)
+    {
+        return new ReductionProduction<>
+                (this, branch_num, sub_reductions, num_branches_explored, src_string);
+    }
 }
