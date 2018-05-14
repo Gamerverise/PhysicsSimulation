@@ -6,7 +6,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract
-class TokenBuffer<TOKEN extends Token>
+class TokenBuffer
+        <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
+                TOKEN_VALUE_TYPE>
 {
     public class TokenBufferString
     {
@@ -26,11 +28,10 @@ class TokenBuffer<TOKEN extends Token>
 
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public TOKEN next_token;
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next_token = null;
     
-    public int cur_tok_start;
-    public int cur_tok_end;
-    
+    public int cursor_pos = 0;
+
     public byte[] buf;
 
     public TokenBuffer(String filename)
@@ -46,41 +47,34 @@ class TokenBuffer<TOKEN extends Token>
         } catch (IOException e) {
             throw new RuntimeException();
         }
-
-        cur_tok_start = 0;
-        eat_separators();
     }
     
-    public TOKEN next() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next() {
         eat_separators();
-        return next_token;
+
+        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> cur_token = next_token;
+
+        next_token = specialized_next();
+
+        return cur_token;
     }
 
-    public
-    TOKEN peek() {
+    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> specialized_next();
+
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> peek() {
         return next_token;
     }
 
     public boolean not_empty() {
-        return cur_tok_start < buf.length;
+        return next_token != null;
     }
 
     public void eat_separators() {
-        while (cur_tok_start < buf.length)
-            if (is_separator(buf[cur_tok_start]))
-                cur_tok_start++;
+        while (cursor_pos < buf.length)
+            if (is_separator(buf[cursor_pos]))
+                cursor_pos++;
             else
                 break;
-
-        cur_tok_end = cur_tok_start;
-        
-        while (cur_tok_end < buf.length)
-            if (!is_separator(buf[cur_tok_end]))
-                cur_tok_end++;
-            else
-                break;
-            
-        update_next();
     }
     
     public boolean is_separator(byte chr) {
@@ -99,6 +93,4 @@ class TokenBuffer<TOKEN extends Token>
     public String get_string(int start, int end) {
         return new String(buf, start, end);
     }
-
-    public abstract void update_next();
 }

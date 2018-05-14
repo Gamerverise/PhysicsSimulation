@@ -1,13 +1,13 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
 import edsel.lib.cfg_model.CFG_Symbol;
-import edsel.lib.cfg_model.CFG_Terminal;
-import edsel.lib.cfg_model.RCFG_Production;
 import edsel.lib.cfg_model.RCFG_Terminal;
-import edsel.lib.cfg_parser.reductions.ReductionProduction;
+import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_parser.reductions.ReductionBase;
+import edsel.lib.cfg_parser.reductions.Reduction;
 import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
-import lib.java_lang_extensions.tuples.Range_int;
+import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 //public enum TransitionType {
 //    SHIFT,
@@ -24,31 +24,25 @@ public class NonDetParser
     public static class AmbiguousParserInput extends Exception {}
     
     @SuppressWarnings("unchecked")
-    public ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+    public Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
     parse_recursive(
             RCFG_Production<ENUM_PRODUCTION_ID>
                     production,
 
-            TokenBuffer
-                    <Token<ENUM_TERMINAL_ID,
-                            Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>>>
+            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                     input,
             int
                     num_branches_explored
     )
             throws AmbiguousParserInput
     {
+        Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+                reduction = null;
+
         for (int i = 0; i < production.rhs.length; i++) {
             CFG_Symbol[] cur_branch = production.rhs[i];
 
-            ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
-                    reduction = null;
-
-            ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
-                    tmp_reduction = null;
-
-            ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>[]
-                    sub_reductions = (ReductionProduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>[]) new Object[cur_branch.length];
+            ReductionBase[] sub_reductions = (ReductionBase[]) new Object[cur_branch.length];
 
             for (int j = 0; j < cur_branch.length; j++) {
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
@@ -58,45 +52,48 @@ public class NonDetParser
                     RCFG_Production<ENUM_PRODUCTION_ID> rhs_production
                             = (RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
-                    tmp_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
+                    sub_reductions[j] = parse_recursive(rhs_production, input, num_branches_explored + 1);
 
-                    if (tmp_reduction != null) {
-                        if (reduction == null)
-                            reduction = tmp_reduction;
-                        else
-                            throw new AmbiguousParserInput();
-                    } else
-                        continue;
+                } else if (cur_expected_symbol instanceof RCFG_Terminal) {
 
-                } else if (cur_expected_symbol instanceof CFG_Terminal) {
-                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input;
+                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.next();
 
                     if (input.not_empty())
                         next_input = input.peek();
                     else
                         return null;
 
-                    CFG_Terminal<ENUM_TERMINAL_ID, Range_int>
+                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                             cur_expected_terminal
                             =
-                            (CFG_Terminal<ENUM_TERMINAL_ID, Range_int>) cur_expected_symbol;
+                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
                     if (next_input.id != cur_expected_terminal.id)
                         return null;
                     else {
-                        sub_reductions[j] = production.reduce(next_input);
-                        input.next();
+                        cur_expected_terminal.reduce(next_input);
+                        sub_reductions[j] = next_input;
                     }
                 }
-
-                sub_reductions[i] = tmp_reduction;
             }
 
-            if (tmp_reduction != null)
-                return production.reduce(production.rhs[i], sub_reductions);
+            int src_text_start = sub_reductions[0].src_string.src_start;
+            int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
+            TokenBufferString string = input.get_buffer_string(src_text_start, src_text_end);
+
+            Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+                    tmp_reduction = production.reduce(i, sub_reductions, num_branches_explored, string);
+
+            if (tmp_reduction == null)
+                continue;
+
+            if (reduction != null)
+                throw new AmbiguousParserInput();
+
+            reduction = tmp_reduction;
         }
 
-        return null;
+        return reduction;
     }
 
     // =========================================================================================
@@ -104,7 +101,7 @@ public class NonDetParser
 //    public LinkedList<Character>
 //    parse_iterative(
 //            RegexCFG                            regex_cfg,
-//            SeekableBuffer<RegexCFG_Terminal<ENUM_TERMINAL_ID, Range_int>>       input,
+//            SeekableBuffer<RegexCFG_Terminal<ENUM_TERMINAL_ID,>>       input,
 //            Stack<ProductionBranchEntry>               state_stack
 //    )
 //            throws InputNotAccepted
@@ -116,7 +113,7 @@ public class NonDetParser
 //        state_stack.push(new ProductionBranchEntry<>(regex_cfg.root_production);
 //
 //        while (true) {
-//            RegexCFG_Terminal<ENUM_TERMINAL_ID, Range_int><REDUCTION_TYPE> sym = input.next();
+//            RegexCFG_Terminal<ENUM_TERMINAL_ID, ><REDUCTION_TYPE> sym = input.next();
 //
 //            if (sym == regex_cfg.eof) {
 //                if (state_stack.empty())

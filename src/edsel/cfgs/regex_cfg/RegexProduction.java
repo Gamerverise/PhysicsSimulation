@@ -2,8 +2,8 @@ package edsel.cfgs.regex_cfg;
 
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_parser.reductions.ReductionBase;
 import edsel.lib.cfg_parser.reductions.Reduction;
-import edsel.lib.cfg_parser.reductions.ReductionProduction;
 import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 import static edsel.cfgs.regex_cfg.RegexProductionID.*;
@@ -11,25 +11,15 @@ import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexProduction
-        extends RCFG_Production
-        <RegexProductionID,
-                ReductionProduction<RegexProductionID, RegexProduction>>
+        extends RCFG_Production<RegexProductionID>
 {
-    public RegexProduction() {
-        super();
-    }
-
-    public RegexProduction(RegexProductionID id, CFG_Symbol[]... rhs) {
-        super.init(id, rhs);
-    }
-
-    public ReductionProduction reduce (
+    public Reduction reduce (
             int branch_num,
-            Reduction[] sub_reductions,
+            ReductionBase[] sub_reductions,
             int num_branches_explored,
             TokenBufferString src_string)
     {
-        return new ReductionProduction(this, branch_num, sub_reductions, num_branches_explored, src_string);
+        return new Reduction(this, branch_num, sub_reductions, num_branches_explored, src_string);
     }
 
     // =========================================================================================

@@ -1,16 +1,23 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.lib.cfg_model.CFG_Symbol;
-import edsel.lib.cfg_model.CFG_Terminal;
+import edsel.lib.cfg_model.RCFG_Terminal;
+import edsel.lib.io.Token;
 
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
 public class RegexTerminal
-        extends CFG_Terminal<RegexTerminalID>
-        implements CFG_Symbol
+        extends RCFG_Terminal<RegexTerminalID, Character>
 {
+    public char character;
+
     public RegexTerminal(RegexTerminalID id, String pattern) {
         super(id, pattern);
+        character = pattern.charAt(0);
+    }
+
+    public void reduce(Token<RegexTerminalID, Character> tok)
+    {
+        tok.value = tok.src_string.get_string().charAt(0);
     }
 
     // =========================================================================================
