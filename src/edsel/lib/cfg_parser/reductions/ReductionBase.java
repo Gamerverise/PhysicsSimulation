@@ -1,36 +1,27 @@
 package edsel.lib.cfg_parser.reductions;
 
-import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
 import lib.tokens.enums.CopyType;
 
 public abstract class ReductionBase
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
 {
     public
     TokenBuffer
             <ENUM_TOKEN_ID,
-                    TOKEN_VALUE_TYPE,
-                    TOKEN_TYPE>.TokenBufferString
+                    TOKEN_VALUE_TYPE>.TokenBufferString
             src_string;
 
     public ReductionBase(
-            TokenBuffer
-                    <ENUM_TOKEN_ID,
-                            TOKEN_VALUE_TYPE,
-                            TOKEN_TYPE>.TokenBufferString
+            TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>.TokenBufferString
                     src_string)
     {
         this.src_string = src_string;
     }
 
     public ReductionBase(
-            ReductionBase
-                    <ENUM_TOKEN_ID,
-                            TOKEN_VALUE_TYPE,
-                            TOKEN_TYPE>
+            ReductionBase<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>
                     reduction_base,
             CopyType
                     copy_type)

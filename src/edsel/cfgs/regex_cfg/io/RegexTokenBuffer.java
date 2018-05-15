@@ -10,7 +10,7 @@ import static edsel.cfgs.regex_cfg.RegexTerminalID.RESTRICT_ID;
 import static edsel.cfgs.regex_cfg.RegexTerminalID.UNRESTRICT_ID;
 
 public class RegexTokenBuffer extends
-        TokenBuffer<RegexTerminalID, Character, RegexToken>
+        TokenBuffer<RegexTerminalID, Character>
 {
     public int restricted_mode_nesting = 0;
 
@@ -30,7 +30,7 @@ public class RegexTokenBuffer extends
 
     // =========================================================================================
 
-    public Token<RegexTerminalID, Character, RegexToken> specialized_next() {
+    public Token<RegexTerminalID, Character> specialized_next() {
         if (cursor_pos >= buf.length) {
             return null;
         }

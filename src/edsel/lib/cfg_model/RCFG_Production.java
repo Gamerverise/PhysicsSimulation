@@ -8,9 +8,7 @@ import edsel.lib.io.TokenBuffer.TokenBufferString;
 public class RCFG_Production
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends
-                        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
         extends
         CFG_Production<ENUM_PRODUCTION_ID>
 {
@@ -24,8 +22,7 @@ public class RCFG_Production
     public Reduction
             <ENUM_PRODUCTION_ID,
                     ENUM_TOKEN_ID,
-                    TOKEN_VALUE_TYPE,
-                    TOKEN_TYPE>
+                    TOKEN_VALUE_TYPE>
     reduce(int branch_num,
            ReductionBase[] sub_reductions,
            int num_branches_explored,

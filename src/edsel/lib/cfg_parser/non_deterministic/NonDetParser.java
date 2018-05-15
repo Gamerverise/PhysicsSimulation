@@ -16,16 +16,8 @@ import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
-                PRODUCTION_TYPE extends
-                        RCFG_Production
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        TOKEN_TYPE>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends
-                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
 {
     public static class AmbiguousParserInput extends Exception {}
 
@@ -33,22 +25,29 @@ public class NonDetParser
     Reduction
             <ENUM_PRODUCTION_ID,
                     ENUM_TERMINAL_ID,
-                    TOKEN_VALUE_TYPE,
-                    TOKEN_TYPE>
+                    TOKEN_VALUE_TYPE>
     parse_recursive(
             RCFG
                     <ENUM_PRODUCTION_ID,
-                            PRODUCTION_TYPE,
+                            RCFG_Production
+                                    <ENUM_PRODUCTION_ID,
+                                            ENUM_TERMINAL_ID,
+                                            TOKEN_VALUE_TYPE>,
                             ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE,
-                            TOKEN_TYPE>
+                            TOKEN_VALUE_TYPE>
                     rcfg,
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                     input
     )
             throws AmbiguousParserInput
     {
-        return parse_recursive(rcfg.start_production, input, 0, rcfg.restrict, rcfg.unrestrict, rcfg.gate);
+        return parse_recursive(
+                rcfg.start_production,
+                input,
+                0,
+                rcfg.restrict_id,
+                rcfg.unrestrict_id,
+                rcfg.gate_id);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,26 +55,29 @@ public class NonDetParser
     Reduction
             <ENUM_PRODUCTION_ID,
                     ENUM_TERMINAL_ID,
-                    TOKEN_VALUE_TYPE,
-                    TOKEN_TYPE>
+                    TOKEN_VALUE_TYPE>
     parse_recursive(
-            PRODUCTION_TYPE                 production,
+            RCFG_Production
+                    <ENUM_PRODUCTION_ID,
+                            ENUM_TERMINAL_ID,
+                            TOKEN_VALUE_TYPE>       production,
             TokenBuffer
                     <ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE,
-                            TOKEN_TYPE>                         input,
-            int                                                 num_branches_explored,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   restrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   unrestrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   gate
+                            TOKEN_VALUE_TYPE>
+                                                    input,
+            int                                     num_branches_explored,
+            ENUM_TERMINAL_ID                        restrict_id,
+            ENUM_TERMINAL_ID                        unrestrict_id,
+            ENUM_TERMINAL_ID                        gate_id
     )
             throws AmbiguousParserInput
     {
+        ENUM_PRODUCTION_ID restriction = null;
+
         Reduction
                 <ENUM_PRODUCTION_ID,
                         ENUM_TERMINAL_ID,
-                        TOKEN_VALUE_TYPE,
-                        TOKEN_TYPE>
+                        TOKEN_VALUE_TYPE>
                 reduction = null;
 
         branch_loop:
@@ -91,12 +93,27 @@ public class NonDetParser
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
 
-                    PRODUCTION_TYPE rhs_production
-                            = (PRODUCTION_TYPE) cur_expected_symbol;
+                    RCFG_Production
+                            <ENUM_PRODUCTION_ID,
+                                    ENUM_TERMINAL_ID,
+                                    TOKEN_VALUE_TYPE>
+                            rhs_production
+                            =
+                            (RCFG_Production
+                                    <ENUM_PRODUCTION_ID,
+                                            ENUM_TERMINAL_ID,
+                                            TOKEN_VALUE_TYPE>)
+                                    cur_expected_symbol;
 
                     ReductionBase cur_sub_reduction
                             =
-                            parse_recursive(rhs_production, input, num_branches_explored + 1, restrict, unrestrict,gate);
+                            parse_recursive(
+                                    rhs_production,
+                                    input,
+                                    num_branches_explored + 1,
+                                    restrict_id,
+                                    unrestrict_id,
+                                    gate_id);
 
                     if (cur_sub_reduction == null)
                         continue branch_loop;
@@ -105,30 +122,34 @@ public class NonDetParser
 
                 } else if (cur_expected_symbol instanceof RCFG_Terminal) {
 
-                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next_input = input.next();
+                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.next();
 
                     if (next_input == null)
                         return null;
 
-                    if (restrict != null)
-                        if (next_input.id == restrict.id)
+                    if (next_input.id == restrict_id) {
+                        ; //restriction = new ;
+                    }
+
+                    if (restriction != null)
+                        if (next_input.id != restrict_id)
                             return null;
 
-                    if (unrestrict != null)
-                        if (next_input.id == unrestrict.id)
-                            return null;
+                    if (next_input.id == unrestrict_id) {
+                        restriction = null;
+                        return null;
 
-                    //                    finish restrict/unrestrict
+                    }
 
-                    if (gate != null) {
-                        if (next_input.id == gate.id)
+                    if (gate_id != null) {
+                        if (next_input.id == gate_id)
                             return null;
                     }
 
-                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                             cur_expected_terminal
                             =
-                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>) cur_expected_symbol;
+                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
                     if (next_input.id != cur_expected_terminal.id)
                         continue branch_loop;

@@ -1,7 +1,6 @@
 package edsel.lib.io;
 
 import edsel.lib.cfg_parser.reductions.ReductionBase;
-import edsel.lib.io.TokenBuffer.TokenBufferString;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
@@ -11,24 +10,29 @@ import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public class Token
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
         extends
-        ReductionBase<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+        ReductionBase<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>
         implements
-        Instantiator<Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+        Instantiator<Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>>
 {
     public ENUM_TOKEN_ID id;
     public TOKEN_VALUE_TYPE value;
 
-    public Token(ENUM_TOKEN_ID id, TOKEN_VALUE_TYPE value, TokenBufferString src_string) {
+    public Token(ENUM_TOKEN_ID
+                         id,
+                 TOKEN_VALUE_TYPE
+                         value,
+                 TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>.TokenBufferString
+                         src_string)
+    {
         super(src_string);
         this.id = id;
         this.value = value;
     }
 
     public Token(
-            Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> tok, CopyType copy_type) {
+            Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> tok, CopyType copy_type) {
         super(
                 copy_type == COPY_DEEP ?
                         tok.src_string.new_copy(copy_type) :
@@ -40,19 +44,19 @@ public class Token
 
     // =========================================================================================
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> self() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> self() {
         return this;
     }
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> new_instance(Object... args) {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_instance(Object... args) {
             return Instantiator.new_instance(Token.class, args);
     }
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> new_copy() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_copy() {
         return new_copy(COPY_SHALLOW);
     }
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> new_copy(CopyType copy_type) {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_copy(CopyType copy_type) {
         return new_instance(this, copy_type);
     }
 

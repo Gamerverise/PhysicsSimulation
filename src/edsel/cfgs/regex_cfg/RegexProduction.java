@@ -1,10 +1,6 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.cfgs.regex_cfg.io.RegexToken;
 import edsel.lib.cfg_model.RCFG_Production;
-import edsel.lib.cfg_parser.reductions.Reduction;
-import edsel.lib.cfg_parser.reductions.ReductionBase;
-import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 import static edsel.cfgs.regex_cfg.RegexProductionID.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
@@ -14,8 +10,7 @@ public class RegexProduction extends
         RCFG_Production
                 <RegexProductionID,
                         RegexTerminalID,
-                        Character,
-                        RegexToken>
+                        Character>
 {
     public static RegexProduction START         = new RegexProduction();
     public static RegexProduction SUB_EXPR      = new RegexProduction();

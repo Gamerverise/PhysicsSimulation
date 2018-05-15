@@ -12,10 +12,9 @@ import java.nio.file.Path;
 public abstract class
 TokenBuffer
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
         extends
-        InstantiatorBase<TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+        InstantiatorBase<TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>>
 {
     public class TokenBufferString
             extends
@@ -37,7 +36,7 @@ TokenBuffer
         // =========================================================================================
 
         public
-        TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>.TokenBufferString
+        TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>.TokenBufferString
         self()
         {
             return this;
@@ -57,7 +56,7 @@ TokenBuffer
 
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next_token = null;
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next_token = null;
     
     public int cursor_pos = 0;
 
@@ -79,7 +78,7 @@ TokenBuffer
     }
 
     public TokenBuffer(
-            TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+            TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>
                     tok_buf,
             CopyType
                     copy_type)
@@ -96,19 +95,19 @@ TokenBuffer
         buf = tok_buf.buf;
     }
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next() {
         eat_separators();
 
-        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> cur_token = next_token;
+        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> cur_token = next_token;
 
         next_token = specialized_next();
 
         return cur_token;
     }
 
-    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> specialized_next();
+    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> specialized_next();
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> peek() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> peek() {
         return next_token;
     }
 

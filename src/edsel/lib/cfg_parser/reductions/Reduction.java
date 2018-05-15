@@ -1,6 +1,5 @@
 package edsel.lib.cfg_parser.reductions;
 
-import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
 
 import static lib.text_io.FormattedText.spaces;
@@ -8,10 +7,8 @@ import static lib.text_io.FormattedText.spaces;
 public class Reduction
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends
-                        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
-    extends ReductionBase<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+                TOKEN_VALUE_TYPE>
+    extends ReductionBase<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>
 {
     public ENUM_PRODUCTION_ID production_id;
     public int branch_num;
@@ -26,13 +23,11 @@ public class Reduction
             ReductionBase[]                                 sub_reductions,
             int                                             num_branches_explored,
             TokenBuffer
-                    <ENUM_TOKEN_ID,
-                            TOKEN_VALUE_TYPE,
-                            TOKEN_TYPE>.TokenBufferString
+                    <ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>.TokenBufferString
                                                             src_string)
     {
         super(src_string);
-//        this.production = production;
+        this.production_id = production_id;
         this.branch_num = branch_num;
         this.sub_reductions = sub_reductions;
         this.num_branches_explored = num_branches_explored;

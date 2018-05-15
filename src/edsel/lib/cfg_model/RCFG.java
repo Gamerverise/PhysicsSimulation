@@ -8,27 +8,24 @@ public class RCFG
                         RCFG_Production
                                 <ENUM_PRODUCTION_ID,
                                         ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        TOKEN_TYPE>,
+                                        TOKEN_VALUE_TYPE>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_TYPE extends
-                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+                TOKEN_VALUE_TYPE>
 {
-    public PRODUCTION_TYPE                                                  start_production;
-    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>    restrict;
-    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>    unrestrict;
-    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>    gate;
+    public PRODUCTION_TYPE          start_production;
+    public ENUM_TERMINAL_ID                restrict_id;
+    public ENUM_TERMINAL_ID                unrestrict_id;
+    public ENUM_TERMINAL_ID                gate_id;
 
     public RCFG(
-            PRODUCTION_TYPE start_production,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   restrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   unrestrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   gate)
+            PRODUCTION_TYPE         start_production,
+            ENUM_TERMINAL_ID        restrict_id,
+            ENUM_TERMINAL_ID        unrestrict_id,
+            ENUM_TERMINAL_ID        gate_id)
     {
         this.start_production = start_production;
-        this.restrict = restrict;
-        this.unrestrict = unrestrict;
-        this.gate = gate;
+        this.restrict_id = restrict_id;
+        this.unrestrict_id = unrestrict_id;
+        this.gate_id = gate_id;
     }
 }
