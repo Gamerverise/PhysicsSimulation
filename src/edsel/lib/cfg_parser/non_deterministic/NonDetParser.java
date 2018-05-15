@@ -7,19 +7,14 @@ import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
 import edsel.lib.io.TokenBuffer.TokenBufferString;
 
-//public enum TransitionType {
-//    SHIFT,
-//    REDUCE,
-//    SHIFT_OR_REDUCE,
-//    NOT_APPLICABLE
-//}
-
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE>
 {
-    public static class AmbiguousParserInput extends Exception {}
+    public static class ParsingException extends Exception {}
+    public static class AmbiguousParserInput extends ParsingException {}
+    public static class InvalidProductionRestriction extends ParsingException {}
 
     public
     Reduction
@@ -39,12 +34,15 @@ public class NonDetParser
             TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                     input
     )
-            throws AmbiguousParserInput
+            throws AmbiguousParserInput, InvalidProductionRestriction
     {
         return parse_recursive(
+                rcfg,
                 rcfg.start_production,
                 input,
                 0,
+                null,
+                null,
                 rcfg.restrict_id,
                 rcfg.unrestrict_id,
                 rcfg.gate_id);
@@ -57,6 +55,7 @@ public class NonDetParser
                     ENUM_TERMINAL_ID,
                     TOKEN_VALUE_TYPE>
     parse_recursive(
+            RCFG                                    rcfg,
             RCFG_Production
                     <ENUM_PRODUCTION_ID,
                             ENUM_TERMINAL_ID,
@@ -66,14 +65,14 @@ public class NonDetParser
                             TOKEN_VALUE_TYPE>
                                                     input,
             int                                     num_branches_explored,
+            ENUM_PRODUCTION_ID                      production_restriction,
+            ENUM_TERMINAL_ID                        terminal_restriction,
             ENUM_TERMINAL_ID                        restrict_id,
             ENUM_TERMINAL_ID                        unrestrict_id,
             ENUM_TERMINAL_ID                        gate_id
     )
-            throws AmbiguousParserInput
+            throws AmbiguousParserInput, InvalidProductionRestriction
     {
-        ENUM_PRODUCTION_ID restriction = null;
-
         Reduction
                 <ENUM_PRODUCTION_ID,
                         ENUM_TERMINAL_ID,
@@ -82,6 +81,7 @@ public class NonDetParser
 
         branch_loop:
         for (int i = 0; i < production.rhs.length; i++) {
+
             CFG_Symbol[] cur_branch = production.rhs[i];
 
             ReductionBase[] sub_reductions = new ReductionBase[cur_branch.length];
@@ -89,6 +89,28 @@ public class NonDetParser
             save_input();
 
             for (int j = 0; j < cur_branch.length; j++) {
+
+                Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.peek();
+
+                if (next_input.id == gate_id) {
+                    input.next();
+                    continue branch_loop;
+                }
+
+                CFG_Symbol cur_expected_symbol;
+
+                if (next_input.id == restrict_id) {
+                    cur_expected_symbol = rcfg.get_production_id(next_input.src_string);
+
+                    if (cur_expected_symbol == null)
+                        throw new InvalidProductionRestriction();
+                }
+
+                if (next_input.id == unrestrict_id) {
+                    restriction = null;
+                    continue;
+                }
+
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
@@ -108,6 +130,7 @@ public class NonDetParser
                     ReductionBase cur_sub_reduction
                             =
                             parse_recursive(
+                                    rcfg,
                                     rhs_production,
                                     input,
                                     num_branches_explored + 1,
@@ -125,27 +148,7 @@ public class NonDetParser
                     Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.next();
 
                     if (next_input == null)
-                        return null;
-
-                    if (next_input.id == restrict_id) {
-                        ; //restriction = new ;
-                    }
-
-                    if (restriction != null)
-                        if (next_input.id != restrict_id)
-                            return null;
-
-                    if (next_input.id == unrestrict_id) {
-                        restriction = null;
-                        return null;
-
-                    }
-
-                    if (gate_id != null) {
-                        if (next_input.id == gate_id)
-                            return null;
-                    }
-
+                        continue branch_loop;
                     RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                             cur_expected_terminal
                             =
