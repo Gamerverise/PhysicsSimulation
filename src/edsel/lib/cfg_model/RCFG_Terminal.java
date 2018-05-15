@@ -5,7 +5,8 @@ import edsel.lib.io.Token;
 public abstract
 class RCFG_Terminal
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                TOKEN_TYPE extends Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
         extends
         CFG_Terminal<ENUM_TERMINAL_ID>
 {
@@ -13,5 +14,5 @@ class RCFG_Terminal
         super(id, pattern);
     }
 
-    public abstract void reduce(Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> tok);
+    public abstract void reduce(Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> tok);
 }

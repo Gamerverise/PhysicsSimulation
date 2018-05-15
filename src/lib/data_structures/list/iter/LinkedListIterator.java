@@ -2,12 +2,12 @@ package lib.data_structures.list.iter;
 
 import lib.data_structures.list.LinkedListAbstract;
 import lib.data_structures.list.link.LinkBase;
-import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 import java.util.Iterator;
 
 public class LinkedListIterator
-        <T extends Constructor<T>,
+        <T extends Instantiator<T>,
                 LINK_TYPE extends LinkBase<T, LINK_TYPE>>
         implements
         Iterator<LINK_TYPE>

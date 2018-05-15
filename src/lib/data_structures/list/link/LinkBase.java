@@ -1,15 +1,15 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_types.Constructor;
-import lib.java_lang_extensions.parametrized_types.ConstructorBase;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 import lib.tokens.enums.CopyType;
 
 public abstract
 class LinkBase
-        <T extends Constructor<T>,
+        <T extends Instantiator<T>,
                 LINK_TYPE extends LinkBase<T, LINK_TYPE>>
         extends
-        ConstructorBase<LINK_TYPE>
+        InstantiatorBase<LINK_TYPE>
 {
     public T elem;
     public LINK_TYPE next;

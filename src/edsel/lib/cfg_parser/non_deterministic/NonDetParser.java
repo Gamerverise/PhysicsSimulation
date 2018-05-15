@@ -16,16 +16,34 @@ import edsel.lib.io.TokenBuffer.TokenBufferString;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
+                PRODUCTION_TYPE extends
+                        RCFG_Production
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        TOKEN_TYPE>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                TOKEN_TYPE extends
+                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
 {
     public static class AmbiguousParserInput extends Exception {}
 
-    public Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+    public
+    Reduction
+            <ENUM_PRODUCTION_ID,
+                    ENUM_TERMINAL_ID,
+                    TOKEN_VALUE_TYPE,
+                    TOKEN_TYPE>
     parse_recursive(
-            RCFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+            RCFG
+                    <ENUM_PRODUCTION_ID,
+                            PRODUCTION_TYPE,
+                            ENUM_TERMINAL_ID,
+                            TOKEN_VALUE_TYPE,
+                            TOKEN_TYPE>
                     rcfg,
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
                     input
     )
             throws AmbiguousParserInput
@@ -34,18 +52,30 @@ public class NonDetParser
     }
 
     @SuppressWarnings("unchecked")
-    public Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+    public
+    Reduction
+            <ENUM_PRODUCTION_ID,
+                    ENUM_TERMINAL_ID,
+                    TOKEN_VALUE_TYPE,
+                    TOKEN_TYPE>
     parse_recursive(
-            RCFG_Production<ENUM_PRODUCTION_ID>                 production,
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>     input,
+            PRODUCTION_TYPE                 production,
+            TokenBuffer
+                    <ENUM_TERMINAL_ID,
+                            TOKEN_VALUE_TYPE,
+                            TOKEN_TYPE>                         input,
             int                                                 num_branches_explored,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>   restrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>   unrestrict,
-            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>   gate
+            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   restrict,
+            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   unrestrict,
+            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>   gate
     )
             throws AmbiguousParserInput
     {
-        Reduction<ENUM_PRODUCTION_ID, RCFG_Production<ENUM_PRODUCTION_ID>>
+        Reduction
+                <ENUM_PRODUCTION_ID,
+                        ENUM_TERMINAL_ID,
+                        TOKEN_VALUE_TYPE,
+                        TOKEN_TYPE>
                 reduction = null;
 
         branch_loop:
@@ -54,13 +84,15 @@ public class NonDetParser
 
             ReductionBase[] sub_reductions = new ReductionBase[cur_branch.length];
 
+            save_input();
+
             for (int j = 0; j < cur_branch.length; j++) {
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
 
-                    RCFG_Production<ENUM_PRODUCTION_ID> rhs_production
-                            = (RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+                    PRODUCTION_TYPE rhs_production
+                            = (PRODUCTION_TYPE) cur_expected_symbol;
 
                     ReductionBase cur_sub_reduction
                             =
@@ -73,20 +105,30 @@ public class NonDetParser
 
                 } else if (cur_expected_symbol instanceof RCFG_Terminal) {
 
-                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.next();
+                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next_input = input.next();
 
                     if (next_input == null)
                         return null;
+
+                    if (restrict != null)
+                        if (next_input.id == restrict.id)
+                            return null;
+
+                    if (unrestrict != null)
+                        if (next_input.id == unrestrict.id)
+                            return null;
+
+                    //                    finish restrict/unrestrict
 
                     if (gate != null) {
                         if (next_input.id == gate.id)
                             return null;
                     }
 
-                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
                             cur_expected_terminal
                             =
-                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>) cur_expected_symbol;
 
                     if (next_input.id != cur_expected_terminal.id)
                         continue branch_loop;
@@ -96,6 +138,8 @@ public class NonDetParser
                     }
                 }
             }
+
+            restore_input();
 
             if (reduction != null)
                 throw new AmbiguousParserInput();
@@ -108,6 +152,16 @@ public class NonDetParser
         }
 
         return reduction;
+    }
+
+    // =========================================================================================
+
+    void save_input() {
+
+    }
+
+    void restore_input() {
+
     }
 
     // =========================================================================================

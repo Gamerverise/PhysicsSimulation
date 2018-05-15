@@ -1,6 +1,6 @@
 package lib.data_structures.container;
 
-import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 public abstract class
 ContainerAdapter
@@ -9,7 +9,7 @@ ContainerAdapter
                 ADAPTER extends ContainerAdapter
                         <DATA_TYPE, UNDERLYING_DATA_STRUCTURE, ADAPTER>>
         implements
-        Constructor<ADAPTER>,
+        Instantiator<ADAPTER>,
         Iterable<DATA_TYPE>
 {
     public UNDERLYING_DATA_STRUCTURE contents;

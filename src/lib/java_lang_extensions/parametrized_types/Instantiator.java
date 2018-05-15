@@ -9,7 +9,7 @@ import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
 public interface
-Constructor<T extends Constructor<T>>
+Instantiator<T extends Instantiator<T>>
 {
     T self();
 

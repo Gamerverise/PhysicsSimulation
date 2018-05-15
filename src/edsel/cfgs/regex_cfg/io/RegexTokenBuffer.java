@@ -3,20 +3,34 @@ package edsel.cfgs.regex_cfg.io;
 import edsel.cfgs.regex_cfg.RegexTerminalID;
 import edsel.lib.io.Token;
 import edsel.lib.io.TokenBuffer;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
-import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
+import static edsel.cfgs.regex_cfg.RegexTerminalID.RESTRICT_ID;
+import static edsel.cfgs.regex_cfg.RegexTerminalID.UNRESTRICT_ID;
 
-public class
-RegexTokenBuffer extends TokenBuffer<RegexTerminalID, Character>
+public class RegexTokenBuffer extends
+        TokenBuffer<RegexTerminalID, Character, RegexToken>
 {
-    int restricted_mode_nesting = 0;
+    public int restricted_mode_nesting = 0;
 
     public RegexTokenBuffer(String filename) {
         super(filename);
     }
 
-    public Token<RegexTerminalID, Character> specialized_next() {
+    // =========================================================================================
+
+    public RegexTokenBuffer self() {
+        return this;
+    }
+
+    public RegexTokenBuffer new_instance(Object... args) {
+        return Instantiator.new_instance(RegexTokenBuffer.class, args);
+    }
+
+    // =========================================================================================
+
+    public Token<RegexTerminalID, Character, RegexToken> specialized_next() {
         if (cursor_pos >= buf.length) {
             return null;
         }

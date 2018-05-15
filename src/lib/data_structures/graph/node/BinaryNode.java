@@ -1,13 +1,13 @@
 package lib.data_structures.graph.node;
 
-import lib.java_lang_extensions.parametrized_types.Constructor;
-import lib.java_lang_extensions.parametrized_types.ConstructorBase;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 import lib.tokens.enums.CopyType;
 
 public class
-BinaryNode <T extends Constructor<T>>
+BinaryNode <T extends Instantiator<T>>
         extends
-        ConstructorBase<BinaryNode<T>>
+        InstantiatorBase<BinaryNode<T>>
 {
     T elem;
     BinaryNode<T> left;
@@ -42,6 +42,6 @@ BinaryNode <T extends Constructor<T>>
     }
 
     public BinaryNode<T> new_instance(Object... args) {
-        return Constructor.new_instance(BinaryNode.class, args);
+        return Instantiator.new_instance(BinaryNode.class, args);
     }
 }

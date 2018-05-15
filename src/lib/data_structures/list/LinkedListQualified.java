@@ -1,18 +1,18 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.link.LinkBase;
-import lib.java_lang_extensions.parametrized_types.Constructor;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
 public abstract
 class LinkedListQualified
-        <T extends Constructor<T>,
+        <T extends Instantiator<T>,
                 LINK_TYPE extends LinkBase<T, LINK_TYPE>,
                 LIST_TYPE extends LinkedListQualified<T, LINK_TYPE, LIST_TYPE>>
         extends
         LinkedListAbstract<T, LINK_TYPE>
         implements
-        Constructor<LIST_TYPE>, Iterable<LINK_TYPE>
+        Instantiator<LIST_TYPE>, Iterable<LINK_TYPE>
 {
     public LinkedListQualified() {
         super();

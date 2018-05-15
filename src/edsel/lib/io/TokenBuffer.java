@@ -1,16 +1,25 @@
 package edsel.lib.io;
 
+import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
+import lib.tokens.enums.CopyType;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public abstract
-class TokenBuffer
+public abstract class
+TokenBuffer
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                TOKEN_TYPE extends Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
+        extends
+        InstantiatorBase<TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>>
 {
     public class TokenBufferString
+            extends
+            InstantiatorBase<TokenBufferString>
     {
         public int src_start;
         public int src_end;
@@ -20,6 +29,26 @@ class TokenBuffer
             this.src_end = src_end;
         }
 
+        public TokenBufferString(TokenBufferString string, CopyType copy_type) {
+            this.src_start = string.src_start;
+            this.src_end = string.src_end;
+        }
+
+        // =========================================================================================
+
+        public
+        TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>.TokenBufferString
+        self()
+        {
+            return this;
+        }
+
+        public TokenBufferString new_instance(Object... args) {
+            return Instantiator.new_instance(TokenBufferString.class, args);
+        }
+
+        // =========================================================================================
+
         public String get_string()
         {
             return new String(buf, src_start, src_end);
@@ -28,7 +57,7 @@ class TokenBuffer
 
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next_token = null;
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next_token = null;
     
     public int cursor_pos = 0;
 
@@ -48,20 +77,38 @@ class TokenBuffer
             throw new RuntimeException();
         }
     }
-    
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next() {
+
+    public TokenBuffer(
+            TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE>
+                    tok_buf,
+            CopyType
+                    copy_type)
+    {
+        if (copy_type == CopyType.COPY_DEEP) {
+            separator_chars = new byte[tok_buf.separator_chars.length];
+            System.arraycopy(tok_buf.separator_chars, 0, separator_chars, 0, tok_buf.separator_chars.length);
+        } else
+            separator_chars = tok_buf.separator_chars;
+
+        next_token = tok_buf.next_token.new_copy(copy_type);
+
+        cursor_pos = tok_buf.cursor_pos;
+        buf = tok_buf.buf;
+    }
+
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> next() {
         eat_separators();
 
-        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> cur_token = next_token;
+        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> cur_token = next_token;
 
         next_token = specialized_next();
 
         return cur_token;
     }
 
-    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> specialized_next();
+    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> specialized_next();
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> peek() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE, TOKEN_TYPE> peek() {
         return next_token;
     }
 

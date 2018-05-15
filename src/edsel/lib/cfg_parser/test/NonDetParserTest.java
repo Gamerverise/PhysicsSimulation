@@ -1,9 +1,10 @@
 package edsel.lib.cfg_parser.test;
 
+import edsel.cfgs.regex_cfg.RegexProduction;
 import edsel.cfgs.regex_cfg.RegexProductionID;
 import edsel.cfgs.regex_cfg.RegexTerminalID;
+import edsel.cfgs.regex_cfg.io.RegexToken;
 import edsel.cfgs.regex_cfg.io.RegexTokenBuffer;
-import edsel.lib.cfg_model.RCFG_Production;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.reductions.Reduction;
 
@@ -18,11 +19,24 @@ public class NonDetParserTest {
                 + "\\RegexParserTestData.txt";
 
         RegexTokenBuffer input = new RegexTokenBuffer(filename);
-        NonDetParser<RegexProductionID, RegexTerminalID, Character> parser = new NonDetParser<>();
+
+        NonDetParser
+                <RegexProductionID,
+                        RegexProduction,
+                        RegexTerminalID,
+                        Character,
+                        RegexToken>
+                parser = new NonDetParser<>();
 
         try {
-            Reduction<RegexProductionID, RCFG_Production<RegexProductionID>>
-                    reduction = parser.parse_recursive(START, input, 0, RESTRICT, UNRESTRICT, GATE);
+            Reduction
+                    <RegexProductionID,
+                            RegexTerminalID,
+                            Character,
+                            RegexToken>
+                    reduction;
+
+            reduction = parser.parse_recursive(START, input, 0, RESTRICT, UNRESTRICT, GATE);
 
             if (reduction != null)
                 System.out.print(reduction.print(0));
