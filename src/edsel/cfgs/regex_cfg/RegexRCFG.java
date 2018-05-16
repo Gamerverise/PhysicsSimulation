@@ -1,21 +1,19 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.lib.cfg_model.RCFG;
-import edsel.lib.cfg_model.RCFG_Production;
-import edsel.lib.io.ParseNodeBuffer;
+import edsel.lib.cfg_parser.RCFG_Parser;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexProduction.OR;
 import static edsel.cfgs.regex_cfg.RegexProduction.REPEAT;
 
-public class RegexRCFG extends RCFG<RegexProductionID, RegexProduction>
+public class RegexRCFG extends RCFG_Parser<RegexProductionID, RegexProduction>
 {
     public RegexRCFG()
     {
         super(START, SUB_EXPR, GROUP, AND, OR, REPEAT);
     }
 
-    public RegexProductionID get_production_id(
+    public RegexProductionID get_production(
             ParseNodeBuffer.ParseNodeBufferString
                     production_name)
     {

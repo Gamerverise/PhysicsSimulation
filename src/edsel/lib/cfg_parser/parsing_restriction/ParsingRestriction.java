@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-public class ParsingRestriction {
+public abstract class ParsingRestriction {
 
     public RestrictionMode mode;
 

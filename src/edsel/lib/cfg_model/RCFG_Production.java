@@ -2,7 +2,7 @@ package edsel.lib.cfg_model;
 
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
-import edsel.lib.io.ParseNodeBuffer.ParseNodeBufferString;
+import edsel.lib.io.old.ParseNodeBuffer.ParseNodeBufferString;
 
 public class RCFG_Production
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>

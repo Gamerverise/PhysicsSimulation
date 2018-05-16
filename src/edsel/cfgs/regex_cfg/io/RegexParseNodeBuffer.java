@@ -2,17 +2,13 @@ package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
-import edsel.lib.io.ParseNodeBuffer;
+import edsel.lib.io.old.ParseNodeBuffer;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
-import static edsel.cfgs.regex_cfg.RegexTerminalID.RESTRICT_ID;
-import static edsel.cfgs.regex_cfg.RegexTerminalID.UNRESTRICT_ID;
 
 public class RegexParseNodeBuffer extends ParseNodeBuffer
 {
-    public int restricted_mode_nesting = 0;
-
     public RegexParseNodeBuffer(String filename) {
         super(filename);
     }
@@ -29,67 +25,12 @@ public class RegexParseNodeBuffer extends ParseNodeBuffer
 
     // =========================================================================================
 
-    //        if (next_input.id == gate_id) {
-//            input.advance();
-//            continue branch_loop;
-//        }
-//
-//        CFG_Symbol cur_expected_symbol;
-//
-//        if (next_input.id == restrict_id) {
-//            cur_expected_symbol = rcfg.get_production_id(next_input.src_string);
-//
-//            if (cur_expected_symbol == null)
-//                throw new InvalidProductionRestriction();
-//        }
-//
-//        if (next_input.id == unrestrict_id) {
-//            restriction = null;
-//            continue;
-//        }
-
     public ParseNode specialized_advance() {
         if (cursor_pos >= buf.length) {
             return null;
         }
 
         char next_char = (char) buf[cursor_pos];
-
-        if (next_char == '(') {
-
-            if (cursor_pos + 1 < buf.length) {
-
-                char next_next_char = (char) buf[cursor_pos + 1];
-
-                if (next_next_char == '~') {
-
-                    int restriction_name_start = cursor_pos;
-
-                    while (cursor_pos < buf.length && buf[cursor_pos] != ':')
-                        cursor_pos++;
-
-                    ParseNodeBufferString restriction_name
-                            = new ParseNodeBufferString(restriction_name_start, cursor_pos);
-
-                    cursor_pos++;
-                    restricted_mode_nesting++;
-
-                    return new RegexToken(RESTRICT_ID, (char) -1 , restriction_name);
-                }
-            }
-        } else if (restricted_mode_nesting > 0 && next_char == '*')
-
-            if (cursor_pos + 1 < buf.length) {
-
-                char next_next_char = (char) buf[cursor_pos];
-
-                if (next_next_char == ')') {
-                    ParseNodeBufferString tok_string = new ParseNodeBufferString(cursor_pos, cursor_pos + 1);
-                    cursor_pos++;
-                    restricted_mode_nesting--;
-                    return new RegexToken(UNRESTRICT_ID, (char) -1, tok_string);
-                }
-            }
 
         RegexTerminalID next_id;
 

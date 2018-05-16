@@ -8,6 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_lexer/lexer_transitions" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/lalr" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/transitions/old" />
+      <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/io/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/parser" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/versions" />
       <excludeFolder url="file://$MODULE_DIR$/src/exclude" />

@@ -7,7 +7,8 @@ import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
 
 import static edsel.cfgs.regex_cfg.RegexRCFG.RegexRCFG;
-import static edsel.lib.cfg_parser.non_deterministic.NonDetParser.AmbiguousParserInput;
+
+import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 
 public class NonDetParserTest {
     public static void main(String[] args) {
