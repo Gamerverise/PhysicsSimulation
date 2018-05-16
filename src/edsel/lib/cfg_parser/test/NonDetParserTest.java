@@ -6,8 +6,7 @@ import edsel.cfgs.regex_cfg.io.RegexParseNodeBuffer;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
 
-import static edsel.cfgs.regex_cfg.RegexProduction.START;
-import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
+import static edsel.cfgs.regex_cfg.RegexRCFG.RegexRCFG;
 import static edsel.lib.cfg_parser.non_deterministic.NonDetParser.AmbiguousParserInput;
 
 public class NonDetParserTest {
@@ -18,19 +17,13 @@ public class NonDetParserTest {
 
         RegexParseNodeBuffer input = new RegexParseNodeBuffer(filename);
 
-        NonDetParser
-                <RegexProductionID,
-                        RegexTerminalID,
-                        Character>
+        NonDetParser<RegexProductionID, RegexTerminalID, Character>
                 parser = new NonDetParser<>();
 
         try {
-            ReductionParseNode<RegexProductionID,
-                                        RegexTerminalID,
-                                        Character>
-                    reduction;
+            ReductionParseNode<RegexProductionID> reduction;
 
-            reduction = parser.parse_recursive(START, input, 0, RESTRICT_ID, UNRESTRICT_ID, GATE_ID);
+            reduction = parser.parse_recursive(RegexRCFG, input);
 
             if (reduction != null)
                 System.out.print(reduction.print(0));

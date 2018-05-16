@@ -1,6 +1,6 @@
 package edsel.lib.cfg_model;
 
-import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
 import edsel.lib.io.ParseNodeBuffer.ParseNodeBufferString;
 
@@ -18,7 +18,7 @@ public class RCFG_Production
 
     public ReductionParseNode<ENUM_PRODUCTION_ID>
     reduce(int branch_num,
-           ParseTreeNode[] sub_reductions,
+           ParseNode[] sub_reductions,
            int num_branches_explored,
            ParseNodeBufferString src_string)
     {

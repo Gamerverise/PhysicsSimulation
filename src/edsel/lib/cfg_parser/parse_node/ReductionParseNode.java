@@ -9,19 +9,19 @@ import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-        extends ParseTreeNode
+        extends ParseNode
 {
     public ENUM_PRODUCTION_ID production_id;
     public int branch_num;
 
-    public ParseTreeNode[] sub_reductions;
+    public ParseNode[] sub_reductions;
 
     public int num_branches_explored = 0;
 
     public ReductionParseNode(
             ENUM_PRODUCTION_ID                          production_id,
             int                                         branch_num,
-            ParseTreeNode[]                             sub_reductions,
+            ParseNode[]                             sub_reductions,
             int                                         num_branches_explored,
             ParseNodeBuffer.ParseNodeBufferString       src_string)
     {
@@ -49,7 +49,7 @@ public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_
         else {
             int num_sub_reductions = parse_node.sub_reductions.length;
 
-            this.sub_reductions = new ParseTreeNode[num_sub_reductions];
+            this.sub_reductions = new ParseNode[num_sub_reductions];
 
             for (int i = 0; i < num_sub_reductions; i++)
                 this.sub_reductions[i] = parse_node.sub_reductions[i].new_copy(COPY_DEEP);
@@ -70,7 +70,7 @@ public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_
     public String print(int tree_level) {
         String string = spaces(tree_level) + production_id.toString() + ", branch " + branch_num;
 
-        for (ParseTreeNode child : sub_reductions)
+        for (ParseNode child : sub_reductions)
             string += "\n" + child.print(tree_level + 1);
 
         return string;

@@ -6,13 +6,12 @@ import lib.tokens.enums.CopyType;
 
 import static lib.text_io.FormattedText.spaces;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
-import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public class TokenParseNode
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
                 TOKEN_VALUE_TYPE>
         extends
-        ParseTreeNode
+        ParseNode
 {
     public ENUM_TOKEN_ID id;
     public TOKEN_VALUE_TYPE value;

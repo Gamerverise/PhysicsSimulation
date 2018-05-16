@@ -13,7 +13,7 @@ public class RCFG
 
     public RCFG(
             PRODUCTION_TYPE         start_production,
-            PRODUCTION_TYPE[]       productions)
+            PRODUCTION_TYPE...      productions)
     {
         this.start_production = start_production;
         this.productions = productions;

@@ -1,7 +1,7 @@
 package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
-import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.io.ParseNodeBuffer;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 
@@ -48,7 +48,7 @@ public class RegexParseNodeBuffer extends ParseNodeBuffer
 //            continue;
 //        }
 
-    public ParseTreeNode specialized_advance() {
+    public ParseNode specialized_advance() {
         if (cursor_pos >= buf.length) {
             return null;
         }

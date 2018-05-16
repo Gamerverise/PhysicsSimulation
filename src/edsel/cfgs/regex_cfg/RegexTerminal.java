@@ -1,6 +1,7 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.lib.cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_parser.parse_node.TokenParseNode;
 
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
@@ -14,7 +15,7 @@ public class RegexTerminal
         character = pattern.charAt(0);
     }
 
-    public void reduce(Token<RegexTerminalID, Character> tok)
+    public void reduce(TokenParseNode<RegexTerminalID, Character> tok)
     {
         tok.value = tok.src_string.get_string().charAt(0);
     }

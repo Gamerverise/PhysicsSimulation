@@ -1,7 +1,7 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
 import edsel.lib.cfg_model.*;
-import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
 import edsel.lib.cfg_parser.parse_node.TokenParseNode;
 import edsel.lib.io.ParseNodeBuffer;
@@ -10,17 +10,17 @@ import edsel.lib.io.ParseNodeBuffer.ParseNodeBufferString;
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
-{
+                TOKEN_VALUE_TYPE> {
     public static class ParsingException extends Exception {}
+
     public static class AmbiguousParserInput extends ParsingException {}
+
     public static class InvalidProductionRestriction extends ParsingException {}
 
     public ReductionParseNode<ENUM_PRODUCTION_ID>
     parse_recursive(
-            RCFG<ENUM_PRODUCTION_ID,
-                    RCFG_Production<ENUM_PRODUCTION_ID>>    rcfg,
-            ParseNodeBuffer                                 input
+            RCFG<ENUM_PRODUCTION_ID, ? extends RCFG_Production<ENUM_PRODUCTION_ID>>   rcfg,
+            ParseNodeBuffer                                                 input
     )
             throws AmbiguousParserInput
     {
@@ -34,10 +34,10 @@ public class NonDetParser
     @SuppressWarnings("unchecked")
     public ReductionParseNode<ENUM_PRODUCTION_ID>
     parse_recursive(
-            RCFG                                    rcfg,
-            RCFG_Production<ENUM_PRODUCTION_ID>     production,
-            ParseNodeBuffer                         input,
-            int                                     num_branches_explored
+            RCFG rcfg,
+            RCFG_Production<ENUM_PRODUCTION_ID> production,
+            ParseNodeBuffer input,
+            int num_branches_explored
     )
             throws AmbiguousParserInput
     {
@@ -50,12 +50,12 @@ public class NonDetParser
 
             CFG_Symbol[] cur_branch = production.rhs[i];
 
-            ParseTreeNode[] sub_reductions = new ParseTreeNode[cur_branch.length];
+            ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
 
             for (int j = 0; j < cur_branch.length; j++) {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
-                ParseTreeNode next_input = input.peek();
+                ParseNode next_input = input.peek();
 
                 if (next_input == null)
                     continue branch_loop;
@@ -134,50 +134,10 @@ public class NonDetParser
     // =========================================================================================
 
     void save_input() {
-
+        assert false;
     }
 
     void restore_input() {
-
+        assert false;
     }
-
-    // =========================================================================================
-
-//    public LinkedList<Character>
-//    parse_iterative(
-//            RegexCFG                            regex_cfg,
-//            SeekableBuffer<RegexCFG_Terminal<ENUM_TERMINAL_ID,>>       input,
-//            Stack<ProductionBranchEntry>               state_stack
-//    )
-//            throws InputNotAccepted
-//    {
-//        ProductionBranchEntry<Production, ENUM_PRODUCTION_ID, REDUCTION_TYPE>
-//                start_state = new ProductionBranchEntry<RegexProduction, RegexProductionID, LinkedList<Character>>
-//                (START_ID, regex_cfg.root_production, 0, 0);
-//
-//        state_stack.push(new ProductionBranchEntry<>(regex_cfg.root_production);
-//
-//        while (true) {
-//            RegexCFG_Terminal<ENUM_TERMINAL_ID, ><REDUCTION_TYPE> sym = input.advance();
-//
-//            if (sym == regex_cfg.eof) {
-//                if (state_stack.empty())
-//                    return;
-//                else
-//                    throw new InputNotAccepted();
-//            }
-//
-//            Iterator<RegexProduction<REDUCTION_TYPE>> production_iter = regex_cfg.productions.iterator();
-//
-//            while (production_iter.hasNext()) {
-//
-//                RegexProduction<REDUCTION_TYPE> cur_production = production_iter.advance();
-//
-//                if (cur_production.start_terminals.contains(sym))
-//                    return parse(cur_production, input, output_reduction);
-//                else
-//                    cur_
-//            }
-//        }
-//    }
 }

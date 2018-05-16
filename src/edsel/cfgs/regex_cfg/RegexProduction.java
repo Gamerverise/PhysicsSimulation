@@ -6,11 +6,7 @@ import static edsel.cfgs.regex_cfg.RegexProductionID.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
-public class RegexProduction extends
-        RCFG_Production
-                <RegexProductionID,
-                        RegexTerminalID,
-                        Character>
+public class RegexProduction extends RCFG_Production<RegexProductionID>
 {
     public static RegexProduction START         = new RegexProduction();
     public static RegexProduction SUB_EXPR      = new RegexProduction();

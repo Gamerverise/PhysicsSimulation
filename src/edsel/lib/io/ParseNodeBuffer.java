@@ -1,6 +1,6 @@
 package edsel.lib.io;
 
-import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.cfg_parser.parse_node.ParseNode;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 import lib.tokens.enums.CopyType;
@@ -52,7 +52,7 @@ ParseNodeBuffer extends InstantiatorBase<ParseNodeBuffer>
 
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public ParseTreeNode next_parse_node = null;
+    public ParseNode next_parse_node = null;
     
     public int cursor_pos = 0;
 
@@ -87,19 +87,19 @@ ParseNodeBuffer extends InstantiatorBase<ParseNodeBuffer>
         buf = tok_buf.buf;
     }
 
-    public ParseTreeNode advance() {
+    public ParseNode advance() {
         eat_separators();
 
-        ParseTreeNode cur_parse_node = next_parse_node;
+        ParseNode cur_parse_node = next_parse_node;
 
         next_parse_node = specialized_advance();
 
         return cur_parse_node;
     }
 
-    public abstract ParseTreeNode specialized_advance();
+    public abstract ParseNode specialized_advance();
 
-    public ParseTreeNode peek() {
+    public ParseNode peek() {
         return next_parse_node;
     }
 

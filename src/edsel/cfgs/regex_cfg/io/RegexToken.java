@@ -1,9 +1,10 @@
 package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
+import edsel.lib.cfg_parser.parse_node.TokenParseNode;
 import edsel.lib.io.ParseNodeBuffer;
 
-public class RegexToken extends Token<RegexTerminalID, Character> {
+public class RegexToken extends TokenParseNode<RegexTerminalID, Character> {
 
     public RegexToken(
             RegexTerminalID
