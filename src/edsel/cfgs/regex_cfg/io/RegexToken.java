@@ -1,8 +1,7 @@
 package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
-import edsel.lib.io.Token;
-import edsel.lib.io.TokenBuffer;
+import edsel.lib.io.ParseNodeBuffer;
 
 public class RegexToken extends Token<RegexTerminalID, Character> {
 
@@ -11,7 +10,7 @@ public class RegexToken extends Token<RegexTerminalID, Character> {
                     id,
             Character
                     value,
-            TokenBuffer<RegexTerminalID, Character>.TokenBufferString
+            ParseNodeBuffer.ParseNodeBufferString
                     src_string)
     {
         super(id, value, src_string);

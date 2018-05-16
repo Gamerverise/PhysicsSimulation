@@ -1,11 +1,11 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
 import edsel.lib.cfg_model.*;
-import edsel.lib.cfg_parser.reductions.ReductionBase;
-import edsel.lib.cfg_parser.reductions.Reduction;
-import edsel.lib.io.Token;
-import edsel.lib.io.TokenBuffer;
-import edsel.lib.io.TokenBuffer.TokenBufferString;
+import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
+import edsel.lib.cfg_parser.parse_node.TokenParseNode;
+import edsel.lib.io.ParseNodeBuffer;
+import edsel.lib.io.ParseNodeBuffer.ParseNodeBufferString;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
@@ -16,164 +16,117 @@ public class NonDetParser
     public static class AmbiguousParserInput extends ParsingException {}
     public static class InvalidProductionRestriction extends ParsingException {}
 
-    public
-    Reduction
-            <ENUM_PRODUCTION_ID,
-                    ENUM_TERMINAL_ID,
-                    TOKEN_VALUE_TYPE>
+    public ReductionParseNode<ENUM_PRODUCTION_ID>
     parse_recursive(
-            RCFG
-                    <ENUM_PRODUCTION_ID,
-                            RCFG_Production
-                                    <ENUM_PRODUCTION_ID,
-                                            ENUM_TERMINAL_ID,
-                                            TOKEN_VALUE_TYPE>,
-                            ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE>
-                    rcfg,
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    input
+            RCFG<ENUM_PRODUCTION_ID,
+                    RCFG_Production<ENUM_PRODUCTION_ID>>    rcfg,
+            ParseNodeBuffer                                 input
     )
-            throws AmbiguousParserInput, InvalidProductionRestriction
+            throws AmbiguousParserInput
     {
         return parse_recursive(
                 rcfg,
                 rcfg.start_production,
                 input,
-                0,
-                null,
-                null,
-                rcfg.restrict_id,
-                rcfg.unrestrict_id,
-                rcfg.gate_id);
+                0);
     }
 
     @SuppressWarnings("unchecked")
-    public
-    Reduction
-            <ENUM_PRODUCTION_ID,
-                    ENUM_TERMINAL_ID,
-                    TOKEN_VALUE_TYPE>
+    public ReductionParseNode<ENUM_PRODUCTION_ID>
     parse_recursive(
             RCFG                                    rcfg,
-            RCFG_Production
-                    <ENUM_PRODUCTION_ID,
-                            ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE>       production,
-            TokenBuffer
-                    <ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE>
-                                                    input,
-            int                                     num_branches_explored,
-            ENUM_PRODUCTION_ID                      production_restriction,
-            ENUM_TERMINAL_ID                        terminal_restriction,
-            ENUM_TERMINAL_ID                        restrict_id,
-            ENUM_TERMINAL_ID                        unrestrict_id,
-            ENUM_TERMINAL_ID                        gate_id
+            RCFG_Production<ENUM_PRODUCTION_ID>     production,
+            ParseNodeBuffer                         input,
+            int                                     num_branches_explored
     )
-            throws AmbiguousParserInput, InvalidProductionRestriction
+            throws AmbiguousParserInput
     {
-        Reduction
-                <ENUM_PRODUCTION_ID,
-                        ENUM_TERMINAL_ID,
-                        TOKEN_VALUE_TYPE>
-                reduction = null;
+        ReductionParseNode<ENUM_PRODUCTION_ID> reduction = null;
+
+        save_input();
 
         branch_loop:
         for (int i = 0; i < production.rhs.length; i++) {
 
             CFG_Symbol[] cur_branch = production.rhs[i];
 
-            ReductionBase[] sub_reductions = new ReductionBase[cur_branch.length];
-
-            save_input();
+            ParseTreeNode[] sub_reductions = new ParseTreeNode[cur_branch.length];
 
             for (int j = 0; j < cur_branch.length; j++) {
 
-                Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.peek();
-
-                if (next_input.id == gate_id) {
-                    input.next();
-                    continue branch_loop;
-                }
-
-                CFG_Symbol cur_expected_symbol;
-
-                if (next_input.id == restrict_id) {
-                    cur_expected_symbol = rcfg.get_production_id(next_input.src_string);
-
-                    if (cur_expected_symbol == null)
-                        throw new InvalidProductionRestriction();
-                }
-
-                if (next_input.id == unrestrict_id) {
-                    restriction = null;
-                    continue;
-                }
-
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
+                ParseTreeNode next_input = input.peek();
+
+                if (next_input == null)
+                    continue branch_loop;
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
 
-                    RCFG_Production
-                            <ENUM_PRODUCTION_ID,
-                                    ENUM_TERMINAL_ID,
-                                    TOKEN_VALUE_TYPE>
-                            rhs_production
-                            =
-                            (RCFG_Production
-                                    <ENUM_PRODUCTION_ID,
-                                            ENUM_TERMINAL_ID,
-                                            TOKEN_VALUE_TYPE>)
-                                    cur_expected_symbol;
+                    ReductionParseNode<ENUM_PRODUCTION_ID> cur_sub_reduction;
 
-                    ReductionBase cur_sub_reduction
-                            =
-                            parse_recursive(
-                                    rcfg,
-                                    rhs_production,
-                                    input,
-                                    num_branches_explored + 1,
-                                    restrict_id,
-                                    unrestrict_id,
-                                    gate_id);
-
-                    if (cur_sub_reduction == null)
+                    if (next_input instanceof TokenParseNode)
                         continue branch_loop;
 
-                    sub_reductions[j] = cur_sub_reduction;
+                    if (next_input instanceof ReductionParseNode) {
 
+                        ENUM_PRODUCTION_ID cur_expected_production_id
+                                = ((RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol).id;
+
+                        ENUM_PRODUCTION_ID cur_production_id
+                                = ((ReductionParseNode<ENUM_PRODUCTION_ID>) next_input).production_id;
+
+                        cur_sub_reduction = (ReductionParseNode<ENUM_PRODUCTION_ID>) next_input;
+
+                        if (cur_sub_reduction.production_id == cur_expected_symbol.id) {
+                            sub_reductions[j] = cur_sub_reduction;
+                            input.advance();
+                        } else
+                            continue branch_loop;
+                    } else {
+                        RCFG_Production<ENUM_PRODUCTION_ID>
+                                rhs_production = (RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
+                        cur_sub_reduction
+                                = parse_recursive(rcfg, rhs_production, input, num_branches_explored + 1);
+
+                        if (cur_sub_reduction != null) {
+                            sub_reductions[j] = cur_sub_reduction;
+                            input.advance();
+                        } else
+                            continue branch_loop;
+                    }
                 } else if (cur_expected_symbol instanceof RCFG_Terminal) {
 
-                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_input = input.next();
-
-                    if (next_input == null)
+                    if (next_input instanceof ReductionParseNode)
                         continue branch_loop;
-                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                            cur_expected_terminal
-                            =
-                            (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
-                    if (next_input.id != cur_expected_terminal.id)
-                        continue branch_loop;
-                    else {
-                        cur_expected_terminal.reduce(next_input);
+                    RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
+                            = (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+
+                    TokenParseNode<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal
+                            = (TokenParseNode<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) next_input;
+
+                    if (cur_terminal.id == cur_expected_terminal.id) {
+                        cur_expected_terminal.reduce(cur_terminal);
                         sub_reductions[j] = next_input;
-                    }
+                        input.advance();
+                    } else
+                        continue branch_loop;
                 }
             }
-
-            restore_input();
 
             if (reduction != null)
                 throw new AmbiguousParserInput();
 
             int src_text_start = sub_reductions[0].src_string.src_start;
             int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
-            TokenBufferString string = input.get_buffer_string(src_text_start, src_text_end);
+            ParseNodeBufferString string = input.get_buffer_string(src_text_start, src_text_end);
 
             reduction = production.reduce(i, sub_reductions, num_branches_explored, string);
         }
+
+        if (reduction == null)
+            restore_input();
 
         return reduction;
     }
@@ -205,7 +158,7 @@ public class NonDetParser
 //        state_stack.push(new ProductionBranchEntry<>(regex_cfg.root_production);
 //
 //        while (true) {
-//            RegexCFG_Terminal<ENUM_TERMINAL_ID, ><REDUCTION_TYPE> sym = input.next();
+//            RegexCFG_Terminal<ENUM_TERMINAL_ID, ><REDUCTION_TYPE> sym = input.advance();
 //
 //            if (sym == regex_cfg.eof) {
 //                if (state_stack.empty())
@@ -218,7 +171,7 @@ public class NonDetParser
 //
 //            while (production_iter.hasNext()) {
 //
-//                RegexProduction<REDUCTION_TYPE> cur_production = production_iter.next();
+//                RegexProduction<REDUCTION_TYPE> cur_production = production_iter.advance();
 //
 //                if (cur_production.start_terminals.contains(sym))
 //                    return parse(cur_production, input, output_reduction);

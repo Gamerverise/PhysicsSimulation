@@ -1,6 +1,6 @@
 package edsel.lib.cfg_model;
 
-import edsel.lib.io.Token;
+import edsel.lib.cfg_parser.parse_node.TokenParseNode;
 
 public abstract
 class RCFG_Terminal
@@ -13,5 +13,5 @@ class RCFG_Terminal
         super(id, pattern);
     }
 
-    public abstract void reduce(Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> tok);
+    public abstract void reduce(TokenParseNode<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> tok);
 }

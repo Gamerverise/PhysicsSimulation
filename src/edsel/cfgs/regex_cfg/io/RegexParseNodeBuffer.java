@@ -1,36 +1,54 @@
 package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
-import edsel.lib.io.Token;
-import edsel.lib.io.TokenBuffer;
+import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
+import edsel.lib.io.ParseNodeBuffer;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static edsel.cfgs.regex_cfg.RegexTerminalID.RESTRICT_ID;
 import static edsel.cfgs.regex_cfg.RegexTerminalID.UNRESTRICT_ID;
 
-public class RegexTokenBuffer extends
-        TokenBuffer<RegexTerminalID, Character>
+public class RegexParseNodeBuffer extends ParseNodeBuffer
 {
     public int restricted_mode_nesting = 0;
 
-    public RegexTokenBuffer(String filename) {
+    public RegexParseNodeBuffer(String filename) {
         super(filename);
     }
 
     // =========================================================================================
 
-    public RegexTokenBuffer self() {
+    public RegexParseNodeBuffer self() {
         return this;
     }
 
-    public RegexTokenBuffer new_instance(Object... args) {
-        return Instantiator.new_instance(RegexTokenBuffer.class, args);
+    public RegexParseNodeBuffer new_instance(Object... args) {
+        return Instantiator.new_instance(RegexParseNodeBuffer.class, args);
     }
 
     // =========================================================================================
 
-    public Token<RegexTerminalID, Character> specialized_next() {
+    //        if (next_input.id == gate_id) {
+//            input.advance();
+//            continue branch_loop;
+//        }
+//
+//        CFG_Symbol cur_expected_symbol;
+//
+//        if (next_input.id == restrict_id) {
+//            cur_expected_symbol = rcfg.get_production_id(next_input.src_string);
+//
+//            if (cur_expected_symbol == null)
+//                throw new InvalidProductionRestriction();
+//        }
+//
+//        if (next_input.id == unrestrict_id) {
+//            restriction = null;
+//            continue;
+//        }
+
+    public ParseTreeNode specialized_advance() {
         if (cursor_pos >= buf.length) {
             return null;
         }
@@ -43,15 +61,15 @@ public class RegexTokenBuffer extends
 
                 char next_next_char = (char) buf[cursor_pos + 1];
 
-                if (next_next_char == '*') {
+                if (next_next_char == '~') {
 
                     int restriction_name_start = cursor_pos;
 
                     while (cursor_pos < buf.length && buf[cursor_pos] != ':')
                         cursor_pos++;
 
-                    TokenBufferString restriction_name
-                            = new TokenBufferString(restriction_name_start, cursor_pos);
+                    ParseNodeBufferString restriction_name
+                            = new ParseNodeBufferString(restriction_name_start, cursor_pos);
 
                     cursor_pos++;
                     restricted_mode_nesting++;
@@ -66,7 +84,7 @@ public class RegexTokenBuffer extends
                 char next_next_char = (char) buf[cursor_pos];
 
                 if (next_next_char == ')') {
-                    TokenBufferString tok_string = new TokenBufferString(cursor_pos, cursor_pos + 1);
+                    ParseNodeBufferString tok_string = new ParseNodeBufferString(cursor_pos, cursor_pos + 1);
                     cursor_pos++;
                     restricted_mode_nesting--;
                     return new RegexToken(UNRESTRICT_ID, (char) -1, tok_string);
@@ -96,7 +114,7 @@ public class RegexTokenBuffer extends
         else
             next_id = LITERAL.id;
 
-        TokenBufferString tok_string = new TokenBufferString(cursor_pos, cursor_pos + 1);
+        ParseNodeBufferString tok_string = new ParseNodeBufferString(cursor_pos, cursor_pos + 1);
 
         return new RegexToken(next_id, next_char, tok_string);
     }

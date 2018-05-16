@@ -53,7 +53,7 @@ public class InputParser {
                 atom.value = Double.parseDouble(m.group(1));
                 line = m.group(4);
             } else
-                throw new RuntimeException("Unimplemented InputSpec type.");
+                throw new RuntimeException("Unimplemented InputSpec mode.");
         }
     }
 }

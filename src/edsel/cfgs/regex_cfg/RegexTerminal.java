@@ -1,7 +1,6 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.lib.cfg_model.RCFG_Terminal;
-import edsel.lib.io.Token;
 
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 

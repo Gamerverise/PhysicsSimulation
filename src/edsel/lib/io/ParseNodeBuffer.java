@@ -1,5 +1,6 @@
 package edsel.lib.io;
 
+import edsel.lib.cfg_parser.parse_node.ParseTreeNode;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 import lib.tokens.enums.CopyType;
@@ -10,40 +11,35 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public abstract class
-TokenBuffer
-        <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
-                TOKEN_VALUE_TYPE>
-        extends
-        InstantiatorBase<TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>>
+ParseNodeBuffer extends InstantiatorBase<ParseNodeBuffer>
 {
-    public class TokenBufferString
+    public class ParseNodeBufferString
             extends
-            InstantiatorBase<TokenBufferString>
+            InstantiatorBase<ParseNodeBufferString>
     {
         public int src_start;
         public int src_end;
 
-        public TokenBufferString(int src_start, int src_end) {
+        public ParseNodeBufferString(int src_start, int src_end) {
             this.src_start = src_start;
             this.src_end = src_end;
         }
 
-        public TokenBufferString(TokenBufferString string, CopyType copy_type) {
+        public ParseNodeBufferString(ParseNodeBufferString string, CopyType copy_type) {
             this.src_start = string.src_start;
             this.src_end = string.src_end;
         }
 
         // =========================================================================================
 
-        public
-        TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>.TokenBufferString
+        public ParseNodeBufferString
         self()
         {
             return this;
         }
 
-        public TokenBufferString new_instance(Object... args) {
-            return Instantiator.new_instance(TokenBufferString.class, args);
+        public ParseNodeBufferString new_instance(Object... args) {
+            return Instantiator.new_instance(ParseNodeBufferString.class, args);
         }
 
         // =========================================================================================
@@ -56,13 +52,13 @@ TokenBuffer
 
     public byte[] separator_chars = {' ', '\n', '\t'};
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next_token = null;
+    public ParseTreeNode next_parse_node = null;
     
     public int cursor_pos = 0;
 
     public byte[] buf;
 
-    public TokenBuffer(String filename)
+    public ParseNodeBuffer(String filename)
     {
         try {
             Path path = FileSystems.getDefault().getPath(filename);
@@ -77,11 +73,7 @@ TokenBuffer
         }
     }
 
-    public TokenBuffer(
-            TokenBuffer<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE>
-                    tok_buf,
-            CopyType
-                    copy_type)
+    public ParseNodeBuffer(ParseNodeBuffer tok_buf, CopyType copy_type)
     {
         if (copy_type == CopyType.COPY_DEEP) {
             separator_chars = new byte[tok_buf.separator_chars.length];
@@ -89,30 +81,30 @@ TokenBuffer
         } else
             separator_chars = tok_buf.separator_chars;
 
-        next_token = tok_buf.next_token.new_copy(copy_type);
+        next_parse_node = tok_buf.next_parse_node.new_copy(copy_type);
 
         cursor_pos = tok_buf.cursor_pos;
         buf = tok_buf.buf;
     }
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> next() {
+    public ParseTreeNode advance() {
         eat_separators();
 
-        Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> cur_token = next_token;
+        ParseTreeNode cur_parse_node = next_parse_node;
 
-        next_token = specialized_next();
+        next_parse_node = specialized_advance();
 
-        return cur_token;
+        return cur_parse_node;
     }
 
-    public abstract Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> specialized_next();
+    public abstract ParseTreeNode specialized_advance();
 
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> peek() {
-        return next_token;
+    public ParseTreeNode peek() {
+        return next_parse_node;
     }
 
     public boolean not_empty() {
-        return next_token != null;
+        return next_parse_node != null;
     }
 
     public void eat_separators() {
@@ -131,9 +123,9 @@ TokenBuffer
         return false;
     }
 
-    public TokenBufferString get_buffer_string(int start, int end)
+    public ParseNodeBufferString get_buffer_string(int start, int end)
     {
-        return new TokenBufferString(start, end);
+        return new ParseNodeBufferString(start, end);
     }
 
     public String get_string(int start, int end) {
