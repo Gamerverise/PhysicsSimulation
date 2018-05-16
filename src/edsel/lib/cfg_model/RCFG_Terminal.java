@@ -9,7 +9,8 @@ class RCFG_Terminal
         extends
         CFG_Terminal<ENUM_TERMINAL_ID>
 {
-    public RCFG_Terminal(ENUM_TERMINAL_ID id, String pattern) {
+    public RCFG_Terminal(ENUM_TERMINAL_ID id, String pattern)
+    {
         super(id, pattern);
     }
 

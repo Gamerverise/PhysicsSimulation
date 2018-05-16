@@ -1,7 +1,7 @@
 package edsel.lib.cfg_parser;
 
-import edsel.cfgs.regex_cfg.io.RegexToken;
 import edsel.lib.cfg_model.RCFG_Production;
+import edsel.lib.cfg_model.RCFG_Terminal;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
@@ -17,13 +17,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Stack;
 
-import static edsel.cfgs.regex_cfg.RegexTerminalID.UNRESTRICT_ID;
+import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.TERMINAL_RESTRICTION;
 
 public abstract class RCFG_Parser
-        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
+        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
+                ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
+                TOKEN_VALUE_TYPE>
 {
-    public RCFG_Production<ENUM_PRODUCTION_ID>          start_production;
-    public RCFG_Production<ENUM_PRODUCTION_ID>[]        productions;
+    public RCFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
+    public RCFG_Production<ENUM_PRODUCTION_ID>                      start_production;
+    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[]      terminals;
 
     @SafeVarargs
     public RCFG_Parser(
@@ -57,11 +60,21 @@ public abstract class RCFG_Parser
         return null;
     }
 
+    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    get_terminal(ParseNodeBuffer.ParseNodeBufferString terminal_name)
+    {
+        for(RCFG_Production<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal : terminals)
+            if (terminal_name.get_string() == terminal.name)
+                return terminal;
+
+        return null;
+    }
+
     // =========================================================================================
 
     public abstract class
-    ParseNodeBuffer<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-            extends InstantiatorBase<ParseNodeBuffer<ENUM_PRODUCTION_ID>>
+    ParseNodeBuffer
+            extends InstantiatorBase<ParseNodeBuffer>
     {
         public class ParseNodeBufferString
                 extends
@@ -215,6 +228,9 @@ public abstract class RCFG_Parser
                     if (mode == null)
                         return null;
 
+                    if (mode == TERMINAL_RESTRICTION)
+
+                        
                     cursor_pos += 2;
 
                     int restriction_name_start = cursor_pos;
@@ -224,6 +240,8 @@ public abstract class RCFG_Parser
 
                     ParseNodeBuffer.ParseNodeBufferString restriction_name
                             = new ParseNodeBuffer.ParseNodeBufferString(restriction_name_start, cursor_pos);
+
+                    RCFG_Production<ENUM_PRODUCTION_ID> production_restriction = get_production(restriction_name);
 
                     cursor_pos++;
                     restricted_mode_nesting++;

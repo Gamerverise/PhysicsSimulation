@@ -1,6 +1,7 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
 public enum RestrictionMode {
+    TERMINAL_RESTRICTION('='),
     PREFIX_RESTRICTION('~'),
     SYMBOL_RESTRICTION('#'),
     SUFFIX_RESTRICTION('.'),     // Not yet implemented
@@ -22,6 +23,7 @@ public enum RestrictionMode {
         for (int i = 0; i < mode_table.length; i++)
             mode_table[i] = null;
 
+        mode_table[TERMINAL_RESTRICTION.chr] = TERMINAL_RESTRICTION;
         mode_table[PREFIX_RESTRICTION.chr] = PREFIX_RESTRICTION;
         mode_table[SYMBOL_RESTRICTION.chr] = SYMBOL_RESTRICTION;
         mode_table[SUFFIX_RESTRICTION.chr] = SUFFIX_RESTRICTION;
