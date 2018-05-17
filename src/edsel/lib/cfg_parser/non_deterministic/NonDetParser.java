@@ -6,14 +6,16 @@ import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
-import edsel.lib.io.old.ParseNodeBuffer.ParseNodeBufferString;
+import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE>
     extends
-        RCFG_Parser<ENUM_PRODUCTION_ID>
+        RCFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
 {
     @SafeVarargs
     public NonDetParser(
@@ -44,7 +46,7 @@ public class NonDetParser
         branch_loop:
         for (int i = 0; i < production.rhs.length; i++) {
 
-            CFG_Symbol[] cur_branch = production.rhs[i];
+            RCFG_Symbol[] cur_branch = production.rhs[i];
 
             ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
 
@@ -52,8 +54,36 @@ public class NonDetParser
 
             for (int j = 0; j < cur_branch.length; j++) {
 
-                CFG_Symbol cur_expected_symbol = cur_branch[j];
-                ParseNode next_input = input.peek();
+                RCFG_Symbol cur_expected_symbol = cur_branch[j];
+                ParsingRestriction restriction = input.restriction_stack.peek();
+
+                if (restriction != null) {
+
+                    if (restriction instanceof ProductionRestriction) {
+
+                        ProductionRestriction production_restriction = (ProductionRestriction) restriction;
+
+                        if (cur_expected_symbol instanceof RCFG_Production) {
+                            RCFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
+                                    = (RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
+                            if (cur_expected_production.id != production_restriction.production.id)
+                                continue branch_loop;
+                        } else
+                            continue branch_loop;
+                    } else {
+                        TerminalRestriction terminal_restriction = (TerminalRestriction) restriction;
+
+                        if (cur_expected_symbol instanceof RCFG_Terminal) {
+                            RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
+                                    = (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+
+                            if (cur_expected_terminal.id != terminal_restriction.terminal.id)
+                                continue branch_loop;
+                        } else
+                            continue branch_loop;
+                    }
+                }
 
                 if (next_input == null) {
                     input.restore();
@@ -81,7 +111,7 @@ public class NonDetParser
 
                         if (cur_sub_reduction.production_id == cur_expected_symbol.id) {
                             sub_reductions[j] = cur_sub_reduction;
-                            input.advance();
+                            input.update_restriction();
                         } else {
                             input.restore();
                             continue branch_loop;
@@ -95,7 +125,7 @@ public class NonDetParser
 
                         if (cur_sub_reduction != null) {
                             sub_reductions[j] = cur_sub_reduction;
-                            input.advance();
+                            input.update_restriction();
                         } else {
                             input.restore();
                             continue branch_loop;
@@ -117,7 +147,7 @@ public class NonDetParser
                     if (cur_terminal.id == cur_expected_terminal.id) {
                         cur_expected_terminal.reduce(cur_terminal);
                         sub_reductions[j] = next_input;
-                        input.advance();
+                        input.update_restriction();
                     } else {
                         input.restore();
                         continue branch_loop;

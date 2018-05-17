@@ -1,17 +1,19 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-import edsel.lib.cfg_parser.RCFG_Parser.SymbolBuffer.SymbolBufferString;
+import edsel.lib.cfg_model.RCFG_Production;
 
-public class ProductionRestriction extends ParsingRestriction
+public class ProductionRestriction
+        <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
+        extends
+        ParsingRestriction
 {
-
-    public SymbolBufferString production_name;
+    public RCFG_Production<ENUM_PRODUCTION_ID> production;
 
     public ProductionRestriction(
-            SymbolBufferString production_name,
+            RCFG_Production<ENUM_PRODUCTION_ID> production,
             RestrictionMode mode)
     {
         super(mode);
-        this.production_name = production_name;
+        this.production = production;
     }
 }

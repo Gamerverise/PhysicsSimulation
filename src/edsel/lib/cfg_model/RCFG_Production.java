@@ -7,13 +7,15 @@ import edsel.lib.cfg_parser.parse_node.Reduction;
 public class RCFG_Production
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
         extends
-        CFG_Production<ENUM_PRODUCTION_ID>
+        CFG_Production<ENUM_PRODUCTION_ID, RCFG_Symbol>
+        implements
+        RCFG_Symbol
 {
-    public RCFG_Symbol_Multi symbol_multi;
+    public String name;
 
-    public void init(ENUM_PRODUCTION_ID id, String name, CFG_Symbol[]... rhs) {
+    public void init(ENUM_PRODUCTION_ID id, String name, RCFG_Production<ENUM_PRODUCTION_ID>[]... rhs) {
         super.init(id, rhs);
-        symbol_multi = new RCFG_Symbol_Multi(name);
+        this.name = name;
     }
 
     public Reduction<ENUM_PRODUCTION_ID>

@@ -8,8 +8,7 @@ public class TerminalRestriction
         extends
         ParsingRestriction
 {
-
-    public RCFG_Terminal terminal;
+    public RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal;
 
     public TerminalRestriction(
             RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal,
@@ -18,5 +17,4 @@ public class TerminalRestriction
         super(mode);
         this.terminal = terminal;
     }
-
 }
