@@ -4,8 +4,8 @@ import edsel.lib.cfg_model.*;
 import edsel.lib.cfg_parser.RCFG_Parser;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
-import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
-import edsel.lib.cfg_parser.parse_node.TokenParseNode;
+import edsel.lib.cfg_parser.parse_node.Reduction;
+import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.io.old.ParseNodeBuffer.ParseNodeBufferString;
 
 public class NonDetParser
@@ -23,23 +23,23 @@ public class NonDetParser
         super(start_production, productions);
     }
 
-    public ReductionParseNode<ENUM_PRODUCTION_ID>
-    parse_recursive(ParseNodeBuffer input)
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_recursive(SymbolBuffer input)
             throws AmbiguousParserInput
     {
         return parse_recursive(start_production, input, 0);
     }
 
     @SuppressWarnings("unchecked")
-    public ReductionParseNode<ENUM_PRODUCTION_ID>
+    public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
             RCFG_Production<ENUM_PRODUCTION_ID> production,
-            ParseNodeBuffer input,
+            SymbolBuffer input,
             int num_branches_explored
     )
             throws AmbiguousParserInput
     {
-        ReductionParseNode<ENUM_PRODUCTION_ID> reduction = null;
+        Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
         branch_loop:
         for (int i = 0; i < production.rhs.length; i++) {
@@ -62,22 +62,22 @@ public class NonDetParser
 
                 if (cur_expected_symbol instanceof RCFG_Production) {
 
-                    ReductionParseNode<ENUM_PRODUCTION_ID> cur_sub_reduction;
+                    Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
 
-                    if (next_input instanceof TokenParseNode) {
+                    if (next_input instanceof Token) {
                         input.restore();
                         continue branch_loop;
                     }
 
-                    if (next_input instanceof ReductionParseNode) {
+                    if (next_input instanceof Reduction) {
 
                         ENUM_PRODUCTION_ID cur_expected_production_id
                                 = ((RCFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol).id;
 
                         ENUM_PRODUCTION_ID cur_production_id
-                                = ((ReductionParseNode<ENUM_PRODUCTION_ID>) next_input).production_id;
+                                = ((Reduction<ENUM_PRODUCTION_ID>) next_input).production_id;
 
-                        cur_sub_reduction = (ReductionParseNode<ENUM_PRODUCTION_ID>) next_input;
+                        cur_sub_reduction = (Reduction<ENUM_PRODUCTION_ID>) next_input;
 
                         if (cur_sub_reduction.production_id == cur_expected_symbol.id) {
                             sub_reductions[j] = cur_sub_reduction;
@@ -103,7 +103,7 @@ public class NonDetParser
                     }
                 } else if (cur_expected_symbol instanceof RCFG_Terminal) {
 
-                    if (next_input instanceof ReductionParseNode) {
+                    if (next_input instanceof Reduction) {
                         input.restore();
                         continue branch_loop;
                     }
@@ -111,8 +111,8 @@ public class NonDetParser
                     RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
                             = (RCFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
-                    TokenParseNode<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal
-                            = (TokenParseNode<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) next_input;
+                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal
+                            = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) next_input;
 
                     if (cur_terminal.id == cur_expected_terminal.id) {
                         cur_expected_terminal.reduce(cur_terminal);

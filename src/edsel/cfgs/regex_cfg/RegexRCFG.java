@@ -14,7 +14,7 @@ public class RegexRCFG extends RCFG_Parser<RegexProductionID, RegexProduction>
     }
 
     public RegexProductionID get_production(
-            ParseNodeBuffer.ParseNodeBufferString
+            SymbolBuffer.SymbolBufferString
                     production_name)
     {
         for(RegexProduction production : productions)

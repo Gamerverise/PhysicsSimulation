@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.old.ParseNodeBuffer;
+import edsel.lib.cfg_parser.RCFG_Parser.SymbolBuffer.SymbolBufferString;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
@@ -8,7 +8,7 @@ import static lib.text_io.FormattedText.spaces;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
-public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
+public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
         extends ParseNode
 {
     public ENUM_PRODUCTION_ID production_id;
@@ -18,12 +18,12 @@ public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_
 
     public int num_branches_explored = 0;
 
-    public ReductionParseNode(
-            ENUM_PRODUCTION_ID                          production_id,
-            int                                         branch_num,
-            ParseNode[]                             sub_reductions,
-            int                                         num_branches_explored,
-            ParseNodeBuffer.ParseNodeBufferString       src_string)
+    public Reduction(
+            ENUM_PRODUCTION_ID          production_id,
+            int                         branch_num,
+            ParseNode[]                 sub_reductions,
+            int                         num_branches_explored,
+            SymbolBufferString src_string)
     {
         super(src_string);
         this.production_id = production_id;
@@ -32,8 +32,8 @@ public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_
         this.num_branches_explored = num_branches_explored;
     }
 
-    public ReductionParseNode(
-            ReductionParseNode<ENUM_PRODUCTION_ID> parse_node,
+    public Reduction(
+            Reduction<ENUM_PRODUCTION_ID> parse_node,
             CopyType copy_type)
     {
         super(copy_type == COPY_DEEP
@@ -57,12 +57,12 @@ public class ReductionParseNode<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_
     }
         // =========================================================================================
 
-    public ReductionParseNode<ENUM_PRODUCTION_ID> self() {
+    public Reduction<ENUM_PRODUCTION_ID> self() {
         return this;
     }
 
-    public ReductionParseNode<ENUM_PRODUCTION_ID> new_instance(Object... args) {
-        return Instantiator.new_instance(ReductionParseNode.class, args);
+    public Reduction<ENUM_PRODUCTION_ID> new_instance(Object... args) {
+        return Instantiator.new_instance(Reduction.class, args);
     }
 
     // =========================================================================================

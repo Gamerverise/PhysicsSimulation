@@ -1,13 +1,13 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.old.ParseNodeBuffer;
+import edsel.lib.cfg_parser.RCFG_Parser;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
 import static lib.text_io.FormattedText.spaces;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 
-public class TokenParseNode
+public class Token
         <ENUM_TOKEN_ID extends Enum<ENUM_TOKEN_ID>,
                 TOKEN_VALUE_TYPE>
         extends
@@ -16,17 +16,17 @@ public class TokenParseNode
     public ENUM_TOKEN_ID id;
     public TOKEN_VALUE_TYPE value;
 
-    public TokenParseNode(ENUM_TOKEN_ID id,
-                          TOKEN_VALUE_TYPE value,
-                          ParseNodeBuffer.ParseNodeBufferString src_string)
+    public Token(ENUM_TOKEN_ID id,
+                 TOKEN_VALUE_TYPE value,
+                 RCFG_Parser.SymbolBuffer.SymbolBufferString src_string)
     {
         super(src_string);
         this.id = id;
         this.value = value;
     }
 
-    public TokenParseNode(
-            TokenParseNode<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> tok, CopyType copy_type) {
+    public Token(
+            Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> tok, CopyType copy_type) {
         super(copy_type == COPY_DEEP
                 ? tok.src_string.new_copy(copy_type)
                 : tok.src_string);
@@ -37,12 +37,12 @@ public class TokenParseNode
 
     // =========================================================================================
 
-    public TokenParseNode<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> self() {
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> self() {
         return this;
     }
 
-    public TokenParseNode<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_instance(Object... args) {
-            return Instantiator.new_instance(TokenParseNode.class, args);
+    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_instance(Object... args) {
+            return Instantiator.new_instance(Token.class, args);
     }
 
     // =========================================================================================

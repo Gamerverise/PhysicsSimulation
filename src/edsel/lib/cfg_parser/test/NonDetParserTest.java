@@ -2,9 +2,9 @@ package edsel.lib.cfg_parser.test;
 
 import edsel.cfgs.regex_cfg.RegexProductionID;
 import edsel.cfgs.regex_cfg.RegexTerminalID;
-import edsel.cfgs.regex_cfg.io.RegexParseNodeBuffer;
+import edsel.cfgs.regex_cfg.io.RegexSymbolBuffer;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
-import edsel.lib.cfg_parser.parse_node.ReductionParseNode;
+import edsel.lib.cfg_parser.parse_node.Reduction;
 
 import static edsel.cfgs.regex_cfg.RegexRCFG.RegexRCFG;
 
@@ -16,13 +16,13 @@ public class NonDetParserTest {
         String filename = "C:\\home\\dad\\Gravity_Game\\Gravity_Game_IDEA\\src\\edsel\\lib\\cfg_parser\\test"
                 + "\\RegexParserTestData.txt";
 
-        RegexParseNodeBuffer input = new RegexParseNodeBuffer(filename);
+        RegexSymbolBuffer input = new RegexSymbolBuffer(filename);
 
         NonDetParser<RegexProductionID, RegexTerminalID, Character>
                 parser = new NonDetParser<>();
 
         try {
-            ReductionParseNode<RegexProductionID> reduction;
+            Reduction<RegexProductionID> reduction;
 
             reduction = parser.parse_recursive(RegexRCFG, input);
 

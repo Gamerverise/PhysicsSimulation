@@ -3,7 +3,7 @@ package edsel.lib.cfg_parser.parsing_restriction;
 public enum RestrictionMode {
     TERMINAL_RESTRICTION('='),
     PREFIX_RESTRICTION('~'),
-    SYMBOL_RESTRICTION('#'),
+    PRODUCTION_RESTRICTION('#'),
     SUFFIX_RESTRICTION('.'),     // Not yet implemented
     BRANCH_RESTRICTION('/');     // Not yet implemented
 
@@ -25,7 +25,7 @@ public enum RestrictionMode {
 
         mode_table[TERMINAL_RESTRICTION.chr] = TERMINAL_RESTRICTION;
         mode_table[PREFIX_RESTRICTION.chr] = PREFIX_RESTRICTION;
-        mode_table[SYMBOL_RESTRICTION.chr] = SYMBOL_RESTRICTION;
+        mode_table[PRODUCTION_RESTRICTION.chr] = PRODUCTION_RESTRICTION;
         mode_table[SUFFIX_RESTRICTION.chr] = SUFFIX_RESTRICTION;
         mode_table[BRANCH_RESTRICTION.chr] = BRANCH_RESTRICTION;
     }

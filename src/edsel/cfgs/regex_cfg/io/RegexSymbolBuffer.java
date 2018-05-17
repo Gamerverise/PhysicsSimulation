@@ -1,31 +1,31 @@
 package edsel.cfgs.regex_cfg.io;
 
 import edsel.cfgs.regex_cfg.RegexTerminalID;
-import edsel.lib.cfg_parser.parse_node.ParseNode;
-import edsel.lib.io.old.ParseNodeBuffer;
+import edsel.lib.cfg_parser.RCFG_Parser.SymbolBuffer;
+import edsel.lib.cfg_parser.parse_node.Token;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
-public class RegexParseNodeBuffer extends ParseNodeBuffer
+public class RegexSymbolBuffer extends SymbolBuffer
 {
-    public RegexParseNodeBuffer(String filename) {
+    public RegexSymbolBuffer(String filename) {
         super(filename);
     }
 
     // =========================================================================================
 
-    public RegexParseNodeBuffer self() {
+    public RegexSymbolBuffer self() {
         return this;
     }
 
-    public RegexParseNodeBuffer new_instance(Object... args) {
-        return Instantiator.new_instance(RegexParseNodeBuffer.class, args);
+    public RegexSymbolBuffer new_instance(Object... args) {
+        return Instantiator.new_instance(RegexSymbolBuffer.class, args);
     }
 
     // =========================================================================================
 
-    public ParseNode specialized_advance() {
+    public Token specialized_advance() {
         if (cursor_pos >= buf.length) {
             return null;
         }
@@ -49,13 +49,10 @@ public class RegexParseNodeBuffer extends ParseNodeBuffer
         else if (next_char == UB.character)
             next_id = UB.id;
 
-        else if (next_char == GATE.character)
-            next_id = GATE.id;
-
         else
             next_id = LITERAL.id;
 
-        ParseNodeBufferString tok_string = new ParseNodeBufferString(cursor_pos, cursor_pos + 1);
+        SymbolBufferString tok_string = new SymbolBufferString(cursor_pos, cursor_pos + 1);
 
         return new RegexToken(next_id, next_char, tok_string);
     }
