@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.cfg_parser.RCFG_Parser.SymbolBuffer.SymbolBufferString;
+import edsel.lib.cfg_parser.SymbolBuffer.SymbolBufferString;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 

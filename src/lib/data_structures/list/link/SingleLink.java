@@ -1,10 +1,11 @@
 package lib.data_structures.list.link;
 
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
-public class SingleLink<T extends Instantiator<T>>
-        extends LinkBase<T, SingleLink<T>>
+public class SingleLink<T extends SingleLink<T>>
+        extends Copyable<T>
 {
     public SingleLink() {}
 

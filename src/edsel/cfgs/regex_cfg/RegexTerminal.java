@@ -1,17 +1,17 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.lib.cfg_model.RCFG_Terminal;
+import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.parse_node.Token;
 
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
 public class RegexTerminal
-        extends RCFG_Terminal<RegexTerminalID, Character>
+        extends CFG_Terminal<RegexTerminalID, Character>
 {
     public char character;
 
-    public RegexTerminal(RegexTerminalID id, String pattern) {
-        super(id, pattern);
+    public RegexTerminal(RegexTerminalID id, String pattern, String name) {
+        super(id, pattern, name);
         character = pattern.charAt(0);
     }
 
@@ -22,13 +22,13 @@ public class RegexTerminal
 
     // =========================================================================================
 
-    public static RegexTerminal OP = new RegexTerminal(OP_ID, "(");
-    public static RegexTerminal CP = new RegexTerminal(CP_ID, ")");
+    public static RegexTerminal OP = new RegexTerminal(OP_ID, "(", null);
+    public static RegexTerminal CP = new RegexTerminal(CP_ID, ")", null);
 
-    public static RegexTerminal VB = new RegexTerminal(VB_ID, "|");
-    public static RegexTerminal ST = new RegexTerminal(ST_ID, "*");
+    public static RegexTerminal VB = new RegexTerminal(VB_ID, "|", null);
+    public static RegexTerminal ST = new RegexTerminal(ST_ID, "*", null);
 
-    public static RegexTerminal UB = new RegexTerminal(UB_ID, "_");
+    public static RegexTerminal UB = new RegexTerminal(UB_ID, "_", null);
 
-    public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]");
+    public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]", "literal");
 }

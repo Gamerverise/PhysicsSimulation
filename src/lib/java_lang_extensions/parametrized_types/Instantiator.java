@@ -8,21 +8,27 @@ import lib.tokens.enums.CopyType;
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;
 
-public interface
-Instantiator<T extends Instantiator<T>>
+public class
+Instantiator<INSTANCE_TYPE>
 {
-    T self();
+    public
+    <PARAMETRIZED_TYPE extends RAW_TYPE, RAW_TYPE>
+    PARAMETRIZED_TYPE
+    new_instance() {
+        return Instantiator.static_new_instance((Class<RAW_TYPE>)this.getClass());
+    }
 
-    T new_instance(Object... args);
-
-    T new_copy();
-
-    T new_copy(CopyType copy_type);
+    public
+    <PARAMETRIZED_TYPE extends RAW_TYPE, RAW_TYPE>
+    PARAMETRIZED_TYPE
+    new_instance(Class<RAW_TYPE> runtime_type, Object... args) {
+        return Instantiator.static_new_instance(runtime_type, args);
+    }
 
     // =========================================================================================
 
     static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>
-    PARAMETRIZED_TYPE new_instance(Class<RAW_TYPE> runtime_type, Object... args) {
+    PARAMETRIZED_TYPE static_new_instance(Class<RAW_TYPE> runtime_type, Object... args) {
         PARAMETRIZED_TYPE copy;
 
         Class[] arg_types = new Class[args.length];

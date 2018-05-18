@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.cfg_parser.RCFG_Parser;
+import edsel.lib.io.SymbolBuffer;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
@@ -18,7 +18,7 @@ public class Token
 
     public Token(ENUM_TOKEN_ID id,
                  TOKEN_VALUE_TYPE value,
-                 RCFG_Parser.SymbolBuffer.SymbolBufferString src_string)
+                 SymbolBuffer.SymbolBufferString src_string)
     {
         super(src_string);
         this.id = id;

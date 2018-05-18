@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-import edsel.lib.cfg_parser.RCFG_Parser.SymbolBuffer.SymbolBufferString;
+import edsel.lib.cfg_parser.SymbolBuffer.SymbolBufferString;
 
 public class BranchRestriction extends ProductionRestriction
 {
