@@ -1,14 +1,15 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.SymbolBuffer;
+import edsel.lib.io.CharBuffer;
+import edsel.lib.io.CharBuffer.CharBufferString;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 
 public abstract class ParseNode
-    extends InstantiatorBase<ParseNode>
+    extends Copyable<ParseNode>
 {
-    public
-    SymbolBuffer.SymbolBufferString src_string;
+    public CharBuffer<? extends CharBuffer>.CharBufferString src_string;
 
-    public ParseNode(SymbolBuffer.SymbolBufferString src_string) {
+    public ParseNode(CharBufferString src_string) {
         this.src_string = src_string;
     }
 

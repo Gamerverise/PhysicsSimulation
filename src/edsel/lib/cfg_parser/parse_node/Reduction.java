@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.cfg_parser.SymbolBuffer.SymbolBufferString;
+import edsel.lib.io.CharBuffer.CharBufferString;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
@@ -23,7 +23,7 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
             int                         branch_num,
             ParseNode[]                 sub_reductions,
             int                         num_branches_explored,
-            SymbolBufferString src_string)
+            CharBufferString            src_string)
     {
         super(src_string);
         this.production_id = production_id;
@@ -54,15 +54,6 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
             for (int i = 0; i < num_sub_reductions; i++)
                 this.sub_reductions[i] = parse_node.sub_reductions[i].new_copy(COPY_DEEP);
         }
-    }
-        // =========================================================================================
-
-    public Reduction<ENUM_PRODUCTION_ID> self() {
-        return this;
-    }
-
-    public Reduction<ENUM_PRODUCTION_ID> new_instance(Object... args) {
-        return Instantiator.new_instance(Reduction.class, args);
     }
 
     // =========================================================================================

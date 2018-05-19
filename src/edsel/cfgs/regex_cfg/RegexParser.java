@@ -1,14 +1,15 @@
 package edsel.cfgs.regex_cfg;
 
+import edsel.lib.cfg_parser.CFG_Parser;
+import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
-import edsel.lib.io.SymbolBuffer;
-import edsel.lib.cfg_parser.parse_node.Token;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
-public class RegexParser extends NonDetParser<RegexProductionID, RegexTerminalID, Character>
+public class RegexParser extends
+        NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>
 {
     public RegexParser()
     {
@@ -17,26 +18,22 @@ public class RegexParser extends NonDetParser<RegexProductionID, RegexTerminalID
 
     public static RegexParser RegexParser = new RegexParser();
 
-    public static class RegexSymbolBuffer
-            extends SymbolBuffer
+    public class
+    RegexSymbolBuffer extends
+            CFG_Parser<RegexProductionID,
+                            RegexTerminalID,
+                            Character,
+                            RegexSymbolBuffer>.SymbolBuffer<RegexSymbolBuffer>
     {
-        public RegexSymbolBuffer(String filename) {
+        public RegexSymbolBuffer(String filename)
+                throws InputNotAccepted
+        {
             super(filename);
         }
 
         // =========================================================================================
 
-        public RegexSymbolBuffer self() {
-            return this;
-        }
-
-        public RegexSymbolBuffer new_instance(Object... args) {
-            return Instantiator.new_instance(RegexSymbolBuffer.class, args);
-        }
-
-        // =========================================================================================
-
-        public Token<RegexToken> token_advance() {
+        public RegexToken token_advance() {
             if (cursor_pos >= buf.length) {
                 return null;
             }
@@ -63,7 +60,7 @@ public class RegexParser extends NonDetParser<RegexProductionID, RegexTerminalID
             else
                 next_id = LITERAL.id;
 
-            SymbolBufferString tok_string = new SymbolBufferString(cursor_pos, cursor_pos + 1);
+            CharBufferString tok_string = new CharBufferString(cursor_pos, cursor_pos + 1);
 
             return new RegexToken(next_id, next_char, tok_string);
         }

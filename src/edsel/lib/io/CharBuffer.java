@@ -1,6 +1,6 @@
 package edsel.lib.io;
 
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
 import java.io.IOException;
@@ -9,10 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
-        extends InstantiatorBase<CHAR_BUFFER_TYPE>
+        extends Copyable<CHAR_BUFFER_TYPE>
 {
     public int cursor_pos = 0;
-    public byte[] buf;
+    public byte[] buf = null;
+
+    public CharBuffer() {}
 
     public CharBuffer(String filename)
     {
@@ -42,32 +44,31 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
 
     // =========================================================================================
 
-    public CHAR_BUFFER_TYPE self() {
-        return this;
-    }
+    public <STRING_TYPE> STRING_TYPE get_string(Class<STRING_TYPE> type, int start, int end) {
+        if (type == CharBufferString.class)
+            return (STRING_TYPE) get_CharBufferString(start, end);
+        else if (type == String.class)
+            return (STRING_TYPE)get_String(start, end);
 
-    public CHAR_BUFFER_TYPE new_instance(Object... args) {
-        return Instantiator.new_instance(CharBuffer.class, args);
+        return null;
     }
-
-    // =========================================================================================
 
     public CharBufferString get_CharBufferString(int start, int end) {
         return new CharBufferString(start, end);
     }
 
-    public String get_string(int start, int end) {
+    public String get_String(int start, int end) {
         return new String(buf, start, end);
     }
 
     // =========================================================================================
 
-    public class CharBufferString
-            extends
-            InstantiatorBase<CharBufferString>
+    public class CharBufferString extends Copyable<CharBufferString>
     {
-        public int src_start;
-        public int src_end;
+        public int src_start = -1;
+        public int src_end = -1;
+
+        public CharBufferString() {}
 
         public CharBufferString(int src_start, int src_end) {
             this.src_start = src_start;
@@ -77,16 +78,6 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
         public CharBufferString(CharBufferString string, CopyType copy_type) {
             this.src_start = string.src_start;
             this.src_end = string.src_end;
-        }
-
-        // =========================================================================================
-
-        public CharBufferString self() {
-            return this;
-        }
-
-        public CharBufferString new_instance(Object... args) {
-            return Instantiator.new_instance(CharBufferString.class, args);
         }
 
         // =========================================================================================

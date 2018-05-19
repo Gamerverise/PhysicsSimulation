@@ -10,14 +10,20 @@ import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
-import edsel.lib.io.SymbolBuffer;
+import edsel.lib.io.CharBuffer.CharBufferString;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                SYMBOL_BUFFER_TYPE extends
+                        CFG_Parser
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE>.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
     extends
-        CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+        CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
 {
     @SafeVarargs
     public NonDetParser(
@@ -29,7 +35,7 @@ public class NonDetParser
 
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
-            SymbolBuffer<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> input
+            SymbolBuffer<SYMBOL_BUFFER_TYPE> input
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -40,7 +46,7 @@ public class NonDetParser
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
-            SymbolBuffer<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> input,
+            SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
             int num_branches_explored
     )
             throws AmbiguousParserInput, InputNotAccepted
@@ -139,8 +145,7 @@ public class NonDetParser
 
             int src_text_start = sub_reductions[0].src_string.src_start;
             int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
-            SymbolBuffer<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>.SymbolBufferString
-                    string = input.get_buffer_string(src_text_start, src_text_end);
+            CharBufferString string = input.get_string(CharBufferString.class, src_text_start, src_text_end);
 
             reduction = production.reduce(i, sub_reductions, num_branches_explored, string);
         }

@@ -1,7 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.SymbolBuffer;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import edsel.lib.io.CharBuffer.CharBufferString;
 import lib.tokens.enums.CopyType;
 
 import static lib.text_io.FormattedText.spaces;
@@ -18,7 +17,7 @@ public class Token
 
     public Token(ENUM_TOKEN_ID id,
                  TOKEN_VALUE_TYPE value,
-                 SymbolBuffer.SymbolBufferString src_string)
+                 CharBufferString src_string)
     {
         super(src_string);
         this.id = id;
@@ -33,16 +32,6 @@ public class Token
 
         this.id = tok.id;
         this.value = tok.value;
-    }
-
-    // =========================================================================================
-
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> self() {
-        return this;
-    }
-
-    public Token<ENUM_TOKEN_ID, TOKEN_VALUE_TYPE> new_instance(Object... args) {
-            return Instantiator.new_instance(Token.class, args);
     }
 
     // =========================================================================================

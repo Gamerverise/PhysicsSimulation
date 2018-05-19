@@ -1,8 +1,8 @@
 package edsel.lib.cfg_model;
 
-import edsel.lib.cfg_parser.SymbolBuffer;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
+import edsel.lib.io.CharBuffer.CharBufferString;
 
 public class
 CFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
@@ -24,7 +24,7 @@ CFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
     reduce(int branch_num,
            ParseNode[] sub_reductions,
            int num_branches_explored,
-           SymbolBuffer.SymbolBufferString src_string)
+           CharBufferString src_string)
     {
         return new Reduction<>
                 (this.id, branch_num, sub_reductions, num_branches_explored, src_string);

@@ -32,16 +32,6 @@ public abstract class TokenBuffer
 
     // =========================================================================================
 
-    public TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_BUFFER_TYPE> self() {
-        return this;
-    }
-
-    public TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_BUFFER_TYPE> new_instance(Object... args) {
-        return Instantiator.new_instance(TokenBuffer.class, args);
-    }
-
-    // =========================================================================================
-
     public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token_advance();
 
     public void eat_separators() {
