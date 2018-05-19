@@ -1,7 +1,6 @@
 package edsel.lib.io;
 
 import lib.java_lang_extensions.parametrized_types.Instantiator;
-import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 import lib.tokens.enums.CopyType;
 
 import java.io.IOException;

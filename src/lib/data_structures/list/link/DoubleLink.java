@@ -1,11 +1,10 @@
 package lib.data_structures.list.link;
 
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
-public class DoubleLink <T extends Instantiator<T>>
-        extends
-        LinkBase<T, DoubleLink<T>>
+public class DoubleLink<T extends Copyable<T>>
+        extends LinkLegacy<T, DoubleLink<T>>
 {
     public DoubleLink<T> prev;
 
@@ -29,15 +28,5 @@ public class DoubleLink <T extends Instantiator<T>>
     public DoubleLink(DoubleLink<T> link, CopyType copy_type) {
         super(link, copy_type);
         this.prev = link.prev;
-    }
-
-    // =========================================================================================
-
-    public DoubleLink<T> self() {
-        return this;
-    }
-
-    public DoubleLink<T> new_instance(Object... args) {
-        return Instantiator.new_instance(DoubleLink.class, args);
     }
 }

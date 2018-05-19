@@ -1,11 +1,11 @@
 package lib.data_structures.list;
 
-import lib.data_structures.list.link.SingleLink;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.data_structures.list.link.Link;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
-public class LinkedList<T extends Instantiator<T>>
-    extends LinkedListQualifiedBase<T, SingleLink<T>, LinkedList<T>>
+public class LinkedList<T extends Copyable<T>>
+        extends LinkedListBase<T, Link<T>, LinkedList<T>>
 {
     public LinkedList() {
         super();
@@ -26,17 +26,7 @@ public class LinkedList<T extends Instantiator<T>>
         return this;
     }
 
-    public LinkedList<T> new_instance(Object... args) {
-        return Instantiator.new_instance(LinkedList.class, args);
-    }
-
-    // =========================================================================================
-
-    public LinkedListAbstract<T, SingleLink<T>> new_copy_abstract(CopyType copy_type){
-        return new LinkedList<>(this, copy_type);
-    }
-
-    public SingleLink<T> new_link(T elem) {
-        return new SingleLink<>(elem);
+    public Link<T> new_link(T elem) {
+        return new Link<>(elem);
     }
 }

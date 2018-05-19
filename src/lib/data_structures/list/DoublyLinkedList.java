@@ -1,11 +1,12 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.link.DoubleLink;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
-public class DoublyLinkedList<T extends Instantiator<T>>
-        extends LinkedListQualifiedBase<T, DoubleLink<T>, DoublyLinkedList<T>>
+public class DoublyLinkedList<T extends Copyable<T>>
+        extends LinkedListBase<T, DoubleLink<T>, DoublyLinkedList<T>>
 {
     public DoublyLinkedList() {
         super();
@@ -22,12 +23,8 @@ public class DoublyLinkedList<T extends Instantiator<T>>
 
     // =========================================================================================
 
-    public DoublyLinkedList<T> new_instance(Object... args) {
-        return Instantiator.new_instance(DoublyLinkedList.class, args);
-    }
-
-    public LinkedListAbstract<T, DoubleLink<T>> new_copy_abstract(CopyType copy_type){
-        return new DoublyLinkedList<>(this, copy_type);
+    public DoublyLinkedList<T> self() {
+        return this;
     }
 
     public DoubleLink<T> new_link(T elem) {
@@ -42,10 +39,6 @@ public class DoublyLinkedList<T extends Instantiator<T>>
     }
 
     // =========================================================================================
-
-    public DoublyLinkedList<T> self() {
-        return this;
-    }
 
     public DoublyLinkedList<T> split(int n) {
         DoublyLinkedList<T> end_part = super.split(n);

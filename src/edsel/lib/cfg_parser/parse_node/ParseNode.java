@@ -1,7 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
 import edsel.lib.io.SymbolBuffer;
-import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
 
 public abstract class ParseNode
     extends InstantiatorBase<ParseNode>

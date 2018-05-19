@@ -1,20 +1,21 @@
 package lib.data_structures.list.iter;
 
-import lib.data_structures.list.LinkedListAbstract;
-import lib.data_structures.list.link.LinkBase;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.data_structures.list.LinkedListLegacy;
+import lib.data_structures.list.link.LinkLegacy;
 
 import java.util.Iterator;
 
 public class LinkedListIterator
-        <T extends Instantiator<T>,
-                LINK_TYPE extends LinkBase<T, LINK_TYPE>>
+        <T, LINK_TYPE extends LinkLegacy<T, LINK_TYPE>>
         implements
         Iterator<LINK_TYPE>
 {
     public LINK_TYPE cur;
 
-    public LinkedListIterator(LinkedListAbstract<T, LINK_TYPE> list) {
+    public LinkedListIterator(
+            LinkedListLegacy<T, LINK_TYPE, ? extends LinkedListLegacy<T, LINK_TYPE, ?>>
+                    list)
+    {
         cur = list.head;
     }
 

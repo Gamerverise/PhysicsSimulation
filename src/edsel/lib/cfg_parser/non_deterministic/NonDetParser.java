@@ -11,9 +11,6 @@ import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.io.SymbolBuffer;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
-import lib.java_lang_extensions.parametrized_types.InstantiatorBase;
-import lib.tokens.enums.CopyType;
 
 public class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
