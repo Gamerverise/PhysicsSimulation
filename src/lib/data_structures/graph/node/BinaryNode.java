@@ -1,12 +1,12 @@
 package lib.data_structures.graph.node;
 
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
 public class
-BinaryNode <T extends Instantiator<T>>
+BinaryNode<T extends Copyable<T>>
         extends
-        InstantiatorBase<BinaryNode<T>>
+        Copyable<BinaryNode<T>>
 {
     T elem;
     BinaryNode<T> left;
@@ -32,15 +32,5 @@ BinaryNode <T extends Instantiator<T>>
         elem = node.elem.new_copy(copy_type);
         left = node.left.new_copy(copy_type);
         right = node.right.new_copy(copy_type);
-    }
-
-    // =========================================================================================
-
-    public BinaryNode<T> self() {
-        return this;
-    }
-
-    public BinaryNode<T> new_instance(Object... args) {
-        return Instantiator.new_instance(BinaryNode.class, args);
     }
 }

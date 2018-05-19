@@ -11,7 +11,7 @@ class LinkedListLegacy
                 LINK_TYPE extends LinkLegacy<T, LINK_TYPE>,
                 LIST_TYPE extends LinkedListLegacy<T, LINK_TYPE, LIST_TYPE>>
         extends
-        Copyable<LinkedListLegacy<T, LINK_TYPE, LIST_TYPE>>
+        Copyable<LIST_TYPE>
         implements
         Iterable<LINK_TYPE>
 {

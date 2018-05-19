@@ -1,9 +1,11 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.lib.cfg_parser.CFG_Parser;
+import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
+import edsel.lib.cfg_parser.parse_node.Reduction;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
@@ -14,6 +16,14 @@ public class RegexParser extends
     public RegexParser()
     {
         super(START, SUB_EXPR, GROUP, AND, OR, REPEAT);
+    }
+
+    public Reduction<RegexProductionID>
+    parse_recursive(String filename)
+            throws AmbiguousParserInput, InputNotAccepted
+    {
+        RegexSymbolBuffer input = new RegexSymbolBuffer(filename);
+        return parse_recursive(start_production, input, 0);
     }
 
     public static RegexParser RegexParser = new RegexParser();

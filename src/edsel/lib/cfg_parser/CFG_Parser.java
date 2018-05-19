@@ -48,6 +48,10 @@ public abstract class CFG_Parser
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
+    parse_recursive(String filename)
+            throws AmbiguousParserInput, InputNotAccepted;
+
+    public abstract Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(SymbolBuffer<SYMBOL_BUFFER_TYPE> input)
             throws AmbiguousParserInput, InputNotAccepted;
 

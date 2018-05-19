@@ -2,7 +2,6 @@ package lib.data_structures.list;
 
 import lib.data_structures.list.link.DoubleLink;
 import lib.java_lang_extensions.parametrized_types.Copyable;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
 public class DoublyLinkedList<T extends Copyable<T>>

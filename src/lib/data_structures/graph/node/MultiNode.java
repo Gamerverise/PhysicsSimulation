@@ -1,38 +1,24 @@
 package lib.data_structures.graph.node;
 
-import lib.data_structures.list.LinkedListLegacy;
-import lib.data_structures.list.link.LinkLegacy;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.data_structures.list.LinkedList;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
-public abstract class MultiNode
-        <T extends Instantiator<T>,
-                LINK_TYPE extends LinkLegacy<T, LINK_TYPE>>
-        extends
-        InstantiatorBase<MultiNode<T, LINK_TYPE>>
+public abstract class MultiNode<T extends Copyable<T>>
+        extends Copyable<MultiNode<T>>
 {
     public T elem;
-    public LinkedListLegacy<T, LINK_TYPE> children;
+    public LinkedList<MultiNode<T>> children;
 
-    public MultiNode(T elem, LinkedListLegacy<T, LINK_TYPE> children) {
+    public MultiNode(T elem, LinkedList<MultiNode<T>> children) {
         this.elem = elem;
         this.children = children;
     }
 
-    public MultiNode(MultiNode<T, LINK_TYPE> mn, CopyType copy_type) {
+    public MultiNode(MultiNode<T> mn, CopyType copy_type) {
         elem = mn.elem.new_copy(copy_type);
-        children = mn.children.new_copy_abstract(COPY_SHALLOW);
-    }
-
-    // =========================================================================================
-
-    public MultiNode<T, LINK_TYPE> self() {
-        return this;
-    }
-
-    public MultiNode<T, LINK_TYPE> new_instance(Object... args) {
-        return Instantiator.new_instance(MultiNode.class, args);
+        children = mn.children.new_copy(COPY_SHALLOW);
     }
 }

@@ -12,7 +12,8 @@ import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 
-public class NonDetParser
+public abstract
+class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE,

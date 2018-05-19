@@ -1,7 +1,6 @@
 package edsel.lib.io;
 
 import edsel.lib.cfg_parser.parse_node.Token;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
 import lib.tokens.enums.CopyType;
 
 public abstract class TokenBuffer

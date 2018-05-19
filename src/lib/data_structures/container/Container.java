@@ -1,11 +1,11 @@
 package lib.data_structures.container;
 
-import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
 public abstract class
 Container
-        <DT extends Instantiator<DT>,
+        <DT extends Copyable<DT>,
                 UDS extends ContainerUnderlyingDataStructure<DT, UDS>,
                 DS extends Container<DT, UDS, DS>>
     extends ContainerCopyableDataStructure<DT, UDS, DS>
