@@ -34,9 +34,11 @@ public abstract class CFG_Parser
                                         TOKEN_VALUE_TYPE,
                                         SYMBOL_BUFFER_TYPE>.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
 {
-    public CFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
     public CFG_Production<ENUM_PRODUCTION_ID>                      start_production;
+    public CFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
     public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[]      terminals;
+
+    public CFG_Parser() {}
 
     @SafeVarargs
     public CFG_Parser(
@@ -45,6 +47,19 @@ public abstract class CFG_Parser
     {
         this.start_production = start_production;
         this.productions = productions;
+    }
+
+    public CFG_Parser(
+            CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    parser,
+            CopyType
+                    copy_type)
+    {
+        // FIXME: Ignore copy_type for now
+
+        this.start_production = parser.start_production;
+        this.productions = parser.productions;
+        this.terminals = parser.terminals;
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
@@ -156,41 +171,44 @@ public abstract class CFG_Parser
             else
                 return;
 
-            ParsingRestriction cur_restriction = restriction_stack.peek();
+            if (restriction_stack.size() > 0 ) {
 
-            if (cur_restriction != null) {
+                ParsingRestriction cur_restriction = restriction_stack.peek();
 
-                if (next_char == ')') {
+                if (cur_restriction != null) {
 
-                    if (last_parse_node instanceof Reduction) {
-                        if (!(cur_restriction instanceof ProductionRestriction))
-                            return;
+                    if (next_char == ')') {
 
-                        Reduction<ENUM_PRODUCTION_ID> last_reduction;
-                        ProductionRestriction<ENUM_PRODUCTION_ID> cur_production_restriction;
+                        if (last_parse_node instanceof Reduction) {
+                            if (!(cur_restriction instanceof ProductionRestriction))
+                                return;
 
-                        last_reduction = (Reduction<ENUM_PRODUCTION_ID>) last_parse_node;
-                        cur_production_restriction = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_restriction;
+                            Reduction<ENUM_PRODUCTION_ID> last_reduction;
+                            ProductionRestriction<ENUM_PRODUCTION_ID> cur_production_restriction;
 
-                        if (last_reduction.production_id != cur_production_restriction.production.id)
-                            return;
-                    } else {
-                        if (!(cur_restriction instanceof TerminalRestriction))
-                            return;
+                            last_reduction = (Reduction<ENUM_PRODUCTION_ID>) last_parse_node;
+                            cur_production_restriction = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_restriction;
 
-                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> last_token;
-                        TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal_restriction;
+                            if (last_reduction.production_id != cur_production_restriction.production.id)
+                                return;
+                        } else {
+                            if (!(cur_restriction instanceof TerminalRestriction))
+                                return;
 
-                        last_token = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) last_parse_node;
-                        cur_terminal_restriction
-                                = (TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_restriction;
+                            Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> last_token;
+                            TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal_restriction;
 
-                        if (last_token.id != cur_terminal_restriction.terminal.id)
-                            return;
+                            last_token = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) last_parse_node;
+                            cur_terminal_restriction
+                                    = (TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_restriction;
+
+                            if (last_token.id != cur_terminal_restriction.terminal.id)
+                                return;
+                        }
+                        restriction_stack.pop();
+                        cursor_pos++;
+                        return;
                     }
-                    restriction_stack.pop();
-                    cursor_pos++;
-                    return;
                 }
             }
 

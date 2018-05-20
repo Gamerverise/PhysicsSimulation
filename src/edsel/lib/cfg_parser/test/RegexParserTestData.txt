@@ -1,1 +1,1 @@
-ab
+(literal:a)b

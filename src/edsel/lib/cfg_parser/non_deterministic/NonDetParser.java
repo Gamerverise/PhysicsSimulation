@@ -66,40 +66,43 @@ class NonDetParser
             for (int j = 0; j < cur_branch.length; j++) {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
-                ParsingRestriction restriction = input.restriction_stack.peek();
 
-                if (restriction != null) {
+                if (input.restriction_stack.size() > 0) {
+                    ParsingRestriction restriction = input.restriction_stack.peek();
 
-                    if (restriction instanceof ProductionRestriction) {
+                    if (restriction != null) {
 
-                        ProductionRestriction production_restriction = (ProductionRestriction) restriction;
+                        if (restriction instanceof ProductionRestriction) {
 
-                        if (cur_expected_symbol instanceof CFG_Production) {
-                            CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
-                                    = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+                            ProductionRestriction production_restriction = (ProductionRestriction) restriction;
 
-                            if (cur_expected_production.id != production_restriction.production.id) {
+                            if (cur_expected_symbol instanceof CFG_Production) {
+                                CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
+                                        = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
+                                if (cur_expected_production.id != production_restriction.production.id) {
+                                    input.restore();
+                                    continue branch_loop;
+                                }
+                            } else {
                                 input.restore();
                                 continue branch_loop;
                             }
                         } else {
-                            input.restore();
-                            continue branch_loop;
-                        }
-                    } else {
-                        TerminalRestriction terminal_restriction = (TerminalRestriction) restriction;
+                            TerminalRestriction terminal_restriction = (TerminalRestriction) restriction;
 
-                        if (cur_expected_symbol instanceof CFG_Terminal) {
-                            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
-                                    = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+                            if (cur_expected_symbol instanceof CFG_Terminal) {
+                                CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
+                                        = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
-                            if (cur_expected_terminal.id != terminal_restriction.terminal.id) {
+                                if (cur_expected_terminal.id != terminal_restriction.terminal.id) {
+                                    input.restore();
+                                    continue branch_loop;
+                                }
+                            } else {
                                 input.restore();
                                 continue branch_loop;
                             }
-                        } else {
-                            input.restore();
-                            continue branch_loop;
                         }
                     }
                 }
