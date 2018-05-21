@@ -12,9 +12,7 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
         extends Copyable<CHAR_BUFFER_TYPE>
 {
     public int cursor_pos = 0;
-    public byte[] buf = null;
-
-    public CharBuffer() {}
+    public byte[] buf;
 
     public CharBuffer(String filename)
     {
@@ -31,19 +29,20 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
         }
     }
 
-    public CharBuffer(CharBuffer char_buf, CopyType copy_type)
+    public CharBuffer(CharBuffer buf, CopyType copy_type)
     {
-        cursor_pos = char_buf.cursor_pos;
+        cursor_pos = buf.cursor_pos;
 
         if (copy_type == CopyType.COPY_DEEP) {
-            buf = new byte[buf.length];
-            System.arraycopy(char_buf.buf, 0, buf, 0, buf.length);
+            this.buf = new byte[this.buf.length];
+            System.arraycopy(buf.buf, 0, this.buf, 0, this.buf.length);
         } else
-            buf = char_buf.buf;
+            this.buf = buf.buf;
     }
 
     // =========================================================================================
 
+    @SuppressWarnings("unchecked")
     public <STRING_TYPE> STRING_TYPE get_string(Class<STRING_TYPE> type, int start, int end) {
         if (type == CharBufferString.class)
             return (STRING_TYPE) get_CharBufferString(start, end);
@@ -83,7 +82,7 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
         // =========================================================================================
 
         public String get_string() {
-            return new String(buf, src_start, src_end);
+            return new String(buf, src_start, src_end - src_start);
         }
     }
 }

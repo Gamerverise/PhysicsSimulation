@@ -3,7 +3,6 @@ package lib.java_lang_extensions.parametrized_types;
 import java.lang.reflect.InvocationTargetException;
 
 import lib.debug.MethodNameHack;
-import lib.tokens.enums.CopyType;
 
 import static lib.debug.AssertMessages.BAD_CODE_PATH;
 import static lib.debug.Debug.assert_msg;

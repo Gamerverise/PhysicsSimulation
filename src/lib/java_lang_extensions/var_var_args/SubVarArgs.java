@@ -37,6 +37,7 @@ public class SubVarArgs<T> {
 //        return new SubVarArgs<>(sub_var_args);
 //    }
 
+    @SafeVarargs
     public static <V> V[] V(V... args) {
         return args;
     }

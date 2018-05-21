@@ -1,7 +1,6 @@
 package lib.widget.adapters;
 
 import javafx.scene.layout.Region;
-import lib.javafx_api_extensions.SceneX;
 import lib.widget.ParentWidget;
 import lib.widget.Widget;
 

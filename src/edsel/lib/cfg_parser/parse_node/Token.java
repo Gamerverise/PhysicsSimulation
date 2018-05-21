@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.CharBuffer.CharBufferString;
+import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 
 import static lib.text_io.FormattedText.spaces;
@@ -17,7 +17,7 @@ public class Token
 
     public Token(ENUM_TOKEN_ID id,
                  TOKEN_VALUE_TYPE value,
-                 CharBufferString src_string)
+                 CharBuffer<? extends CharBuffer>.CharBufferString src_string)
     {
         super(src_string);
         this.id = id;
@@ -37,6 +37,10 @@ public class Token
     // =========================================================================================
 
     public String print(int tree_level) {
-        return spaces(tree_level) + id.toString() + ": " + src_string.get_string();
+        return
+                spaces(tree_level) +
+                        id.toString() +
+                        ": " +
+                        src_string.get_string();
     }
 }

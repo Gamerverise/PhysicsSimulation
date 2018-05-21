@@ -1,27 +1,26 @@
 package edsel.cfgs.regex_cfg;
 
+import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
-import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import lib.tokens.enums.CopyType;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
+import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexParser extends
         NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>
 {
     public RegexParser()
     {
-        super(START, SUB_EXPR, GROUP, AND, OR, REPEAT);
-    }
-
-    public RegexParser(CopyType copy_type)
-    {
-        super();
+        super(
+                START,
+                V(SUB_EXPR, GROUP, AND, OR, REPEAT),
+                OP, CP, VB, ST, UB, LITERAL);
     }
 
     public Reduction<RegexProductionID>
@@ -45,6 +44,12 @@ public class RegexParser extends
                 throws InputNotAccepted
         {
             super(filename);
+        }
+
+        public RegexSymbolBuffer(RegexSymbolBuffer buf, CopyType copy_type)
+                throws InputNotAccepted
+        {
+            super(buf, copy_type);
         }
 
         // =========================================================================================

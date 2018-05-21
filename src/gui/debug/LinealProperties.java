@@ -22,7 +22,6 @@ class LinealProperties {
         if (n instanceof Parent) {
             Parent p = (Parent)n;
             parent_props = new ParentProperties(p);
-            return;
         }
     }
 }

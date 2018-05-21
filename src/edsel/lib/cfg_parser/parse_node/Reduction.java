@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.io.CharBuffer.CharBufferString;
+import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 
 import static lib.text_io.FormattedText.spaces;
@@ -15,14 +15,14 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
 
     public ParseNode[] sub_reductions;
 
-    public int num_branches_explored = 0;
+    public int num_branches_explored;
 
     public Reduction(
-            ENUM_PRODUCTION_ID          production_id,
-            int                         branch_num,
-            ParseNode[]                 sub_reductions,
-            int                         num_branches_explored,
-            CharBufferString            src_string)
+            ENUM_PRODUCTION_ID                                  production_id,
+            int                                                 branch_num,
+            ParseNode[]                                         sub_reductions,
+            int                                                 num_branches_explored,
+            CharBuffer<? extends CharBuffer>.CharBufferString   src_string)
     {
         super(src_string);
         this.production_id = production_id;
@@ -58,11 +58,18 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
     // =========================================================================================
 
     public String print(int tree_level) {
-        String string = spaces(tree_level) + production_id.toString() + ", branch " + branch_num;
+        StringBuilder string
+                = new StringBuilder(spaces(tree_level))
+                .append(production_id.toString())
+                .append(", branch ")
+                .append(branch_num);
 
-        for (ParseNode child : sub_reductions)
-            string += "\n" + child.print(tree_level + 1);
+        for (ParseNode child : sub_reductions) {
+            string
+                    .append("\n")
+                    .append(child.print(tree_level + 1));
+        }
 
-        return string;
+        return string.toString();
     }
 }

@@ -8,7 +8,7 @@ public class Width<T> {
         this.width = width;
     }
 
-    public static <T> Width<T> Width(T top) {
-        return new Width<>(top);
+    public static <T> Width<T> Width(T width) {
+        return new Width<>(width);
     }
 }

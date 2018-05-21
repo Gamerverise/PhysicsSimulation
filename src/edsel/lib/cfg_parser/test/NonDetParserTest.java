@@ -2,12 +2,8 @@ package edsel.lib.cfg_parser.test;
 
 import edsel.cfgs.regex_cfg.RegexParser;
 import edsel.cfgs.regex_cfg.RegexProductionID;
-import edsel.cfgs.regex_cfg.RegexTerminalID;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
-import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.parse_node.Reduction;
-
-import static edsel.cfgs.regex_cfg.RegexParser.RegexParser;
 
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 

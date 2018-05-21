@@ -8,7 +8,7 @@ public class X<T> {
         this.x = x;
     }
 
-    public static <T> X<T> X(T top) {
-        return new X<>(top);
+    public static <T> X<T> X(T x) {
+        return new X<>(x);
     }
 }

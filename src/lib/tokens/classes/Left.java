@@ -8,7 +8,7 @@ public class Left<T> {
         this.left = left;
     }
 
-    public static <T> Left<T> Left(T top) {
-        return new Left<>(top);
+    public static <T> Left<T> Left(T left) {
+        return new Left<>(left);
     }
 }

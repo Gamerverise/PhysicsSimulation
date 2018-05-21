@@ -1,8 +1,6 @@
 package lib.graphics;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import lib.geometry.Geometry;
 import lib.java_api_extensions.MathX;
 import lib.javafx_api_extensions.GraphicsContextX;
 

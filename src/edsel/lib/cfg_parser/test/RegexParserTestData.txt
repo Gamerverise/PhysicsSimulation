@@ -1,1 +1,1 @@
-(literal:a)b
+(=literal:z)y

@@ -11,11 +11,11 @@ import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.RestrictionMode;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.cfg_parser.CFG_Parser.SymbolBuffer;
-import edsel.lib.io.CharBuffer;
 import edsel.lib.io.TokenBuffer;
 import lib.tokens.enums.CopyType;
 import edsel.lib.io.CharBuffer.CharBufferString;
 
+import java.util.Objects;
 import java.util.Stack;
 
 import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.PRODUCTION_RESTRICTION;
@@ -38,28 +38,15 @@ public abstract class CFG_Parser
     public CFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
     public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[]      terminals;
 
-    public CFG_Parser() {}
-
     @SafeVarargs
     public CFG_Parser(
-            CFG_Production<ENUM_PRODUCTION_ID>      start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>...   productions)
+            CFG_Production<ENUM_PRODUCTION_ID>                      start_production,
+            CFG_Production<ENUM_PRODUCTION_ID>[]                    productions,
+            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>...     terminals)
     {
         this.start_production = start_production;
         this.productions = productions;
-    }
-
-    public CFG_Parser(
-            CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-                    parser,
-            CopyType
-                    copy_type)
-    {
-        // FIXME: Ignore copy_type for now
-
-        this.start_production = parser.start_production;
-        this.productions = parser.productions;
-        this.terminals = parser.terminals;
+        this.terminals = terminals;
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
@@ -82,7 +69,7 @@ public abstract class CFG_Parser
     get_production(CharBufferString production_name)
     {
         for(CFG_Production<ENUM_PRODUCTION_ID> production : productions)
-            if (production_name.get_string() == production.name)
+            if (Objects.equals(production_name.get_string(), production.name))
                 return production;
 
         return null;
@@ -91,8 +78,10 @@ public abstract class CFG_Parser
     public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     get_terminal(CharBufferString terminal_name)
     {
+        String terminal_name_str = terminal_name.get_string();
+
         for(CFG_Terminal<ENUM_TERMINAL_ID,  TOKEN_VALUE_TYPE> terminal : terminals)
-            if (terminal_name.get_string() == terminal.name)
+            if (Objects.equals(terminal_name_str, terminal.name))
                 return terminal;
 
         return null;
@@ -105,8 +94,6 @@ public abstract class CFG_Parser
             TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
     {
         public Stack<ParsingRestriction> restriction_stack = new Stack<>();
-
-        public Stack<SymbolBuffer<SYMBOL_BUFFER_TYPE>> save_stack = new Stack<>();
 
         public SymbolBuffer(String filename)
                 throws InputNotAccepted
@@ -122,18 +109,20 @@ public abstract class CFG_Parser
             init(separator_chars, cursor_pos, buf);
         }
 
-        public SymbolBuffer(SymbolBuffer<SYMBOL_BUFFER_TYPE> tok_buf, CopyType copy_type)
+        public SymbolBuffer(SymbolBuffer<SYMBOL_BUFFER_TYPE> buf, CopyType copy_type)
                 throws InputNotAccepted
         {
-            super(tok_buf, COPY_SHALLOW);
+            super(buf, COPY_SHALLOW);
 
             if (copy_type == COPY_DEEP) {
-                separator_chars = new byte[tok_buf.separator_chars.length];
-                System.arraycopy(tok_buf.separator_chars, 0, separator_chars, 0, tok_buf.separator_chars.length);
+                separator_chars = new byte[buf.separator_chars.length];
+                System.arraycopy(buf.separator_chars, 0, separator_chars, 0, buf.separator_chars.length);
             } else
-                separator_chars = tok_buf.separator_chars;
+                separator_chars = buf.separator_chars;
 
-            init(separator_chars, tok_buf.cursor_pos, tok_buf.buf);
+            save restriction stack
+
+            init(separator_chars, buf.cursor_pos, buf.buf);
         }
 
         public void init(byte[] separator_chars, int cursor_pos, byte[] buf)
@@ -149,7 +138,7 @@ public abstract class CFG_Parser
         // =========================================================================================
 
         public void save() {
-            save_stack.push(new_copy(CopyType.COPY_DEEP));
+            save_stack.push(new_copy(CFG_Parser.this, CopyType.COPY_DEEP));
         }
 
         public void restore()
@@ -157,6 +146,8 @@ public abstract class CFG_Parser
         {
             SymbolBuffer<SYMBOL_BUFFER_TYPE> tmp = save_stack.pop();
             init(tmp.separator_chars, tmp.cursor_pos, tmp.buf);
+
+            restore doesn't need full init?
         }
 
         public void update_restriction(ParseNode last_parse_node)
@@ -250,6 +241,8 @@ public abstract class CFG_Parser
                 if (next_terminal_restriction != null) {
                     restriction_stack.push(new TerminalRestriction<>(next_terminal_restriction, mode));
                 }
+
+                return;
             } else if (mode == PRODUCTION_RESTRICTION) {
                 CFG_Production<ENUM_PRODUCTION_ID> next_production_restriction
                         = get_production(restriction_name);
@@ -257,6 +250,8 @@ public abstract class CFG_Parser
                 if (next_production_restriction != null) {
                     restriction_stack.push(new ProductionRestriction<>(next_production_restriction, mode));
                 }
+
+                return;
             }
             throw new InputNotAccepted();
         }

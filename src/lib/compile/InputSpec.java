@@ -121,26 +121,30 @@ public class InputSpec {
     /***************************************************************************/
 
     public String sprint() {
-        String out = parse_name + " = ";
+        StringBuilder out = new StringBuilder(parse_name + " = ");
 
         int i = 0;
-        for (; i < parsed_values.length - 1; i++)
-            out += parsed_values[i].value.toString() + " ";
+        for (; i < parsed_values.length - 1; i++) {
+            out.append(parsed_values[i].value.toString());
+            out.append(" ");
+        }
 
-        out += parsed_values[i].value.toString();
+        out.append(parsed_values[i].value.toString());
 
-        return out;
+        return out.toString();
     }
 
     public static String array_sprint(InputSpec[] specs) {
-        String out = "";
+        StringBuilder out = new StringBuilder();
 
         int i = 0;
-        for (; i < specs.length - 1; i++)
-            out += specs[i].sprint() + "\n";
+        for (; i < specs.length - 1; i++) {
+            out.append(specs[i].sprint());
+            out.append("\n");
+        }
 
-        out += specs[i].sprint();
+        out.append(specs[i].sprint());
 
-        return out;
+        return out.toString();
     }
 }

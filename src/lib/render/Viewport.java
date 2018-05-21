@@ -63,7 +63,7 @@ public class Viewport {
         this.basis_width_model = basis_width_model;
         this.basis_height_model = basis_height_model;
         this.translation_unit = translation_unit;
-        this.scale_count = scale_count;
+        this.scale_unit = scale_unit;
         this.delta_x_count = delta_x_count;
         this.delta_y_count = delta_y_count;
         this.scale_count = scale_count;

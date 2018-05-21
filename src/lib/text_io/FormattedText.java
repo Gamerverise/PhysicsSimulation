@@ -2,13 +2,33 @@ package lib.text_io;
 
 public class FormattedText {
 
+    public static String[] pre_computed_spaces = {
+            "",
+            " ",
+            "  ",
+            "   ",
+            "    ",
+            "     ",
+            "      ",
+            "       ",
+            "        ",
+            "         ",
+            "          ",
+            "           ",
+            "            ",
+    };
+
     public static String spaces(int n) {
-        String spaces = "";
 
-        for (int i = 0; i < n; i++)
-            spaces += " ";
+        if (n < pre_computed_spaces.length)
+            return pre_computed_spaces[n];
 
-        return spaces;
+        StringBuilder tmp_spaces = new StringBuilder(pre_computed_spaces[pre_computed_spaces.length - 1]);
+
+        for (int i = pre_computed_spaces.length; i < n; i++)
+            tmp_spaces.append(" ");
+
+        return tmp_spaces.toString();
     }
 
     public static String concatenate(String separator, String... strs) {
@@ -16,11 +36,13 @@ public class FormattedText {
         if (strs.length == 0)
             return "";
 
-        String result = strs[0];
+        StringBuilder result = new StringBuilder(strs[0]);
 
-        for (int i = 1; i < strs.length; i++)
-            result += separator + strs[i];
+        for (int i = 1; i < strs.length; i++) {
+            result.append(separator);
+            result.append(strs[i]);
+        }
 
-        return result;
+        return result.toString();
     }
 }

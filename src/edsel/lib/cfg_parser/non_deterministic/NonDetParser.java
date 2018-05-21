@@ -12,6 +12,8 @@ import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 
+import java.util.Stack;
+
 public abstract
 class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
@@ -28,10 +30,11 @@ class NonDetParser
 {
     @SafeVarargs
     public NonDetParser(
-            CFG_Production<ENUM_PRODUCTION_ID>      start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>...   productions)
+            CFG_Production<ENUM_PRODUCTION_ID>                      start_production,
+            CFG_Production<ENUM_PRODUCTION_ID>[]                    productions,
+            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>...     terminals)
     {
-        super(start_production, productions);
+        super(start_production, productions, terminals);
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
@@ -62,6 +65,8 @@ class NonDetParser
             ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
 
             input.save();
+
+            public Stack<SymbolBuffer<SYMBOL_BUFFER_TYPE>> save_stack = new Stack<>();
 
             for (int j = 0; j < cur_branch.length; j++) {
 

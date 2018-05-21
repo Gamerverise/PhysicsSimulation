@@ -8,7 +8,7 @@ public class Right<T> {
         this.right = right;
     }
 
-    public static <T> Right<T> Right(T top) {
-        return new Right<>(top);
+    public static <T> Right<T> Right(T right) {
+        return new Right<>(right);
     }
 }
