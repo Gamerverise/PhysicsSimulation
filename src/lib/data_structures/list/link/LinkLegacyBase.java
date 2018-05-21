@@ -3,28 +3,28 @@ package lib.data_structures.list.link;
 import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
-public class LinkLegacy<T>
-        extends LinkLegacyBase<T, LinkLegacy<T>>
+public class LinkLegacyBase<T, LINK_TYPE extends LinkLegacyBase<T, LINK_TYPE>>
+        extends Copyable<LINK_TYPE>
 {
     public T elem;
-    public LinkLegacy<T> next;
+    public LINK_TYPE next;
 
-    public LinkLegacy() {
+    public LinkLegacyBase() {
         elem = null;
         next = null;
     }
 
-    public LinkLegacy(T elem) {
+    public LinkLegacyBase(T elem) {
         this.elem = elem;
         this.next = null;
     }
 
-    public LinkLegacy(T elem, LinkLegacy<T> next) {
+    public LinkLegacyBase(T elem, LINK_TYPE next) {
         this.elem = elem;
         this.next = next;
     }
 
-    public LinkLegacy(LinkLegacy<T> link, CopyType copy_type) {
+    public LinkLegacyBase(LinkLegacyBase<T, LINK_TYPE> link, CopyType copy_type) {
         elem = link.elem;
         next = link.next;
     }

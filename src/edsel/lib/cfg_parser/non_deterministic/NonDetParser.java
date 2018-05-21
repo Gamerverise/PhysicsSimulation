@@ -1,6 +1,8 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
-import edsel.lib.cfg_model.*;
+import edsel.lib.cfg_model.CFG_Production;
+import edsel.lib.cfg_model.CFG_Symbol;
+import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
@@ -11,8 +13,6 @@ import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
-
-import java.util.Stack;
 
 public abstract
 class NonDetParser
@@ -64,15 +64,43 @@ class NonDetParser
 
             ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
 
-            input.save();
 
-            public Stack<SymbolBuffer<SYMBOL_BUFFER_TYPE>> save_stack = new Stack<>();
+            /*
+
+                                if (last_parse_node instanceof Reduction) {
+                        if (!(cur_restriction instanceof ProductionRestriction))
+                            return;
+
+                        Reduction<ENUM_PRODUCTION_ID> last_reduction;
+                        ProductionRestriction<ENUM_PRODUCTION_ID> cur_production_restriction;
+
+                        last_reduction = (Reduction<ENUM_PRODUCTION_ID>) last_parse_node;
+                        cur_production_restriction = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_restriction;
+
+                        if (last_reduction.production_id != cur_production_restriction.production.id)
+                            return;
+                    } else {
+                        if (!(cur_restriction instanceof TerminalRestriction))
+                            return;
+
+                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> last_token;
+                        TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal_restriction;
+
+                        last_token = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) last_parse_node;
+                        cur_terminal_restriction
+                                = (TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_restriction;
+
+                        if (last_token.id != cur_terminal_restriction.terminal.id)
+                            return;
+                    }
+
+             */
 
             for (int j = 0; j < cur_branch.length; j++) {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
-                if (input.restriction_stack.size() > 0) {
+                if (input.restriction_stack.length > 0) {
                     ParsingRestriction restriction = input.restriction_stack.peek();
 
                     if (restriction != null) {
@@ -86,7 +114,7 @@ class NonDetParser
                                         = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
                                 if (cur_expected_production.id != production_restriction.production.id) {
-                                    input.restore();
+                                    input.restore(saved_buf, save_point);
                                     continue branch_loop;
                                 }
                             } else {
@@ -139,7 +167,7 @@ class NonDetParser
                     if (cur_token.id == cur_expected_terminal.id) {
                         cur_expected_terminal.reduce(cur_token);
                         sub_reductions[j] = cur_token;
-                        input.update_restriction(cur_token);
+                        input.symbol_advance(cur_token);
                     } else {
                         input.restore();
                         continue branch_loop;

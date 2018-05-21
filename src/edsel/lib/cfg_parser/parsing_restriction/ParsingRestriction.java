@@ -1,7 +1,10 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-public abstract class ParsingRestriction {
+import edsel.lib.cfg_parser.CFG_Parser.SymbolBufferSymbol;
 
+public abstract class ParsingRestriction
+        implements SymbolBufferSymbol
+{
     public RestrictionMode mode;
 
     public ParsingRestriction(RestrictionMode mode) {

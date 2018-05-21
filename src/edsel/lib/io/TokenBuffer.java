@@ -11,11 +11,13 @@ public abstract class TokenBuffer
         extends
         CharBuffer<TOKEN_BUFFER_TYPE>
 {
+    public static byte[] DEFAULT_SEPARATOR_CHARS = new byte[] {' ', '\n', '\t'};
+
     public byte[] separator_chars;
 
     public TokenBuffer(String filename)
     {
-        this(filename, new byte[] {' ', '\n', '\t'});
+        this(filename, DEFAULT_SEPARATOR_CHARS);
     }
 
     public TokenBuffer(String filename, byte[] separator_chars)
@@ -27,6 +29,12 @@ public abstract class TokenBuffer
     public TokenBuffer(TokenBuffer buf, CopyType copy_type)
     {
         super(buf, copy_type);
+
+        if (copy_type == CopyType.COPY_DEEP) {
+            this.separator_chars = new byte[this.buf.length];
+            System.arraycopy(buf.separator_chars, 0, this.separator_chars, 0, this.separator_chars.length);
+        } else
+            this.separator_chars = buf.separator_chars;
     }
 
     // =========================================================================================

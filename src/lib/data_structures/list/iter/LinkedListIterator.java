@@ -1,19 +1,19 @@
 package lib.data_structures.list.iter;
 
-import lib.data_structures.list.LinkedListLegacy;
-import lib.data_structures.list.link.LinkLegacy;
+import lib.data_structures.list.LinkedListLegacyBase;
+import lib.data_structures.list.link.LinkLegacyBase;
 
 import java.util.Iterator;
 
 public class LinkedListIterator
-        <T, LINK_TYPE extends LinkLegacy<T, LINK_TYPE>>
+        <T, LINK_TYPE extends LinkLegacyBase<T, LINK_TYPE>>
         implements
         Iterator<LINK_TYPE>
 {
     public LINK_TYPE cur;
 
     public LinkedListIterator(
-            LinkedListLegacy<T, LINK_TYPE, ? extends LinkedListLegacy<T, LINK_TYPE, ?>>
+            LinkedListLegacyBase<T, LINK_TYPE, ? extends LinkedListLegacyBase<T, LINK_TYPE, ?>>
                     list)
     {
         cur = list.head;

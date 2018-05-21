@@ -4,7 +4,7 @@ import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
 public class Link<T extends Copyable<T>>
-        extends LinkLegacy<T, Link<T>>
+        extends LinkLegacyBase<T, Link<T>>
 {
     public Link() {
         super();

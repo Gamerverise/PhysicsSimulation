@@ -1,11 +1,18 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
 public enum RestrictionMode {
+
+    RESTRICTION_ESCAPE('\\'),
+
     TERMINAL_RESTRICTION('='),
+
     PREFIX_RESTRICTION('~'),
     PRODUCTION_RESTRICTION('#'),
     SUFFIX_RESTRICTION('.'),     // Not yet implemented
-    BRANCH_RESTRICTION('/');     // Not yet implemented
+
+    BRANCH_RESTRICTION('/'),     // Not yet implemented
+
+    END_RESTRICTION(')');
 
     public char chr;
 
@@ -23,10 +30,14 @@ public enum RestrictionMode {
         for (int i = 0; i < mode_table.length; i++)
             mode_table[i] = null;
 
+        mode_table[RESTRICTION_ESCAPE.chr] = RESTRICTION_ESCAPE;
+
         mode_table[TERMINAL_RESTRICTION.chr] = TERMINAL_RESTRICTION;
+
         mode_table[PREFIX_RESTRICTION.chr] = PREFIX_RESTRICTION;
         mode_table[PRODUCTION_RESTRICTION.chr] = PRODUCTION_RESTRICTION;
         mode_table[SUFFIX_RESTRICTION.chr] = SUFFIX_RESTRICTION;
+
         mode_table[BRANCH_RESTRICTION.chr] = BRANCH_RESTRICTION;
     }
 }

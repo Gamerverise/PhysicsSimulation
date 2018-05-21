@@ -1,5 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
+import edsel.lib.cfg_parser.CFG_Parser.SymbolBufferSymbol;
 import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 
@@ -11,6 +12,8 @@ public class Token
                 TOKEN_VALUE_TYPE>
         extends
         ParseNode
+        implements
+        SymbolBufferSymbol
 {
     public ENUM_TOKEN_ID id;
     public TOKEN_VALUE_TYPE value;

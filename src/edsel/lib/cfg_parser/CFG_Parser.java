@@ -1,27 +1,23 @@
 package edsel.lib.cfg_parser;
 
-import edsel.lib.cfg_model.*;
+import edsel.lib.cfg_model.CFG_Production;
+import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
-import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.RestrictionMode;
-import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
-import edsel.lib.cfg_parser.CFG_Parser.SymbolBuffer;
-import edsel.lib.io.TokenBuffer;
-import lib.tokens.enums.CopyType;
+import edsel.lib.cfg_parser.parsing_restriction.*;
 import edsel.lib.io.CharBuffer.CharBufferString;
+import edsel.lib.io.TokenBuffer;
+import jdk.internal.util.xml.impl.Input;
+import lib.data_structures.list.LinkedListLegacy;
+import lib.data_structures.list.link.LinkLegacy;
 
 import java.util.Objects;
-import java.util.Stack;
 
 import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.PRODUCTION_RESTRICTION;
 import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.TERMINAL_RESTRICTION;
-import static lib.tokens.enums.CopyType.COPY_DEEP;
-import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
 public abstract class CFG_Parser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
@@ -87,123 +83,92 @@ public abstract class CFG_Parser
         return null;
     }
 
+    public interface SymbolBufferSymbol {}
+
     public abstract
     class SymbolBuffer
             <SYMBOL_BUFFER_TYPE extends SymbolBuffer<SYMBOL_BUFFER_TYPE>>
             extends
             TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
     {
-        public Stack<ParsingRestriction> restriction_stack = new Stack<>();
+        // =========================================================================================
+
+        LinkLegacy<SymbolBufferSymbol> symbol_cursor;
+
+        int restriction_nesting_level = 0;
+
+        public LinkedListLegacy<SymbolBufferSymbol> symbol_buffer = new LinkedListLegacy<>();
+
+        public LinkedListLegacy<LinkLegacy<SymbolBufferSymbol>> save_queue = new LinkedListLegacy<>();
+
+        // =========================================================================================
 
         public SymbolBuffer(String filename)
                 throws InputNotAccepted
         {
-            super(filename);
-            init(separator_chars, cursor_pos, buf);
+            this(filename, DEFAULT_SEPARATOR_CHARS);
         }
 
         public SymbolBuffer(String filename, byte[] separator_chars)
                 throws InputNotAccepted
         {
-            super(filename);
-            init(separator_chars, cursor_pos, buf);
-        }
-
-        public SymbolBuffer(SymbolBuffer<SYMBOL_BUFFER_TYPE> buf, CopyType copy_type)
-                throws InputNotAccepted
-        {
-            super(buf, COPY_SHALLOW);
-
-            if (copy_type == COPY_DEEP) {
-                separator_chars = new byte[buf.separator_chars.length];
-                System.arraycopy(buf.separator_chars, 0, separator_chars, 0, buf.separator_chars.length);
-            } else
-                separator_chars = buf.separator_chars;
-
-            save restriction stack
-
-            init(separator_chars, buf.cursor_pos, buf.buf);
-        }
-
-        public void init(byte[] separator_chars, int cursor_pos, byte[] buf)
-                throws InputNotAccepted
-        {
-            this.separator_chars = separator_chars;
-            this.cursor_pos = cursor_pos;
-            this.buf = buf;
-
-            update_restriction(null);
+            super(filename, separator_chars);
         }
 
         // =========================================================================================
 
         public void save() {
-            save_stack.push(new_copy(CFG_Parser.this, CopyType.COPY_DEEP));
+            save_queue.push(symbol_cursor);
         }
 
         public void restore()
-                throws InputNotAccepted
         {
-            SymbolBuffer<SYMBOL_BUFFER_TYPE> tmp = save_stack.pop();
-            init(tmp.separator_chars, tmp.cursor_pos, tmp.buf);
-
-            restore doesn't need full init?
+            symbol_cursor = save_queue.pop();
         }
 
-        public void update_restriction(ParseNode last_parse_node)
+        public SymbolBufferSymbol next_symbol()
+                throws InputNotAccepted
+        {
+            SymbolBufferSymbol next_sym;
+
+            if (symbol_cursor == null) {
+                next_sym = lex_next_symbol();
+
+                if (next_sym == null)
+                    return null;
+
+                symbol_buffer.append(next_sym);
+                symbol_cursor = symbol_buffer.tail;
+                return symbol_cursor.elem;
+            } else {
+                SymbolBufferSymbol cur = symbol_cursor.elem;
+                symbol_cursor = symbol_cursor.next;
+                return cur;
+            }
+        }
+
+        public SymbolBufferSymbol lex_next_symbol()
                 throws InputNotAccepted
         {
             eat_separators();
 
-            char next_char;
-
-            if (cursor_pos + 1 < buf.length)
-                next_char = (char) buf[cursor_pos];
-            else
-                return;
-
-            if (restriction_stack.size() > 0 ) {
-
-                ParsingRestriction cur_restriction = restriction_stack.peek();
-
-                if (cur_restriction != null) {
-
-                    if (next_char == ')') {
-
-                        if (last_parse_node instanceof Reduction) {
-                            if (!(cur_restriction instanceof ProductionRestriction))
-                                return;
-
-                            Reduction<ENUM_PRODUCTION_ID> last_reduction;
-                            ProductionRestriction<ENUM_PRODUCTION_ID> cur_production_restriction;
-
-                            last_reduction = (Reduction<ENUM_PRODUCTION_ID>) last_parse_node;
-                            cur_production_restriction = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_restriction;
-
-                            if (last_reduction.production_id != cur_production_restriction.production.id)
-                                return;
-                        } else {
-                            if (!(cur_restriction instanceof TerminalRestriction))
-                                return;
-
-                            Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> last_token;
-                            TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal_restriction;
-
-                            last_token = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) last_parse_node;
-                            cur_terminal_restriction
-                                    = (TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_restriction;
-
-                            if (last_token.id != cur_terminal_restriction.terminal.id)
-                                return;
-                        }
-                        restriction_stack.pop();
-                        cursor_pos++;
-                        return;
-                    }
-                }
+            if (cursor_pos >= buf.length) {
+                if (restriction_nesting_level > 0)
+                    throw new InputNotAccepted();
+                else
+                    return null;
             }
 
-            if (next_char == '(') {
+            char next_char = (char) buf[cursor_pos];
+
+            if (next_char == ')') {
+                if (restriction_nesting_level > 0) {
+
+                    restriction_nesting_level -= 1;
+                    cursor_pos++;
+                    return new EndRestriction();
+                }
+            } else if (next_char == '(') {
 
                 if (cursor_pos + 1 < buf.length) {
                     char mode_char = (char) buf[cursor_pos + 1];
@@ -212,51 +177,43 @@ public abstract class CFG_Parser
 
                     if (mode != null) {
                         cursor_pos += 2;
-                        push_new_restriction(mode);
+
+                        int restriction_name_start = cursor_pos;
+
+                        while (cursor_pos < buf.length && buf[cursor_pos] != ':')
+                            cursor_pos++;
+
+                        if (buf[cursor_pos] != ':')
+                            throw new InputNotAccepted();
+
+                        CharBufferString restriction_name
+                                = new CharBufferString(restriction_name_start, cursor_pos);
+
+                        cursor_pos++;
+
+                        if (mode == TERMINAL_RESTRICTION) {
+                            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal = get_terminal(restriction_name);
+
+                            if (terminal == null)
+                                throw new InputNotAccepted();
+
+                            return next_token();
+
+                        } else if (mode == PRODUCTION_RESTRICTION) {
+                            CFG_Production<ENUM_PRODUCTION_ID> production = get_production(restriction_name);
+
+                            if (production == null)
+                                throw new InputNotAccepted();
+
+                            return new ProductionRestriction<>(production, mode);
+                        }
                     }
                 }
             }
+            return next_token();
         }
 
-        public void push_new_restriction(RestrictionMode mode)
-                throws InputNotAccepted
-        {
-            int restriction_name_start = cursor_pos;
-
-            while (cursor_pos < buf.length && buf[cursor_pos] != ':')
-                cursor_pos++;
-
-            if (buf[cursor_pos] != ':')
-                throw new InputNotAccepted();
-
-            CharBufferString restriction_name
-                    = new CharBufferString(restriction_name_start, cursor_pos);
-
-            cursor_pos++;
-
-            if (mode == TERMINAL_RESTRICTION) {
-                CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_terminal_restriction
-                        = get_terminal(restriction_name);
-
-                if (next_terminal_restriction != null) {
-                    restriction_stack.push(new TerminalRestriction<>(next_terminal_restriction, mode));
-                }
-
-                return;
-            } else if (mode == PRODUCTION_RESTRICTION) {
-                CFG_Production<ENUM_PRODUCTION_ID> next_production_restriction
-                        = get_production(restriction_name);
-
-                if (next_production_restriction != null) {
-                    restriction_stack.push(new ProductionRestriction<>(next_production_restriction, mode));
-                }
-
-                return;
-            }
-            throw new InputNotAccepted();
-        }
-
-        public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token_advance();
+        public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token();
 
         public void eat_separators() {
             while (cursor_pos < buf.length)
