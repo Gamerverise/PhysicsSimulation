@@ -9,10 +9,12 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
-import edsel.lib.cfg_parser.parsing_restriction.ParsingRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.*;
 import edsel.lib.io.CharBuffer.CharBufferString;
+import lib.debug.MethodNameHack;
+
+import static lib.debug.AssertMessages.NOT_YET_IMPLEMENTED;
+import static lib.debug.Debug.assert_msg;
 
 public abstract
 class NonDetParser
@@ -98,76 +100,85 @@ class NonDetParser
 
             for (int j = 0; j < cur_branch.length; j++) {
 
+                input.save();
+
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
-                if (input.restriction_stack.length > 0) {
-                    ParsingRestriction restriction = input.restriction_stack.peek();
+                SymbolBufferSymbol cur_symbol = input.next_symbol();
 
-                    if (restriction != null) {
+                if (cur_expected_symbol == null)
+                    continue;
 
-                        if (restriction instanceof ProductionRestriction) {
+                else if (cur_expected_symbol instanceof CFG_Production) {
 
-                            ProductionRestriction production_restriction = (ProductionRestriction) restriction;
+                    if (cur_symbol instanceof ProductionRestriction) {
 
-                            if (cur_expected_symbol instanceof CFG_Production) {
-                                CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
-                                        = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+                        CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
+                                = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
-                                if (cur_expected_production.id != production_restriction.production.id) {
-                                    input.restore(saved_buf, save_point);
-                                    continue branch_loop;
+                        ProductionRestriction<ENUM_PRODUCTION_ID> production_restriction
+                                = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_symbol;
+
+                        if (cur_expected_production.id == production_restriction.production.id) {
+
+                            if (cur_symbol instanceof BranchRestriction) {
+
+                                assert false : assert_msg(
+                                        this.getClass(),
+                                        new MethodNameHack(){}.method_name(),
+                                        NOT_YET_IMPLEMENTED);
+
+                                BranchRestriction<ENUM_PRODUCTION_ID> branch_restriction
+                                        = (BranchRestriction<ENUM_PRODUCTION_ID>) cur_symbol;
+
+                                if (j == branch_restriction.branch_num) {
+
                                 }
                             } else {
-                                input.restore();
-                                continue branch_loop;
-                            }
-                        } else {
-                            TerminalRestriction terminal_restriction = (TerminalRestriction) restriction;
+                                Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
 
-                            if (cur_expected_symbol instanceof CFG_Terminal) {
-                                CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
-                                        = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+                                CFG_Production<ENUM_PRODUCTION_ID>
+                                        rhs_production = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
-                                if (cur_expected_terminal.id != terminal_restriction.terminal.id) {
+                                cur_sub_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
+
+                                Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
+                                CFG_Production<ENUM_PRODUCTION_ID>
+                                        rhs_production = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
+                                cur_sub_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
+
+                                if (cur_sub_reduction == null) {
                                     input.restore();
                                     continue branch_loop;
-                                }
-                            } else {
-                                input.restore();
-                                continue branch_loop;
+                                } else
+                                    sub_reductions[j] = cur_sub_reduction;
                             }
                         }
                     }
-                }
+                } if (cur_expected_symbol instanceof CFG_Terminal) {
 
-                if (cur_expected_symbol instanceof CFG_Production) {
+                    if (cur_symbol instanceof Token) {
 
-                    Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
-                    CFG_Production<ENUM_PRODUCTION_ID>
-                            rhs_production = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
+                                = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
-                    cur_sub_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
+                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token
+                                = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_symbol;
 
-                    if (cur_sub_reduction == null) {
-                        input.restore();
-                        continue branch_loop;
-                    } else
-                        sub_reductions[j] = cur_sub_reduction;
-                } else {
-                    Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_token = input.token_advance();
+                        if (token.id == cur_expected_terminal.id) {
 
-                    if (cur_token == null) {
-                        input.restore();
-                        continue branch_loop;
+                            cur_expected_terminal.reduce(token);
+                            sub_reductions[j] = token;
+                            input.symbol_advance(cur_token);
+                        }
                     }
+                } else if (cur_symbol instanceof EndRestriction) {
 
-                    CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
-                            = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+
+                } else if (cur_symbol instanceof Token) {
 
                     if (cur_token.id == cur_expected_terminal.id) {
-                        cur_expected_terminal.reduce(cur_token);
-                        sub_reductions[j] = cur_token;
-                        input.symbol_advance(cur_token);
                     } else {
                         input.restore();
                         continue branch_loop;
