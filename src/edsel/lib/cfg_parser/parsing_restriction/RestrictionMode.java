@@ -6,11 +6,11 @@ public enum RestrictionMode {
 
     TERMINAL_RESTRICTION('='),
 
-    PREFIX_RESTRICTION('~'),
+    PREFIX_RESTRICTION('~'),        // Not yet implemented
     PRODUCTION_RESTRICTION('#'),
-    SUFFIX_RESTRICTION('.'),     // Not yet implemented
+    SUFFIX_RESTRICTION('.'),        // Not yet implemented
 
-    BRANCH_RESTRICTION('/'),     // Not yet implemented
+    BRANCH_RESTRICTION('/'),
 
     END_RESTRICTION(')');
 

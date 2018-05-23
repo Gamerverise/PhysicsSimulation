@@ -9,12 +9,10 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
-import edsel.lib.cfg_parser.parsing_restriction.*;
+import edsel.lib.cfg_parser.parsing_restriction.BranchRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.EndRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
-import lib.debug.MethodNameHack;
-
-import static lib.debug.AssertMessages.NOT_YET_IMPLEMENTED;
-import static lib.debug.Debug.assert_msg;
 
 public abstract
 class NonDetParser
@@ -59,145 +57,113 @@ class NonDetParser
     {
         Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
-        branch_loop:
         for (int i = 0; i < production.rhs.length; i++) {
 
-            CFG_Symbol[] cur_branch = production.rhs[i];
+            input.save();
 
-            ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
+            Reduction<ENUM_PRODUCTION_ID> tmp_reduction
+                    = parse_branch_recursive(production, i, input, num_branches_explored);
 
+            if (tmp_reduction == null) {
+                input.restore();
+                continue;
+            } else if (reduction == null)
+                    reduction = tmp_reduction;
+            else
+                throw new AmbiguousParserInput();
+        }
+        return reduction;
+    }
 
-            /*
+    @SuppressWarnings("unchecked")
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_branch_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
+            int num_branches_explored
+    )
+            throws AmbiguousParserInput, InputNotAccepted
+    {
+        Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
-                                if (last_parse_node instanceof Reduction) {
-                        if (!(cur_restriction instanceof ProductionRestriction))
-                            return;
+        CFG_Symbol[] cur_branch = production.rhs[branch_num];
 
-                        Reduction<ENUM_PRODUCTION_ID> last_reduction;
-                        ProductionRestriction<ENUM_PRODUCTION_ID> cur_production_restriction;
+        ParseNode[] sub_reductions = new ParseNode[cur_branch.length];
 
-                        last_reduction = (Reduction<ENUM_PRODUCTION_ID>) last_parse_node;
-                        cur_production_restriction = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_restriction;
+        for (int j = 0; j < cur_branch.length; j++) {
 
-                        if (last_reduction.production_id != cur_production_restriction.production.id)
-                            return;
-                    } else {
-                        if (!(cur_restriction instanceof TerminalRestriction))
-                            return;
+            SymbolBufferSymbol cur_symbol = input.next_symbol();
 
-                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> last_token;
-                        TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_terminal_restriction;
-
-                        last_token = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) last_parse_node;
-                        cur_terminal_restriction
-                                = (TerminalRestriction<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_restriction;
-
-                        if (last_token.id != cur_terminal_restriction.terminal.id)
-                            return;
-                    }
-
-             */
-
-            for (int j = 0; j < cur_branch.length; j++) {
-
-                input.save();
+            if (cur_symbol != null) {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
-                SymbolBufferSymbol cur_symbol = input.next_symbol();
-
-                if (cur_expected_symbol == null)
-                    continue;
-
-                else if (cur_expected_symbol instanceof CFG_Production) {
+                if (cur_expected_symbol instanceof CFG_Production) {
 
                     if (cur_symbol instanceof ProductionRestriction) {
-
-                        CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
-                                = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
                         ProductionRestriction<ENUM_PRODUCTION_ID> production_restriction
                                 = (ProductionRestriction<ENUM_PRODUCTION_ID>) cur_symbol;
 
+                        CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
+                                = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
                         if (cur_expected_production.id == production_restriction.production.id) {
 
-                            if (cur_symbol instanceof BranchRestriction) {
+                            Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
 
-                                assert false : assert_msg(
-                                        this.getClass(),
-                                        new MethodNameHack(){}.method_name(),
-                                        NOT_YET_IMPLEMENTED);
+                            if (cur_symbol instanceof BranchRestriction) {
 
                                 BranchRestriction<ENUM_PRODUCTION_ID> branch_restriction
                                         = (BranchRestriction<ENUM_PRODUCTION_ID>) cur_symbol;
 
-                                if (j == branch_restriction.branch_num) {
+                                sub_reductions[j]
+                                        =
+                                        parse_branch_recursive(
+                                                branch_restriction.production,
+                                                branch_restriction.branch_num,
+                                                input,
+                                                num_branches_explored + 1);
+                            } else
+                                sub_reductions[j]
+                                        =
+                                        parse_recursive(
+                                                production_restriction.production,
+                                                input,
+                                                num_branches_explored + 1);
 
-                                }
-                            } else {
-                                Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
-
-                                CFG_Production<ENUM_PRODUCTION_ID>
-                                        rhs_production = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
-
-                                cur_sub_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
-
-                                Reduction<ENUM_PRODUCTION_ID> cur_sub_reduction;
-                                CFG_Production<ENUM_PRODUCTION_ID>
-                                        rhs_production = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
-
-                                cur_sub_reduction = parse_recursive(rhs_production, input, num_branches_explored + 1);
-
-                                if (cur_sub_reduction == null) {
-                                    input.restore();
-                                    continue branch_loop;
-                                } else
-                                    sub_reductions[j] = cur_sub_reduction;
-                            }
+                            if (sub_reductions[j] == null)
+                                return null;
                         }
                     }
-                } if (cur_expected_symbol instanceof CFG_Terminal) {
+                } else if (cur_symbol instanceof EndRestriction) {
+
+                } else if (cur_expected_symbol instanceof CFG_Terminal) {
 
                     if (cur_symbol instanceof Token) {
 
-                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
-                                = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
-
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token
                                 = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_symbol;
+
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
+                                = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
 
                         if (token.id == cur_expected_terminal.id) {
 
                             cur_expected_terminal.reduce(token);
                             sub_reductions[j] = token;
-                            input.symbol_advance(cur_token);
                         }
-                    }
-                } else if (cur_symbol instanceof EndRestriction) {
-
-
-                } else if (cur_symbol instanceof Token) {
-
-                    if (cur_token.id == cur_expected_terminal.id) {
-                    } else {
-                        input.restore();
-                        continue branch_loop;
                     }
                 }
             }
-
-            if (reduction != null) {
-                input.restore();
-                throw new AmbiguousParserInput();
-            }
-
-            int src_text_start = sub_reductions[0].src_string.src_start;
-            int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
-            CharBufferString string = input.get_string(CharBufferString.class, src_text_start, src_text_end);
-
-            reduction = production.reduce(i, sub_reductions, num_branches_explored, string);
+            return null;
         }
 
-        return reduction;
+        int src_text_start = sub_reductions[0].src_string.src_start;
+        int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
+        CharBufferString string = input.get_string(CharBufferString.class, src_text_start, src_text_end);
+
+        return production.reduce(branch_num, sub_reductions, num_branches_explored, string);
     }
 }

@@ -46,15 +46,9 @@ public class RegexParser extends
             super(filename);
         }
 
-        public RegexSymbolBuffer(RegexSymbolBuffer buf, CopyType copy_type)
-                throws InputNotAccepted
-        {
-            super(buf, copy_type);
-        }
-
         // =========================================================================================
 
-        public RegexToken token_advance() {
+        public RegexToken next_token() {
             if (cursor_pos >= buf.length) {
                 return null;
             }

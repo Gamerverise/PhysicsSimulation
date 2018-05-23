@@ -39,8 +39,6 @@ public abstract class TokenBuffer
 
     // =========================================================================================
 
-    public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token_advance();
-
     public void eat_separators() {
         while (cursor_pos < buf.length)
             if (is_separator(buf[cursor_pos]))
