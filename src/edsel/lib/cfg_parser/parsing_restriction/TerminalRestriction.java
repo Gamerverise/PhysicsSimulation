@@ -1,20 +1,18 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-import edsel.lib.cfg_model.CFG_Terminal;
+import edsel.lib.cfg_parser.parse_node.Token;
 
 public class TerminalRestriction
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE>
-        extends
+        implements
         ParsingRestriction
 {
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal;
+    public Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token;
 
-    public TerminalRestriction(
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal,
-            RestrictionMode mode)
-    {
-        super(mode);
-        this.terminal = terminal;
+    public TerminalRestriction() {}
+
+    public TerminalRestriction(Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token) {
+        this.token = token;
     }
 }

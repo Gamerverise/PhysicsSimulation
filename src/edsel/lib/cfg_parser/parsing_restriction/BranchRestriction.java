@@ -7,6 +7,10 @@ public class BranchRestriction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_I
 {
     public int branch_num;
 
+    public BranchRestriction(RestrictionMode mode) {
+        super(mode);
+    }
+
     public BranchRestriction(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             int branch_num,

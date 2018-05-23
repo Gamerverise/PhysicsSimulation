@@ -12,11 +12,11 @@ import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.BranchRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.EndRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import lib.java_lang_extensions.mutable.MutableInt;
 
-import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.BRANCH_RESTRICTION;
-import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.PRODUCTION_RESTRICTION;
+import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.*;
 
 public abstract
 class NonDetParser
@@ -97,6 +97,9 @@ class NonDetParser
 
                 if (cur_expected_symbol instanceof CFG_Production) {
 
+                    if (cur_symbol instanceof TerminalRestriction)
+                        return null;
+
                     CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
                             = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
 
@@ -132,14 +135,15 @@ class NonDetParser
                         } else
                             return null;
 
-                        if (production_restriction.mode == PRODUCTION_RESTRICTION
-                                || production_restriction.mode == BRANCH_RESTRICTION)
-                        {
+                        if (production_restriction.mode == EXACT_MODE) {
+
                             cur_symbol = input.next_symbol();
 
                             if (!(cur_symbol instanceof EndRestriction))
                                 return null;
                         }
+
+                        else do what for prefix mode?
                     } else
                         parse_recursive(cur_expected_production, input, num_branches_explored);
 

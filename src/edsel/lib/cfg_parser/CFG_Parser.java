@@ -1,26 +1,25 @@
 package edsel.lib.cfg_parser;
 
 import edsel.lib.cfg_model.CFG_Production;
+import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
-import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.*;
+import edsel.lib.io.CharBuffer;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
-import jdk.internal.util.xml.impl.Input;
 import lib.data_structures.list.LinkedListLegacy;
 import lib.data_structures.list.link.LinkLegacy;
 import lib.java_lang_extensions.mutable.MutableInt;
-import lib.java_lang_extensions.parametrized_types.Instantiator;
-import lib.java_lang_extensions.tuples.Tuple;
 
 import java.util.Objects;
 
-import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.PRODUCTION_RESTRICTION;
-import static edsel.lib.cfg_parser.parsing_restriction.RestrictionMode.TERMINAL_RESTRICTION;
+import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.*;
+import static edsel.lib.cfg_parser.parsing_restriction.RestrictionOperator.*;
+import static java.lang.Character.isDigit;
 
 public abstract class CFG_Parser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
@@ -186,46 +185,124 @@ public abstract class CFG_Parser
             } else if (next_char == '(') {
 
                 if (cursor_pos + 1 < buf.length) {
-                    char mode_char = (char) buf[cursor_pos + 1];
 
-                    RestrictionMode mode = RestrictionMode.get_mode(mode_char);
+                    char op_char = (char) buf[cursor_pos + 1];
 
-                    if (mode != null) {
-                        cursor_pos += 2;
+                    if (op_char == TERMINAL_RESTRICTION.chr) {
 
-                        int restriction_name_start = cursor_pos;
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                                terminal
+                                =
+                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>)
+                                        get_restriction(TerminalRestriction.class, ':');
 
-                        while (cursor_pos < buf.length && buf[cursor_pos] != ':')
-                            cursor_pos++;
-
-                        if (buf[cursor_pos] != ':')
+                        if (terminal == null)
                             throw new InputNotAccepted();
 
-                        CharBufferString restriction_name
-                                = new CharBufferString(restriction_name_start, cursor_pos);
+                        Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token = next_token();
 
-                        cursor_pos++;
+                        if (next_token().id == terminal.id && buf[cursor_pos] == ')') {
 
-                        if (mode == TERMINAL_RESTRICTION) {
-                            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> terminal = get_terminal(restriction_name);
-
-                            if (terminal == null)
-                                throw new InputNotAccepted();
-
-                            return next_token();
-
-                        } else if (mode == PRODUCTION_RESTRICTION) {
-                            CFG_Production<ENUM_PRODUCTION_ID> production = get_production(restriction_name);
-
-                            if (production == null)
-                                throw new InputNotAccepted();
-
-                            return new ProductionRestriction<>(production, mode);
+                            cursor_pos++;
+                            return new TerminalRestriction<>(next_token);
                         }
+
+                        throw new InputNotAccepted();
+
+                    } else if (op_char == PRODUCTION_PREFIX_RESTRICTION.chr) {
+
+                        CFG_Production<ENUM_PRODUCTION_ID>
+                                production
+                                =
+                                (CFG_Production<ENUM_PRODUCTION_ID>)
+                                        get_restriction(ProductionRestriction.class, ')');
+
+                        return new ProductionRestriction<>(production, PREFIX_MODE);
+
+                    } else if (op_char == PRODUCTION_RESTRICTION.chr) {
+
+                        CFG_Production<ENUM_PRODUCTION_ID>
+                                production
+                                =
+                                (CFG_Production<ENUM_PRODUCTION_ID>)
+                                        get_restriction(ProductionRestriction.class, ':');
+
+                        return new ProductionRestriction<>(production, EXACT_MODE);
+
+                    } else if (op_char == BRANCH_PREFIX_RESTRICTION.chr) {
+
+                        CFG_Production<ENUM_PRODUCTION_ID>
+                                production
+                                =
+                                (CFG_Production<ENUM_PRODUCTION_ID>)
+                                        get_restriction(ProductionRestriction.class, ':');
+
+                        int branch_num = lex_nonzero_int(')');
+
+                        return new BranchRestriction<>(production, branch_num, PREFIX_MODE);
+
+                    } else if (op_char == BRANCH_RESTRICTION.chr) {
+
+                        CFG_Production<ENUM_PRODUCTION_ID>
+                                production
+                                =
+                                (CFG_Production<ENUM_PRODUCTION_ID>)
+                                        get_restriction(ProductionRestriction.class, ':');
+
+                        int branch_num = lex_nonzero_int(':');
+
+                        return new BranchRestriction<>(production, branch_num, EXACT_MODE);
                     }
                 }
             }
             return next_token();
+        }
+
+        public CFG_Symbol
+        get_restriction(Class<? extends ParsingRestriction> restriction_type, char delimeter)
+                throws InputNotAccepted
+        {
+            cursor_pos += 2;
+
+            int restriction_name_start = cursor_pos;
+
+            while (cursor_pos < buf.length && buf[cursor_pos] != delimeter)
+                cursor_pos++;
+
+            if (buf[cursor_pos] != delimeter)
+                throw new InputNotAccepted();
+
+            CharBuffer<SYMBOL_BUFFER_TYPE>.CharBufferString
+                    restriction_name = new CharBufferString(restriction_name_start, cursor_pos);
+
+            cursor_pos++;
+
+            if (restriction_type == ProductionRestriction.class)
+                return get_production(restriction_name);
+            else if (restriction_type == TerminalRestriction.class)
+                return get_terminal(restriction_name);
+
+            throw new InputNotAccepted();
+        }
+
+        public int lex_nonzero_int(char delimeter)
+                throws InputNotAccepted
+        {
+            int int_start = cursor_pos;
+
+            while (cursor_pos < buf.length && isDigit(buf[cursor_pos]))
+                cursor_pos++;
+
+            if (buf[cursor_pos] != delimeter)
+                throw new InputNotAccepted();
+
+            int branch_num
+                    = Integer.parseInt(
+                    new String(buf, int_start, cursor_pos - int_start));
+
+            cursor_pos++;
+
+            return branch_num;
         }
 
         public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token();

@@ -6,9 +6,6 @@ import lib.tokens.enums.CopyType;
 public class LinkLegacy<T>
         extends LinkLegacyBase<T, LinkLegacy<T>>
 {
-    public T elem;
-    public LinkLegacy<T> next;
-
     public LinkLegacy() {
         elem = null;
         next = null;

@@ -47,7 +47,7 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
         if (type == CharBufferString.class)
             return (STRING_TYPE) get_CharBufferString(start, end);
         else if (type == String.class)
-            return (STRING_TYPE)get_String(start, end);
+            return (STRING_TYPE) get_String(start, end);
 
         return null;
     }
@@ -57,7 +57,7 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
     }
 
     public String get_String(int start, int end) {
-        return new String(buf, start, end);
+        return new String(buf, start, end - start);
     }
 
     // =========================================================================================
