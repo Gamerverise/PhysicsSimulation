@@ -49,8 +49,8 @@ public class InputSpec {
         for (Atom atom : atoms)
             init(parse_name, prompt, atom);
 
-        for (int intejer : ints)
-            init(parse_name, prompt, intejer);
+        for (int integer : ints)
+            init(parse_name, prompt, integer);
 
         for (Float flote : floats)
             init(parse_name, prompt, flote);
@@ -70,8 +70,8 @@ public class InputSpec {
                     init(parse_name, prompt, atom);
 
             if (sub_var_args.type_ish() == Integer.class)
-                for (Integer intejer : (Integer[]) sub_var_args.array)
-                    init(parse_name, prompt, intejer);
+                for (Integer integer : (Integer[]) sub_var_args.array)
+                    init(parse_name, prompt, integer);
 
             if (sub_var_args.type_ish() == Float.class)
                 for (Float flote : (Float[]) sub_var_args.array)

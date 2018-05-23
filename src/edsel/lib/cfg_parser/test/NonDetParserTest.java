@@ -6,6 +6,7 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
+import lib.java_lang_extensions.mutable.MutableInt;
 
 public class NonDetParserTest {
     public static void main(String[] args) {
@@ -15,10 +16,12 @@ public class NonDetParserTest {
 
         RegexParser parser = new RegexParser();
 
+        MutableInt num_branches_explored = new MutableInt(0);
+
         try {
             Reduction<RegexProductionID> reduction;
 
-            reduction = parser.parse_recursive(filename);
+            reduction = parser.parse_recursive(filename, num_branches_explored);
 
             if (reduction != null)
                 System.out.print(reduction.print(0));

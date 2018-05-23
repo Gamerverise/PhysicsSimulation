@@ -6,7 +6,7 @@ import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.parse_node.Reduction;
-import lib.tokens.enums.CopyType;
+import lib.java_lang_extensions.mutable.MutableInt;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
@@ -24,11 +24,11 @@ public class RegexParser extends
     }
 
     public Reduction<RegexProductionID>
-    parse_recursive(String filename)
+    parse_recursive(String filename, MutableInt num_branches_explored)
             throws AmbiguousParserInput, InputNotAccepted
     {
         RegexSymbolBuffer input = new RegexSymbolBuffer(filename);
-        return parse_recursive(start_production, input, 0);
+        return parse_recursive(start_production, input, num_branches_explored);
     }
 
     public static RegexParser RegexParser = new RegexParser();

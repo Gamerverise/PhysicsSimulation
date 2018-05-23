@@ -13,6 +13,9 @@ import edsel.lib.io.TokenBuffer;
 import jdk.internal.util.xml.impl.Input;
 import lib.data_structures.list.LinkedListLegacy;
 import lib.data_structures.list.link.LinkLegacy;
+import lib.java_lang_extensions.mutable.MutableInt;
+import lib.java_lang_extensions.parametrized_types.Instantiator;
+import lib.java_lang_extensions.tuples.Tuple;
 
 import java.util.Objects;
 
@@ -46,18 +49,30 @@ public abstract class CFG_Parser
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(String filename)
+    parse_recursive(String filename, MutableInt num_branches_explored)
             throws AmbiguousParserInput, InputNotAccepted;
 
-    public abstract Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(SymbolBuffer<SYMBOL_BUFFER_TYPE> input)
-            throws AmbiguousParserInput, InputNotAccepted;
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_recursive(SymbolBuffer<SYMBOL_BUFFER_TYPE> input, MutableInt num_branches_explored)
+            throws AmbiguousParserInput, InputNotAccepted
+    {
+        return parse_recursive(start_production, input, num_branches_explored);
+    }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
-            int num_branches_explored
+            MutableInt num_branches_explored
+    )
+            throws AmbiguousParserInput, InputNotAccepted;
+
+    public abstract Reduction<ENUM_PRODUCTION_ID>
+    parse_branch_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
+            MutableInt num_branches_explored
     )
             throws AmbiguousParserInput, InputNotAccepted;
 

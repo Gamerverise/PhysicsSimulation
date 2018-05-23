@@ -6,10 +6,11 @@ public enum RestrictionMode {
 
     TERMINAL_RESTRICTION('='),
 
-    PREFIX_RESTRICTION('~'),        // Not yet implemented
+    PREFIX_RESTRICTION('~'),
     PRODUCTION_RESTRICTION('#'),
     SUFFIX_RESTRICTION('.'),        // Not yet implemented
 
+    BRANCH_PREFIX_RESTRICTION('&'),
     BRANCH_RESTRICTION('/'),
 
     END_RESTRICTION(')');
@@ -38,6 +39,7 @@ public enum RestrictionMode {
         mode_table[PRODUCTION_RESTRICTION.chr] = PRODUCTION_RESTRICTION;
         mode_table[SUFFIX_RESTRICTION.chr] = SUFFIX_RESTRICTION;
 
+        mode_table[BRANCH_PREFIX_RESTRICTION.chr] = BRANCH_PREFIX_RESTRICTION;
         mode_table[BRANCH_RESTRICTION.chr] = BRANCH_RESTRICTION;
     }
 }
