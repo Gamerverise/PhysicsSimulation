@@ -36,6 +36,8 @@ public abstract class CFG_Parser
     public CFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
     public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[]      terminals;
 
+    public SYMBOL_BUFFER_TYPE input;
+
     @SafeVarargs
     public CFG_Parser(
             CFG_Production<ENUM_PRODUCTION_ID>                      start_production,
@@ -52,16 +54,16 @@ public abstract class CFG_Parser
             throws AmbiguousParserInput, InputNotAccepted;
 
     public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(SymbolBuffer<SYMBOL_BUFFER_TYPE> input, MutableInt num_branches_explored)
+    parse_recursive(SYMBOL_BUFFER_TYPE input, MutableInt num_branches_explored)
             throws AmbiguousParserInput, InputNotAccepted
     {
-        return parse_recursive(start_production, input, num_branches_explored);
+        this.input = input;
+        return parse_recursive(start_production, num_branches_explored);
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
-            SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
             MutableInt num_branches_explored
     )
             throws AmbiguousParserInput, InputNotAccepted;
@@ -70,7 +72,6 @@ public abstract class CFG_Parser
     parse_branch_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             int branch_num,
-            SymbolBuffer<SYMBOL_BUFFER_TYPE> input,
             MutableInt num_branches_explored
     )
             throws AmbiguousParserInput, InputNotAccepted;
@@ -211,6 +212,8 @@ public abstract class CFG_Parser
 
                     } else if (op_char == PRODUCTION_PREFIX_RESTRICTION.chr) {
 
+                        restriction_nesting_level++;
+
                         CFG_Production<ENUM_PRODUCTION_ID>
                                 production
                                 =
@@ -219,7 +222,7 @@ public abstract class CFG_Parser
 
                         return new ProductionRestriction<>(production, PREFIX_MODE);
 
-                    } else if (op_char == PRODUCTION_RESTRICTION.chr) {
+                    } else if (op_char == PRODUCTION_EXACT_RESTRICTION.chr) {
 
                         CFG_Production<ENUM_PRODUCTION_ID>
                                 production
@@ -241,7 +244,7 @@ public abstract class CFG_Parser
 
                         return new BranchRestriction<>(production, branch_num, PREFIX_MODE);
 
-                    } else if (op_char == BRANCH_RESTRICTION.chr) {
+                    } else if (op_char == BRANCH_EXACT_RESTRICTION.chr) {
 
                         CFG_Production<ENUM_PRODUCTION_ID>
                                 production

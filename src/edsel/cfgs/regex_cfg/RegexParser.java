@@ -28,7 +28,7 @@ public class RegexParser extends
             throws AmbiguousParserInput, InputNotAccepted
     {
         RegexSymbolBuffer input = new RegexSymbolBuffer(filename);
-        return parse_recursive(start_production, input, num_branches_explored);
+        return parse_recursive(start_production, num_branches_explored);
     }
 
     public static RegexParser RegexParser = new RegexParser();

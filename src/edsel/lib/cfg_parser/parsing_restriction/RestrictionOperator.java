@@ -1,20 +1,20 @@
 package edsel.lib.cfg_parser.parsing_restriction;
 
-import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
-import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
-
 public enum RestrictionOperator {
 
     RESTRICTION_ESCAPE('\\'),
 
+    GATE_RESTRICTION('#'),
+
     TERMINAL_RESTRICTION('='),
 
     PRODUCTION_PREFIX_RESTRICTION('~'),
-    PRODUCTION_RESTRICTION('#'),
-    SUFFIX_RESTRICTION('.'),        // Not yet implemented
+    PRODUCTION_EXACT_RESTRICTION('#'),
+    PRODUCTION_SUFFIX_RESTRICTION('.'),     // Not yet implemented
 
     BRANCH_PREFIX_RESTRICTION('&'),
-    BRANCH_RESTRICTION('/'),
+    BRANCH_EXACT_RESTRICTION('/'),
+    BRANCH_SUFFIX_RESTRICTION('.'),         // Not yet implemented
 
     END_RESTRICTION(')');
 
@@ -39,10 +39,10 @@ public enum RestrictionOperator {
         op_table[TERMINAL_RESTRICTION.chr] = TERMINAL_RESTRICTION;
 
         op_table[PRODUCTION_PREFIX_RESTRICTION.chr] = PRODUCTION_PREFIX_RESTRICTION;
-        op_table[PRODUCTION_RESTRICTION.chr] = PRODUCTION_RESTRICTION;
-        op_table[SUFFIX_RESTRICTION.chr] = SUFFIX_RESTRICTION;
+        op_table[PRODUCTION_EXACT_RESTRICTION.chr] = PRODUCTION_EXACT_RESTRICTION;
+        op_table[BRANCH_SUFFIX_RESTRICTION.chr] = BRANCH_SUFFIX_RESTRICTION;
 
         op_table[BRANCH_PREFIX_RESTRICTION.chr] = BRANCH_PREFIX_RESTRICTION;
-        op_table[BRANCH_RESTRICTION.chr] = BRANCH_RESTRICTION;
+        op_table[BRANCH_EXACT_RESTRICTION.chr] = BRANCH_EXACT_RESTRICTION;
     }
 }
