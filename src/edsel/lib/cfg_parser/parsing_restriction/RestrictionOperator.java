@@ -4,6 +4,9 @@ public enum RestrictionOperator {
 
     RESTRICTION_ESCAPE('\\'),
 
+    BEGIN_RESTRICTION('('),
+    END_RESTRICTION(')'),
+
     GATE_RESTRICTION('#'),
 
     TERMINAL_RESTRICTION('='),
@@ -16,7 +19,7 @@ public enum RestrictionOperator {
     BRANCH_EXACT_RESTRICTION('/'),
     BRANCH_SUFFIX_RESTRICTION('.'),         // Not yet implemented
 
-    END_RESTRICTION(')');
+    RESTRICTION_CLAUSE_DELIMITER(':');
 
     public char chr;
 

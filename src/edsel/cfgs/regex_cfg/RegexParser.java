@@ -27,7 +27,7 @@ public class RegexParser extends
     parse_recursive(String filename, MutableInt num_branches_explored)
             throws AmbiguousParserInput, InputNotAccepted
     {
-        RegexSymbolBuffer input = new RegexSymbolBuffer(filename);
+        input = new RegexSymbolBuffer(filename);
         return parse_recursive(start_production, num_branches_explored);
     }
 
@@ -55,29 +55,24 @@ public class RegexParser extends
 
             char next_char = (char) buf[cursor_pos];
 
-            RegexTerminalID next_id;
-
-            if (next_char == OP.character)
-                next_id = OP.id;
-
-            else if (next_char == CP.character)
-                next_id = CP.id;
-
-            else if (next_char == VB.character)
-                next_id = VB.id;
-
-            else if (next_char == ST.character)
-                next_id = ST.id;
-
-            else if (next_char == UB.character)
-                next_id = UB.id;
-
-            else
-                next_id = LITERAL.id;
-
             CharBufferString tok_string = new CharBufferString(cursor_pos, cursor_pos + 1);
 
-            return new RegexToken(next_id, next_char, tok_string);
+            if (next_char == OP.character)
+                return OP.reduce(tok_string);
+
+            else if (next_char == CP.character)
+                return CP.reduce(tok_string);
+
+            else if (next_char == VB.character)
+                return VB.reduce(tok_string);
+
+            else if (next_char == ST.character)
+                return ST.reduce(tok_string);
+
+            else if (next_char == UB.character)
+                return UB.reduce(tok_string);
+            else
+                return LITERAL.reduce(tok_string);
         }
     }
 }

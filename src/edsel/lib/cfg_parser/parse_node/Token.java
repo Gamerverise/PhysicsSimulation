@@ -1,6 +1,6 @@
 package edsel.lib.cfg_parser.parse_node;
 
-import edsel.lib.cfg_parser.CFG_Parser.SymbolBufferSymbol;
+import edsel.lib.cfg_parser.SymbolBufferSymbol;
 import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 

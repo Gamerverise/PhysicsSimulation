@@ -4,15 +4,14 @@ import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.CFG_Parser;
+import edsel.lib.cfg_parser.SymbolBufferSymbol;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
-import edsel.lib.cfg_parser.parsing_restriction.BranchRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.EndRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.TerminalRestriction;
+import edsel.lib.cfg_parser.parsing_restriction.*;
+import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import lib.java_lang_extensions.mutable.MutableInt;
 
@@ -39,9 +38,9 @@ class NonDetParser
 
     @SafeVarargs
     public NonDetParser(
-            CFG_Production<ENUM_PRODUCTION_ID>                      start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>[]                    productions,
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>...     terminals)
+            CFG_Production<ENUM_PRODUCTION_ID>                                          start_production,
+            CFG_Production<ENUM_PRODUCTION_ID>[]                                        productions,
+            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>...     terminals)
     {
         super(start_production, productions, terminals);
     }
@@ -98,6 +97,8 @@ class NonDetParser
             SymbolBufferSymbol cur_symbol = input.next_symbol();
 
             if (cur_symbol == null)
+                return null;
+            else if (cur_symbol instanceof GateRestriction)
                 return null;
             else {
 
@@ -164,12 +165,14 @@ class NonDetParser
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token
                                 = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_symbol;
 
-                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cur_expected_terminal
-                                = (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_expected_symbol;
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                                cur_expected_terminal
+                                =
+                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>)
+                                        cur_expected_symbol;
 
                         if (token.id == cur_expected_terminal.id) {
 
-                            cur_expected_terminal.reduce(token);
                             sub_reductions[j] = token;
                         } else
                             return null;

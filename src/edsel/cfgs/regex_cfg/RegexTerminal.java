@@ -2,11 +2,12 @@ package edsel.cfgs.regex_cfg;
 
 import edsel.lib.cfg_model.CFG_Terminal;
 import edsel.lib.cfg_parser.parse_node.Token;
+import edsel.lib.io.CharBuffer;
 
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
 public class RegexTerminal
-        extends CFG_Terminal<RegexTerminalID, Character>
+        extends CFG_Terminal<RegexTerminalID, Character, RegexParser.RegexSymbolBuffer>
 {
     public char character;
 
@@ -15,9 +16,10 @@ public class RegexTerminal
         character = pattern.charAt(0);
     }
 
-    public void reduce(Token<RegexTerminalID, Character> tok)
+    public RegexToken reduce(CharBuffer.CharBufferString str)
     {
-        tok.value = tok.src_string.get_string().charAt(0);
+
+        return new RegexToken(id, str.get_first_char(), str);
     }
 
     // =========================================================================================

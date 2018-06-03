@@ -8,6 +8,7 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.*;
+import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
@@ -32,17 +33,17 @@ public abstract class CFG_Parser
                                         TOKEN_VALUE_TYPE,
                                         SYMBOL_BUFFER_TYPE>.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
 {
-    public CFG_Production<ENUM_PRODUCTION_ID>                      start_production;
-    public CFG_Production<ENUM_PRODUCTION_ID>[]                    productions;
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[]      terminals;
+    public CFG_Production<ENUM_PRODUCTION_ID>                                       start_production;
+    public CFG_Production<ENUM_PRODUCTION_ID>[]                                     productions;
+    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>[]   terminals;
 
     public SYMBOL_BUFFER_TYPE input;
 
     @SafeVarargs
     public CFG_Parser(
-            CFG_Production<ENUM_PRODUCTION_ID>                      start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>[]                    productions,
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>...     terminals)
+            CFG_Production<ENUM_PRODUCTION_ID>                                          start_production,
+            CFG_Production<ENUM_PRODUCTION_ID>[]                                        productions,
+            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>...     terminals)
     {
         this.start_production = start_production;
         this.productions = productions;
@@ -86,19 +87,17 @@ public abstract class CFG_Parser
         return null;
     }
 
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
     get_terminal(CharBufferString terminal_name)
     {
         String terminal_name_str = terminal_name.get_string();
 
-        for(CFG_Terminal<ENUM_TERMINAL_ID,  TOKEN_VALUE_TYPE> terminal : terminals)
+        for(CFG_Terminal<ENUM_TERMINAL_ID,  TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE> terminal : terminals)
             if (Objects.equals(terminal_name_str, terminal.name))
                 return terminal;
 
         return null;
     }
-
-    public interface SymbolBufferSymbol {}
 
     public abstract
     class SymbolBuffer
@@ -176,14 +175,14 @@ public abstract class CFG_Parser
 
             char next_char = (char) buf[cursor_pos];
 
-            if (next_char == ')') {
+            if (next_char == END_RESTRICTION.chr) {
                 if (restriction_nesting_level > 0) {
 
                     restriction_nesting_level -= 1;
                     cursor_pos++;
                     return new EndRestriction();
                 }
-            } else if (next_char == '(') {
+            } else if (next_char == BEGIN_RESTRICTION.chr) {
 
                 if (cursor_pos + 1 < buf.length) {
 
@@ -191,10 +190,10 @@ public abstract class CFG_Parser
 
                     if (op_char == TERMINAL_RESTRICTION.chr) {
 
-                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
                                 terminal
                                 =
-                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>)
+                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>)
                                         get_restriction(TerminalRestriction.class, ':');
 
                         if (terminal == null)
@@ -202,62 +201,52 @@ public abstract class CFG_Parser
 
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token = next_token();
 
-                        if (next_token().id == terminal.id && buf[cursor_pos] == ')') {
+                        if (next_token().id == terminal.id && buf[cursor_pos] == END_RESTRICTION.chr) {
 
                             cursor_pos++;
-                            return new TerminalRestriction<>(next_token);
+                            return next_token;
                         }
 
                         throw new InputNotAccepted();
 
-                    } else if (op_char == PRODUCTION_PREFIX_RESTRICTION.chr) {
-
+                    } else if (op_char == PRODUCTION_PREFIX_RESTRICTION.chr
+                            | op_char == PRODUCTION_EXACT_RESTRICTION.chr
+                            | op_char == BRANCH_PREFIX_RESTRICTION.chr
+                            | op_char == BRANCH_EXACT_RESTRICTION.chr)
+                    {
                         restriction_nesting_level++;
 
                         CFG_Production<ENUM_PRODUCTION_ID>
                                 production
                                 =
                                 (CFG_Production<ENUM_PRODUCTION_ID>)
-                                        get_restriction(ProductionRestriction.class, ')');
+                                        get_restriction(
+                                                ProductionRestriction.class,
+                                                RESTRICTION_CLAUSE_DELIMITER.chr);
 
-                        return new ProductionRestriction<>(production, PREFIX_MODE);
+                        if (op_char == PRODUCTION_PREFIX_RESTRICTION.chr)
+                            return new ProductionRestriction<>(production, PREFIX_MODE);
 
-                    } else if (op_char == PRODUCTION_EXACT_RESTRICTION.chr) {
+                        else if (op_char == PRODUCTION_EXACT_RESTRICTION.chr)
+                            return new ProductionRestriction<>(production, EXACT_MODE);
 
-                        CFG_Production<ENUM_PRODUCTION_ID>
-                                production
-                                =
-                                (CFG_Production<ENUM_PRODUCTION_ID>)
-                                        get_restriction(ProductionRestriction.class, ':');
+                        else if (op_char == BRANCH_PREFIX_RESTRICTION.chr
+                                | op_char == BRANCH_EXACT_RESTRICTION.chr)
+                        {
+                            int branch_num = lex_nonzero_int(RESTRICTION_CLAUSE_DELIMITER.chr);
 
-                        return new ProductionRestriction<>(production, EXACT_MODE);
+                            if (op_char == BRANCH_PREFIX_RESTRICTION.chr)
+                                return new BranchRestriction<>(production, branch_num, PREFIX_MODE);
 
-                    } else if (op_char == BRANCH_PREFIX_RESTRICTION.chr) {
-
-                        CFG_Production<ENUM_PRODUCTION_ID>
-                                production
-                                =
-                                (CFG_Production<ENUM_PRODUCTION_ID>)
-                                        get_restriction(ProductionRestriction.class, ':');
-
-                        int branch_num = lex_nonzero_int(')');
-
-                        return new BranchRestriction<>(production, branch_num, PREFIX_MODE);
-
-                    } else if (op_char == BRANCH_EXACT_RESTRICTION.chr) {
-
-                        CFG_Production<ENUM_PRODUCTION_ID>
-                                production
-                                =
-                                (CFG_Production<ENUM_PRODUCTION_ID>)
-                                        get_restriction(ProductionRestriction.class, ':');
-
-                        int branch_num = lex_nonzero_int(':');
-
-                        return new BranchRestriction<>(production, branch_num, EXACT_MODE);
+                            else if (op_char == BRANCH_EXACT_RESTRICTION.chr)
+                                return new BranchRestriction<>(production, branch_num, EXACT_MODE);
+                        }
                     }
                 }
+            } else if (next_char == GATE_RESTRICTION.chr) {
+                return new GateRestriction();
             }
+
             return next_token();
         }
 
@@ -307,8 +296,6 @@ public abstract class CFG_Parser
 
             return branch_num;
         }
-
-        public abstract Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token();
 
         public void eat_separators() {
             while (cursor_pos < buf.length)

@@ -26,7 +26,7 @@ Instantiator<INSTANCE_TYPE>
 
     // =========================================================================================
 
-    static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>
+    public static <RAW_TYPE, PARAMETRIZED_TYPE extends RAW_TYPE>
     PARAMETRIZED_TYPE static_new_instance(Class<RAW_TYPE> runtime_type, Object... args) {
         PARAMETRIZED_TYPE copy;
 
