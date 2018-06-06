@@ -17,6 +17,7 @@ import lib.data_structures.list.link.LinkLegacy;
 import lib.java_lang_extensions.mutable.MutableInt;
 
 import java.util.Objects;
+import java.util.Stack;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.*;
 import static edsel.lib.cfg_parser.parsing_restriction.RestrictionOperator.*;
@@ -107,13 +108,8 @@ public abstract class CFG_Parser
     {
         // =========================================================================================
 
-        LinkLegacy<SymbolBufferSymbol> symbol_cursor;
-
-        int restriction_nesting_level = 0;
-
         public LinkedListLegacy<SymbolBufferSymbol> symbol_buffer = new LinkedListLegacy<>();
-
-        public LinkedListLegacy<LinkLegacy<SymbolBufferSymbol>> save_queue = new LinkedListLegacy<>();
+        public Stack<SymbolBufferState> save_stack = new Stack<>();
 
         // =========================================================================================
 
@@ -127,23 +123,45 @@ public abstract class CFG_Parser
                 throws InputNotAccepted
         {
             super(filename, separator_chars);
+            save_stack.push(new SymbolBufferState());
         }
 
         // =========================================================================================
 
         public void save() {
-            save_queue.push(symbol_cursor);
+            save_stack.push(new SymbolBufferState(save_stack.peek()));
         }
 
         public void restore()
         {
-            symbol_cursor = save_queue.pop();
+            save_stack.pop();
+        }
+
+        public LinkLegacy<SymbolBufferSymbol> get_symbol_cursor() {
+            return save_stack.peek().symbol_cursor;
+        }
+
+        public void set_symbol_cursor(LinkLegacy<SymbolBufferSymbol> symbol_cursor) {
+            save_stack.peek().symbol_cursor = symbol_cursor;
+        }
+
+        public int get_nesting_level() {
+            return save_stack.peek().restriction_nesting_level;
+        }
+
+        public int inc_nesting_level() {
+            return save_stack.peek().restriction_nesting_level++;
+        }
+
+        public int dec_nesting_level() {
+            return save_stack.peek().restriction_nesting_level--;
         }
 
         public SymbolBufferSymbol next_symbol()
                 throws InputNotAccepted
         {
             SymbolBufferSymbol next_sym;
+            LinkLegacy<SymbolBufferSymbol> symbol_cursor = get_symbol_cursor();
 
             if (symbol_cursor == null) {
                 next_sym = lex_next_symbol();
@@ -152,7 +170,8 @@ public abstract class CFG_Parser
                     return null;
 
                 symbol_buffer.append(next_sym);
-                symbol_cursor = symbol_buffer.tail;
+                set_symbol_cursor(symbol_buffer.tail);
+
                 return symbol_cursor.elem;
             } else {
                 SymbolBufferSymbol cur = symbol_cursor.elem;
@@ -167,20 +186,20 @@ public abstract class CFG_Parser
             eat_separators();
 
             if (cursor_pos >= buf.length) {
-                if (restriction_nesting_level > 0)
+                if (get_nesting_level() > 0)
                     throw new InputNotAccepted();
                 else
                     return null;
             }
 
+            Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token = next_token();
             char next_char = (char) buf[cursor_pos];
 
             if (next_char == END_RESTRICTION.chr) {
-                if (restriction_nesting_level > 0) {
+                if (get_nesting_level() > 0) {
 
-                    restriction_nesting_level -= 1;
+                    dec_nesting_level();
                     cursor_pos++;
-                    return new EndRestriction();
                 }
             } else if (next_char == BEGIN_RESTRICTION.chr) {
 
@@ -189,6 +208,8 @@ public abstract class CFG_Parser
                     char op_char = (char) buf[cursor_pos + 1];
 
                     if (op_char == TERMINAL_RESTRICTION.chr) {
+
+                        cursor_pos += 2;
 
                         CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
                                 terminal
@@ -201,9 +222,12 @@ public abstract class CFG_Parser
 
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> next_token = next_token();
 
-                        if (next_token().id == terminal.id && buf[cursor_pos] == END_RESTRICTION.chr) {
+                        if (next_token.id == terminal.id) {
+                            if (buf[cursor_pos] == END_RESTRICTION.chr)
+                                cursor_pos++;
 
-                            cursor_pos++;
+                            symbol_buffer.ap
+
                             return next_token;
                         }
 
@@ -214,7 +238,9 @@ public abstract class CFG_Parser
                             | op_char == BRANCH_PREFIX_RESTRICTION.chr
                             | op_char == BRANCH_EXACT_RESTRICTION.chr)
                     {
-                        restriction_nesting_level++;
+                        inc_nesting_level();
+
+                        cursor_pos += 2;
 
                         CFG_Production<ENUM_PRODUCTION_ID>
                                 production
@@ -233,7 +259,7 @@ public abstract class CFG_Parser
                         else if (op_char == BRANCH_PREFIX_RESTRICTION.chr
                                 | op_char == BRANCH_EXACT_RESTRICTION.chr)
                         {
-                            int branch_num = lex_nonzero_int(RESTRICTION_CLAUSE_DELIMITER.chr);
+                            int branch_num = lex_non_negative_int(RESTRICTION_CLAUSE_DELIMITER.chr);
 
                             if (op_char == BRANCH_PREFIX_RESTRICTION.chr)
                                 return new BranchRestriction<>(production, branch_num, PREFIX_MODE);
@@ -254,8 +280,6 @@ public abstract class CFG_Parser
         get_restriction(Class<? extends ParsingRestriction> restriction_type, char delimeter)
                 throws InputNotAccepted
         {
-            cursor_pos += 2;
-
             int restriction_name_start = cursor_pos;
 
             while (cursor_pos < buf.length && buf[cursor_pos] != delimeter)
@@ -277,7 +301,7 @@ public abstract class CFG_Parser
             throw new InputNotAccepted();
         }
 
-        public int lex_nonzero_int(char delimeter)
+        public int lex_non_negative_int(char delimeter)
                 throws InputNotAccepted
         {
             int int_start = cursor_pos;
@@ -311,6 +335,61 @@ public abstract class CFG_Parser
                     return true;
 
             return false;
+        }
+
+//        public
+//        class ParsingState
+//        {
+//            public Stack<PrefixInfo> prefix_info_stack = new Stack<>();
+//
+//            public void save() {
+//                input.save();
+//
+//                PrefixInfo top = prefix_info_stack.peek();
+//                prefix_info_stack.push(new PrefixInfo(top));
+//            }
+//
+//            public void restore() {
+//                input.restore();
+//                prefix_info_stack.pop();
+//            }
+//
+//            public int get_in_progress() {
+//                return prefix_info_stack.peek().num_prefixes_in_progress;
+//            }
+//
+//            public void inc_prefixes_in_progress() {
+//                prefix_info_stack.peek().num_prefixes_in_progress++;
+//            }
+//
+//            public void inc_prefixes_to_retire() {
+//                prefix_info_stack.peek().num_prefixes_to_retire++;
+//            }
+//
+//            public boolean retire_prefix() {
+//                PrefixInfo top = prefix_info_stack.peek();
+//
+//                if (top.num_prefixes_in_progress > 0) {
+//                    top.num_prefixes_in_progress--;
+//                    return true;
+//                }
+//
+//                return false;
+//            }
+//        }
+    }
+
+    public static
+    class SymbolBufferState
+    {
+        LinkLegacy<SymbolBufferSymbol> symbol_cursor = null;
+        int restriction_nesting_level = 0;
+
+        public SymbolBufferState() {}
+
+        public SymbolBufferState(SymbolBufferState state) {
+            symbol_cursor = state.symbol_cursor;
+            restriction_nesting_level = state.restriction_nesting_level;
         }
     }
 }

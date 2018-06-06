@@ -56,6 +56,7 @@ public class RegexParser extends
             char next_char = (char) buf[cursor_pos];
 
             CharBufferString tok_string = new CharBufferString(cursor_pos, cursor_pos + 1);
+            cursor_pos++;
 
             if (next_char == OP.character)
                 return OP.reduce(tok_string);
