@@ -1,12 +1,7 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
-import edsel.lib.cfg_parser.CFG_Parser;
-import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
-import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
-import edsel.lib.cfg_parser.parse_node.Reduction;
-import lib.java_lang_extensions.mutable.MutableInt;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
@@ -23,25 +18,21 @@ public class RegexParser extends
                 OP, CP, VB, ST, UB, LITERAL);
     }
 
-    public Reduction<RegexProductionID>
-    parse_recursive(String filename, MutableInt num_branches_explored)
-            throws AmbiguousParserInput, InputNotAccepted
-    {
-        input = new RegexSymbolBuffer(filename);
-        return parse_recursive(start_production, num_branches_explored);
+    public RegexSymbolBuffer get_new_input(String filename) {
+        return new RegexSymbolBuffer(filename);
+    }
+
+    public ParsingState get_new_parsing_state(RegexSymbolBuffer input) {
+        return new ParsingState(input);
     }
 
     public static RegexParser RegexParser = new RegexParser();
 
     public class
     RegexSymbolBuffer extends
-            CFG_Parser<RegexProductionID,
-                            RegexTerminalID,
-                            Character,
-                            RegexSymbolBuffer>.SymbolBuffer<RegexSymbolBuffer>
+            SymbolBuffer
     {
         public RegexSymbolBuffer(String filename)
-                throws InputNotAccepted
         {
             super(filename);
         }

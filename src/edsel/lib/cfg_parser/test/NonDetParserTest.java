@@ -21,7 +21,7 @@ public class NonDetParserTest {
         try {
             Reduction<RegexProductionID> reduction;
 
-            reduction = parser.parse_recursive(filename, num_branches_explored);
+            reduction = parser.parse_recursive(filename);
 
             if (reduction != null)
                 System.out.print(reduction.print(0));

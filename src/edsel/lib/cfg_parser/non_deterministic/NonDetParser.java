@@ -16,7 +16,8 @@ import edsel.lib.cfg_parser.parsing_restriction.GateRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
-import lib.java_lang_extensions.mutable.MutableInt;
+
+import java.util.Stack;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
@@ -27,11 +28,7 @@ class NonDetParser
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE,
                 SYMBOL_BUFFER_TYPE extends
-                        CFG_Parser
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE>.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
+                        CFG_Parser.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
     extends
         CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
 {
@@ -48,7 +45,8 @@ class NonDetParser
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
-            MutableInt num_branches_explored
+            NonDetParser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    .ParsingState state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -56,18 +54,12 @@ class NonDetParser
 
         for (int i = 0; i < production.rhs.length; i++) {
 
-            input.save();
+            state.save();
 
-            Reduction<ENUM_PRODUCTION_ID>
-                    tmp_reduction
-                    =
-                    parse_branch_recursive(
-                            production,
-                            i,
-                            num_branches_explored);
+            Reduction<ENUM_PRODUCTION_ID> tmp_reduction = parse_branch_recursive(production, i, state);
 
             if (tmp_reduction == null) {
-                input.restore();
+                state.restore();
             } else if (reduction == null)
                     reduction = tmp_reduction;
             else
@@ -81,11 +73,12 @@ class NonDetParser
     parse_branch_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             int branch_num,
-            MutableInt num_branches_explored
+            NonDetParser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    .ParsingState state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-        num_branches_explored.value++;
+        state.num_branches_explored++;
 
         CFG_Symbol[] cur_branch = production.rhs[branch_num];
 
@@ -93,11 +86,13 @@ class NonDetParser
 
         for (int j = 0; j < cur_branch.length; j++) {
 
-            SymbolBufferSymbol cur_symbol = input.next_symbol();
+            SymbolBufferSymbol cur_symbol = state.input.next_symbol();
 
             if (cur_symbol == null)
                 return null;
             else if (cur_symbol instanceof GateRestriction)
+                return null;
+            else if (cur_symbol instanceof EndRestriction)
                 return null;
             else {
 
@@ -119,7 +114,7 @@ class NonDetParser
                         if (cur_expected_production.id == production_restriction.production.id) {
 
                             if (production_restriction.mode == PREFIX_MODE)
-                                input.inc_nesting_level();
+                                state.inc_prefixes_in_progress();
 
                             if (cur_symbol instanceof BranchRestriction) {
 
@@ -131,13 +126,13 @@ class NonDetParser
                                         parse_branch_recursive(
                                                 branch_restriction.production,
                                                 branch_restriction.branch_num,
-                                                num_branches_explored);
+                                                state);
                             } else
                                 sub_reductions[j]
                                         =
                                         parse_recursive(
                                                 production_restriction.production,
-                                                num_branches_explored);
+                                                state);
 
                             if (sub_reductions[j] == null)
                                 return null;
@@ -146,13 +141,13 @@ class NonDetParser
 
                         if (production_restriction.mode == EXACT_MODE) {
 
-                            cur_symbol = input.next_symbol();
+                            cur_symbol = state.input.next_symbol();
 
                             if (!(cur_symbol instanceof EndRestriction))
                                 return null;
                         }
                     } else
-                        parse_recursive(cur_expected_production, num_branches_explored);
+                        parse_recursive(cur_expected_production, state);
 
                 } else if (cur_expected_symbol instanceof CFG_Terminal) {
 
@@ -181,67 +176,77 @@ class NonDetParser
         }
 
         int src_text_start = sub_reductions[0].src_string.src_start;
-        int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
-        CharBufferString string = input.get_string(CharBufferString.class, src_text_start, src_text_end);
 
-        return production.reduce(branch_num, sub_reductions, num_branches_explored.value, string);
+        int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
+
+        CharBufferString
+                string = state.input.get_string(CharBufferString.class, src_text_start, src_text_end);
+
+        return production.reduce(branch_num, sub_reductions, state.num_branches_explored, string);
     }
 
-//    public static
-//    class PrefixInfo
-//    {
-//        public int num_prefixes_in_progress;
-//        public int num_prefixes_to_retire;
-//
+    public static
+    class PrefixInfo
+    {
+        public int num_prefixes_in_progress;
+        public int num_prefixes_to_retire;
+
 //        public PrefixInfo(int num_prefix_in_progress, int num_prefixes_to_retire) {
 //            this.num_prefixes_in_progress = num_prefix_in_progress;
 //            this.num_prefixes_to_retire = num_prefixes_to_retire;
 //        }
-//
-//        public PrefixInfo(PrefixInfo info) {
-//            num_prefixes_in_progress = info.num_prefixes_in_progress;
-//            num_prefixes_to_retire = info.num_prefixes_to_retire;
-//        }
-//    }
-//
-//    public
-//    class ParsingState
-//    {
-//        public Stack<PrefixInfo> prefix_info_stack = new Stack<>();
-//
-//        public void save() {
-//            input.save();
-//
-//            PrefixInfo top = prefix_info_stack.peek();
-//            prefix_info_stack.push(new PrefixInfo(top));
-//        }
-//
-//        public void restore() {
-//            input.restore();
-//            prefix_info_stack.pop();
-//        }
-//
-//        public int get_in_progress() {
-//            return prefix_info_stack.peek().num_prefixes_in_progress;
-//        }
-//
-//        public void inc_prefixes_in_progress() {
-//            prefix_info_stack.peek().num_prefixes_in_progress++;
-//        }
-//
-//        public void inc_prefixes_to_retire() {
-//            prefix_info_stack.peek().num_prefixes_to_retire++;
-//        }
-//
-//        public boolean retire_prefix() {
-//            PrefixInfo top = prefix_info_stack.peek();
-//
-//            if (top.num_prefixes_in_progress > 0) {
-//                top.num_prefixes_in_progress--;
-//                return true;
-//            }
-//
-//            return false;
-//        }
-//    }
+
+        public PrefixInfo(PrefixInfo info) {
+            num_prefixes_in_progress = info.num_prefixes_in_progress;
+            num_prefixes_to_retire = info.num_prefixes_to_retire;
+        }
+    }
+
+    public
+    class ParsingState
+            extends
+            edsel.lib.cfg_parser.ParsingState
+    {
+        public Stack<PrefixInfo> prefix_info_stack = new Stack<>();
+        int num_branches_explored = 0;
+
+        public ParsingState(SYMBOL_BUFFER_TYPE input) {
+            super(input);
+        }
+
+        public void save() {
+            input.save();
+
+            PrefixInfo top = prefix_info_stack.peek();
+            prefix_info_stack.push(new PrefixInfo(top));
+        }
+
+        public void restore() {
+            input.restore();
+            prefix_info_stack.pop();
+        }
+
+        public int get_prefixes_in_progress() {
+            return prefix_info_stack.peek().num_prefixes_in_progress;
+        }
+
+        public void inc_prefixes_in_progress() {
+            prefix_info_stack.peek().num_prefixes_in_progress++;
+        }
+
+        public void inc_prefixes_to_retire() {
+            prefix_info_stack.peek().num_prefixes_to_retire++;
+        }
+
+        public boolean retire_prefix() {
+            PrefixInfo top = prefix_info_stack.peek();
+
+            if (top.num_prefixes_in_progress > 0) {
+                top.num_prefixes_in_progress--;
+                return true;
+            }
+
+            return false;
+        }
+    }
 }
