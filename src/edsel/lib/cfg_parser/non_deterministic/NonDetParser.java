@@ -17,8 +17,6 @@ import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 
-import java.util.Stack;
-
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
 
@@ -28,7 +26,11 @@ class NonDetParser
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
                 TOKEN_VALUE_TYPE,
                 SYMBOL_BUFFER_TYPE extends
-                        CFG_Parser.SymbolBuffer<SYMBOL_BUFFER_TYPE>>
+                        CFG_Parser
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE>.SymbolBuffer>
     extends
         CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
 {
@@ -44,9 +46,10 @@ class NonDetParser
     @SuppressWarnings("unchecked")
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID> production,
-            NonDetParser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-                    .ParsingState state
+            CFG_Production<ENUM_PRODUCTION_ID>
+                    production,
+            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -73,8 +76,11 @@ class NonDetParser
     parse_branch_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             int branch_num,
-            NonDetParser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-                    .ParsingState state
+            NonDetParsingState
+                    <ENUM_PRODUCTION_ID,
+                            ENUM_TERMINAL_ID,
+                            TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -202,51 +208,4 @@ class NonDetParser
         }
     }
 
-    public
-    class ParsingState
-            extends
-            edsel.lib.cfg_parser.ParsingState
-    {
-        public Stack<PrefixInfo> prefix_info_stack = new Stack<>();
-        int num_branches_explored = 0;
-
-        public ParsingState(SYMBOL_BUFFER_TYPE input) {
-            super(input);
-        }
-
-        public void save() {
-            input.save();
-
-            PrefixInfo top = prefix_info_stack.peek();
-            prefix_info_stack.push(new PrefixInfo(top));
-        }
-
-        public void restore() {
-            input.restore();
-            prefix_info_stack.pop();
-        }
-
-        public int get_prefixes_in_progress() {
-            return prefix_info_stack.peek().num_prefixes_in_progress;
-        }
-
-        public void inc_prefixes_in_progress() {
-            prefix_info_stack.peek().num_prefixes_in_progress++;
-        }
-
-        public void inc_prefixes_to_retire() {
-            prefix_info_stack.peek().num_prefixes_to_retire++;
-        }
-
-        public boolean retire_prefix() {
-            PrefixInfo top = prefix_info_stack.peek();
-
-            if (top.num_prefixes_in_progress > 0) {
-                top.num_prefixes_in_progress--;
-                return true;
-            }
-
-            return false;
-        }
-    }
 }

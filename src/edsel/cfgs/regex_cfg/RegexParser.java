@@ -2,6 +2,7 @@ package edsel.cfgs.regex_cfg;
 
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
+import edsel.lib.cfg_parser.non_deterministic.NonDetParsingState;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
@@ -22,8 +23,11 @@ public class RegexParser extends
         return new RegexSymbolBuffer(filename);
     }
 
-    public ParsingState get_new_parsing_state(RegexSymbolBuffer input) {
-        return new ParsingState(input);
+    public
+    NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>
+    get_new_parsing_state(RegexSymbolBuffer input)
+    {
+        return new NonDetParsingState<>(input);
     }
 
     public static RegexParser RegexParser = new RegexParser();

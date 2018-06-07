@@ -26,11 +26,18 @@ import static edsel.lib.cfg_parser.parsing_restriction.RestrictionOperator.*;
 public abstract class CFG_Parser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                SYMBOL_BUFFER_TYPE extends
+                        CFG_Parser
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE>
+                                .SymbolBuffer>
 {
     public CFG_Production<ENUM_PRODUCTION_ID> start_production;
     public CFG_Production<ENUM_PRODUCTION_ID>[] productions;
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SymbolBuffer>[] terminals;
+    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>[] terminals;
 
     @SafeVarargs
     public CFG_Parser(
@@ -52,7 +59,9 @@ public abstract class CFG_Parser
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(ParsingState state)
+    parse_recursive(
+            ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE> state
+    )
             throws AmbiguousParserInput, InputNotAccepted
     {
         return parse_recursive(start_production, state);
@@ -98,7 +107,7 @@ public abstract class CFG_Parser
 
     public abstract class SymbolBuffer
             extends
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SymbolBuffer>
+            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
     {
         // =========================================================================================
 
