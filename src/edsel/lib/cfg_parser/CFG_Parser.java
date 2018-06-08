@@ -32,8 +32,16 @@ public abstract class CFG_Parser
                                 <ENUM_PRODUCTION_ID,
                                         ENUM_TERMINAL_ID,
                                         TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE>
-                                .SymbolBuffer>
+                                        SYMBOL_BUFFER_TYPE,
+                                        PARSING_STATE_TYPE>
+                                .SymbolBuffer,
+                PARSING_STATE_TYPE extends
+                        ParsingState
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE,
+                                        PARSING_STATE_TYPE>>
 {
     public CFG_Production<ENUM_PRODUCTION_ID> start_production;
     public CFG_Production<ENUM_PRODUCTION_ID>[] productions;
@@ -54,34 +62,36 @@ public abstract class CFG_Parser
             throws AmbiguousParserInput, InputNotAccepted
     {
         SYMBOL_BUFFER_TYPE input = get_new_input(filename);
-        ParsingState state = get_new_parsing_state(input);
+        PARSING_STATE_TYPE state = get_new_parsing_state(input);
         return parse_recursive(start_production, state);
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(
-            ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE> state
-    )
+    parse_recursive(PARSING_STATE_TYPE state)
             throws AmbiguousParserInput, InputNotAccepted
     {
         return parse_recursive(start_production, state);
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(CFG_Production<ENUM_PRODUCTION_ID> production,
-                    ParsingState state)
+    parse_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            PARSING_STATE_TYPE state
+    )
             throws AmbiguousParserInput, InputNotAccepted;
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
-    parse_branch_recursive(CFG_Production<ENUM_PRODUCTION_ID> production,
-                           int branch_num,
-                           ParsingState state)
-            throws AmbiguousParserInput, InputNotAccepted;
+    parse_branch_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            PARSING_STATE_TYPE state
+    )
+       throws AmbiguousParserInput, InputNotAccepted;
 
     // =========================================================================================
 
     public abstract SYMBOL_BUFFER_TYPE get_new_input(String filename);
-    public abstract ParsingState get_new_parsing_state(SYMBOL_BUFFER_TYPE input);
+    public abstract PARSING_STATE_TYPE get_new_parsing_state(SYMBOL_BUFFER_TYPE input);
 
     // =========================================================================================
 
@@ -160,7 +170,7 @@ public abstract class CFG_Parser
 
                 extend_symbol_buffer(next_sym);
 
-                return symbol_cursor.elem;
+                return next_sym;
             } else {
                 SymbolBufferSymbol cur = symbol_cursor.elem;
                 symbol_cursor = symbol_cursor.next;

@@ -1,6 +1,7 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
+import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParsingState;
 
@@ -9,7 +10,8 @@ import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexParser extends
-        NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>
+        NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer,
+                NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>
 {
     public RegexParser()
     {
@@ -34,7 +36,13 @@ public class RegexParser extends
 
     public class
     RegexSymbolBuffer extends
-            SymbolBuffer
+            CFG_Parser
+                    <RegexProductionID,
+                            RegexTerminalID,
+                            Character,
+                            RegexSymbolBuffer,
+                            NonDetParsingState
+                                    <RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>.SymbolBuffer
     {
         public RegexSymbolBuffer(String filename)
         {

@@ -14,14 +14,10 @@ public class NonDetParserTest {
         String filename = "C:\\home\\dad\\Gravity_Game\\Gravity_Game_IDEA\\src\\edsel\\lib\\cfg_parser\\test"
                 + "\\RegexParserTestData.txt";
 
-        RegexParser parser = new RegexParser();
-
-        MutableInt num_branches_explored = new MutableInt(0);
-
         try {
             Reduction<RegexProductionID> reduction;
 
-            reduction = parser.parse_recursive(filename);
+            reduction = RegexParser.RegexParser.parse_recursive(filename);
 
             if (reduction != null)
                 System.out.print(reduction.print(0));

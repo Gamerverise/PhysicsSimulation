@@ -14,7 +14,6 @@ import edsel.lib.cfg_parser.parsing_restriction.BranchRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.EndRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.GateRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
-import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
@@ -30,9 +29,29 @@ class NonDetParser
                                 <ENUM_PRODUCTION_ID,
                                         ENUM_TERMINAL_ID,
                                         TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE>.SymbolBuffer>
-    extends
-        CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                                        SYMBOL_BUFFER_TYPE,
+                                        NonDetParsingState
+                                                <ENUM_PRODUCTION_ID,
+                                                        ENUM_TERMINAL_ID,
+                                                        TOKEN_VALUE_TYPE,
+                                                        SYMBOL_BUFFER_TYPE>>.SymbolBuffer,
+                PARSING_STATE_TYPE extends
+                        NonDetParsingState
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE>>
+        extends
+        CFG_Parser
+                <ENUM_PRODUCTION_ID,
+                        ENUM_TERMINAL_ID,
+                        TOKEN_VALUE_TYPE,
+                        SYMBOL_BUFFER_TYPE,
+                        NonDetParsingState
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE>>
 {
     @SafeVarargs
     public NonDetParser(
@@ -46,10 +65,8 @@ class NonDetParser
     @SuppressWarnings("unchecked")
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-                    state
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            PARSING_STATE_TYPE state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -76,11 +93,7 @@ class NonDetParser
     parse_branch_recursive(
             CFG_Production<ENUM_PRODUCTION_ID> production,
             int branch_num,
-            NonDetParsingState
-                    <ENUM_PRODUCTION_ID,
-                            ENUM_TERMINAL_ID,
-                            TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-                    state
+            PARSING_STATE_TYPE state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -96,21 +109,29 @@ class NonDetParser
 
             if (cur_symbol == null)
                 return null;
-            else if (cur_symbol instanceof GateRestriction)
+
+            else if (cur_symbol instanceof GateRestriction && j != 0)
                 return null;
-            else if (cur_symbol instanceof EndRestriction)
-                return null;
-            else {
+
+            else if (cur_symbol instanceof EndRestriction) {
+
+                if (state.get_prefixes_in_progress() <= 0)
+                    return null;
+                else
+                    state.retire_prefix();
+            } else {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
 
                 if (cur_expected_symbol instanceof CFG_Production) {
 
-                    if (cur_symbol instanceof TerminalRestriction)
-                        return null;
-
                     CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
                             = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
+
+                    if (state.chk_consecutive_expected_production(cur_expected_production))
+                        return null;
+
+                    state.record_expected_symbol(cur_expected_production);
 
                     if (cur_symbol instanceof ProductionRestriction) {
 
@@ -145,7 +166,10 @@ class NonDetParser
                         } else
                             return null;
 
-                        if (production_restriction.mode == EXACT_MODE) {
+                        if (production_restriction.mode == PREFIX_MODE) {
+                            state.inc_prefixes_to_retire();
+
+                        } if (production_restriction.mode == EXACT_MODE) {
 
                             cur_symbol = state.input.next_symbol();
 
@@ -170,6 +194,7 @@ class NonDetParser
 
                         if (token.id == cur_expected_terminal.id) {
 
+                            state.record_expected_symbol(cur_expected_terminal);
                             sub_reductions[j] = token;
                         } else
                             return null;
@@ -189,23 +214,6 @@ class NonDetParser
                 string = state.input.get_string(CharBufferString.class, src_text_start, src_text_end);
 
         return production.reduce(branch_num, sub_reductions, state.num_branches_explored, string);
-    }
-
-    public static
-    class PrefixInfo
-    {
-        public int num_prefixes_in_progress;
-        public int num_prefixes_to_retire;
-
-//        public PrefixInfo(int num_prefix_in_progress, int num_prefixes_to_retire) {
-//            this.num_prefixes_in_progress = num_prefix_in_progress;
-//            this.num_prefixes_to_retire = num_prefixes_to_retire;
-//        }
-
-        public PrefixInfo(PrefixInfo info) {
-            num_prefixes_in_progress = info.num_prefixes_in_progress;
-            num_prefixes_to_retire = info.num_prefixes_to_retire;
-        }
     }
 
 }

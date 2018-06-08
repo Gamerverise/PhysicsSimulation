@@ -1,6 +1,7 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.iter.LinkedListIterator;
+import lib.data_structures.list.link.LinkLegacy;
 import lib.data_structures.list.link.LinkLegacyBase;
 import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
@@ -135,6 +136,11 @@ class LinkedListLegacyBase
         length = n;
 
         return end_part;
+    }
+
+    public void truncate(LINK_TYPE link) {
+        tail = link;
+        link.next = null;
     }
 
     // =========================================================================================

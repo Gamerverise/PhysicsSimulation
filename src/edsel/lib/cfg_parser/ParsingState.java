@@ -9,8 +9,16 @@ public class ParsingState
                                 <ENUM_PRODUCTION_ID,
                                         ENUM_TERMINAL_ID,
                                         TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE>
-                                .SymbolBuffer>
+                                        SYMBOL_BUFFER_TYPE,
+                                        PARSING_STATE_TYPE>
+                                .SymbolBuffer,
+                PARSING_STATE_TYPE extends
+                        ParsingState
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE,
+                                        PARSING_STATE_TYPE>>
 {
     public SYMBOL_BUFFER_TYPE input;
 
