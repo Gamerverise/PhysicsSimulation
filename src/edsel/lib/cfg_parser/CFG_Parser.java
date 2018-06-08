@@ -151,6 +151,10 @@ public abstract class CFG_Parser
             return save_stack.peek().symbol_cursor;
         }
 
+        public void set_symbol_cursor(LinkLegacy<SymbolBufferSymbol> link) {
+            save_stack.peek().symbol_cursor = link;
+        }
+
         public void extend_symbol_buffer(SymbolBufferSymbol symbol) {
             symbol_buffer.append(symbol);
             save_stack.peek().symbol_cursor = symbol_buffer.tail;
@@ -173,7 +177,7 @@ public abstract class CFG_Parser
                 return next_sym;
             } else {
                 SymbolBufferSymbol cur = symbol_cursor.elem;
-                symbol_cursor = symbol_cursor.next;
+                set_symbol_cursor(symbol_cursor.next);
                 return cur;
             }
         }

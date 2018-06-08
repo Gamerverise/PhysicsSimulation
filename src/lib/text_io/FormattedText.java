@@ -31,7 +31,7 @@ public class FormattedText {
         return tmp_spaces.toString();
     }
 
-    public static String concatenate(String separator, String... strs) {
+    public static String sprint_text_list(String separator, String... strs) {
 
         if (strs.length == 0)
             return "";
@@ -44,5 +44,18 @@ public class FormattedText {
         }
 
         return result.toString();
+    }
+
+    public static String concatenate(String... strs) {
+        StringBuilder result = new StringBuilder(strs[0]);
+
+        for (int i = 1; i < strs.length; i++)
+            result.append(strs[i]);
+
+        return result.toString();
+    }
+
+    public static String indent(int n, String string) {
+        return concatenate(spaces(n), string);
     }
 }

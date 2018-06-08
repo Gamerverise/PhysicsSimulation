@@ -18,6 +18,7 @@ import edsel.lib.io.CharBuffer.CharBufferString;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
+import static lib.text_io.FormattedText.indent;
 
 public abstract
 class NonDetParser
@@ -70,6 +71,9 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
+        System.out.println(indent(state.exploration_depth, production.id.toString()));
+        state.exploration_depth++;
+
         Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
         for (int i = 0; i < production.rhs.length; i++) {
@@ -85,6 +89,9 @@ class NonDetParser
             else
                 throw new AmbiguousParserInput();
         }
+
+        state.exploration_depth--;
+
         return reduction;
     }
 
@@ -117,8 +124,9 @@ class NonDetParser
 
                 if (state.get_prefixes_in_progress() <= 0)
                     return null;
-                else
-                    state.retire_prefix();
+
+                state.retire_prefix();
+                j--;
             } else {
 
                 CFG_Symbol cur_expected_symbol = cur_branch[j];
@@ -157,9 +165,7 @@ class NonDetParser
                             } else
                                 sub_reductions[j]
                                         =
-                                        parse_recursive(
-                                                production_restriction.production,
-                                                state);
+                                        parse_recursive(production_restriction.production, state);
 
                             if (sub_reductions[j] == null)
                                 return null;
@@ -176,9 +182,12 @@ class NonDetParser
                             if (!(cur_symbol instanceof EndRestriction))
                                 return null;
                         }
-                    } else
-                        parse_recursive(cur_expected_production, state);
+                    } else {
+                        sub_reductions[j] = parse_recursive(cur_expected_production, state);
 
+                        if (sub_reductions[j] == null)
+                            return null;
+                    }
                 } else if (cur_expected_symbol instanceof CFG_Terminal) {
 
                     if (cur_symbol instanceof Token) {

@@ -2,13 +2,13 @@ package lib.debug;
 
 import lib.java_lang_extensions.function_types.*;
 
-import static lib.text_io.FormattedText.concatenate;
+import static lib.text_io.FormattedText.sprint_text_list;
 
 public class Debug {
 
     public static String assert_msg(Class clazz, String method_name, String... msgs) {
 
-        return clazz.getName() + "." + method_name + ": Failed assertion: " + concatenate(": ", msgs);
+        return clazz.getName() + "." + method_name + ": Failed assertion: " + sprint_text_list(": ", msgs);
     }
 
     public static <A1, A2> void print(boolean debug_flag,

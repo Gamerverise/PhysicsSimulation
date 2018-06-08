@@ -4,7 +4,6 @@ import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.ParsingState;
 import lib.data_structures.list.LinkedListLegacy;
-import lib.data_structures.list.link.LinkLegacy;
 
 import java.util.Stack;
 
@@ -38,6 +37,8 @@ public class NonDetParsingState
     public Stack<NonDetParsingStateFrame> state_stack = new Stack<>();
 
     public LinkedListLegacy<CFG_Symbol> exploration_stack = new LinkedListLegacy<>();
+
+    int exploration_depth = 0;
 
     int num_branches_explored = 0;
 
