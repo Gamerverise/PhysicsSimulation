@@ -16,10 +16,12 @@ public class NonDetParserTest {
         try {
             Reduction<RegexProductionID> reduction;
 
+            System.out.print("\nParsing: " + filename + "\n\n");
+
             reduction = RegexParser.RegexParser.parse_recursive(filename);
 
             if (reduction != null)
-                System.out.print(reduction.sprint(0));
+                System.out.print("\nFinished parsing: " + filename);
 
         } catch (AmbiguousParserInput | InputNotAccepted e) {
             throw new RuntimeException();

@@ -3,6 +3,7 @@ package lib.data_structures.list;
 import lib.data_structures.list.iter.LinkedListIterator;
 import lib.data_structures.list.link.LinkLegacy;
 import lib.data_structures.list.link.LinkLegacyBase;
+import lib.java_lang_extensions.function_types.FunctionR1;
 import lib.java_lang_extensions.parametrized_types.Copyable;
 import lib.tokens.enums.CopyType;
 
@@ -141,6 +142,23 @@ class LinkedListLegacyBase
     public void truncate(LINK_TYPE link) {
         tail = link;
         link.next = null;
+    }
+
+
+    // =========================================================================================
+
+    public String sprint(FunctionR1<String, T> sprint_function) {
+        StringBuilder result = new StringBuilder();
+
+        LinkedListIterator<T, LINK_TYPE> iter = iterator();
+
+        if (iter.hasNext())
+            result.append(sprint_function.call(iter.next().elem));
+
+        while (iter.hasNext())
+            result.append(", ").append(sprint_function.call(iter.next().elem));
+
+        return result.toString();
     }
 
     // =========================================================================================

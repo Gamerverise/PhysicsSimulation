@@ -15,6 +15,7 @@ import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
 import lib.data_structures.list.LinkedListLegacy;
+import lib.data_structures.list.iter.LinkedListIterator;
 import lib.data_structures.list.link.LinkLegacy;
 
 import static java.lang.Character.isDigit;
@@ -310,6 +311,10 @@ public abstract class CFG_Parser
                     return true;
 
             return false;
+        }
+
+        public String sprint() {
+            return symbol_buffer.sprint(SymbolBufferSymbol::sprint);
         }
     }
 }

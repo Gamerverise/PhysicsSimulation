@@ -96,7 +96,7 @@ class NonDetParser
                     throw new AmbiguousParserInput();
                 else {
                     System.out.println(
-                            new StringBuilder(indent(state.get_cur_depth(), "Reduced "))
+                            new StringBuilder(indent(state.get_cur_depth(), "* Reduced "))
                                     .append(tmp_reduction.sprint(0)));
 
                     reduction = tmp_reduction;
@@ -252,7 +252,7 @@ class NonDetParser
                         if (token.id == cur_expected_terminal.id) {
 
                             System.out.println(
-                                    new StringBuilder(indent(state.get_cur_depth() + 1, "Accepted token: "))
+                                    new StringBuilder(indent(state.get_cur_depth() + 1, "* Accepted token "))
                                             .append(token.sprint(0)));
 
                             state.set_last_symbol_explored(cur_expected_terminal);

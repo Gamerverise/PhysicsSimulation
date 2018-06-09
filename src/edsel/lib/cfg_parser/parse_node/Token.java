@@ -39,6 +39,10 @@ public class Token
 
     // =========================================================================================
 
+    public String sprint() {
+        return sprint(0);
+    }
+
     public String sprint(int indent) {
         return
                 new StringBuilder(spaces(indent))

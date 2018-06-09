@@ -1,3 +1,5 @@
 package edsel.lib.cfg_parser;
 
-public interface SymbolBufferSymbol {}
+public interface SymbolBufferSymbol {
+    public String sprint();
+}
