@@ -121,8 +121,8 @@ public abstract class CFG_Parser
     {
         // =========================================================================================
 
+        public LinkLegacy<SymbolBufferSymbol> symbol_cursor = null;
         public LinkedListLegacy<SymbolBufferSymbol> symbol_buffer = new LinkedListLegacy<>();
-        public Stack<SymbolBufferState> save_stack = new Stack<>();
 
         // =========================================================================================
 
@@ -134,37 +134,19 @@ public abstract class CFG_Parser
         public SymbolBuffer(String filename, byte[] separator_chars)
         {
             super(filename, separator_chars);
-            save_stack.push(new SymbolBufferState());
         }
 
         // =========================================================================================
 
-        public void save() {
-            save_stack.push(new SymbolBufferState(save_stack.peek()));
-        }
-
-        public void restore() {
-            save_stack.pop();
-        }
-
-        public LinkLegacy<SymbolBufferSymbol> get_symbol_cursor() {
-            return save_stack.peek().symbol_cursor;
-        }
-
-        public void set_symbol_cursor(LinkLegacy<SymbolBufferSymbol> link) {
-            save_stack.peek().symbol_cursor = link;
-        }
-
         public void extend_symbol_buffer(SymbolBufferSymbol symbol) {
             symbol_buffer.append(symbol);
-            save_stack.peek().symbol_cursor = symbol_buffer.tail;
+            symbol_cursor = symbol_buffer.tail;
         }
 
         public SymbolBufferSymbol next_symbol()
                 throws InputNotAccepted
         {
             SymbolBufferSymbol next_sym;
-            LinkLegacy<SymbolBufferSymbol> symbol_cursor = get_symbol_cursor();
 
             if (symbol_cursor == null) {
                 next_sym = lex_next_symbol();
@@ -177,7 +159,7 @@ public abstract class CFG_Parser
                 return next_sym;
             } else {
                 SymbolBufferSymbol cur = symbol_cursor.elem;
-                set_symbol_cursor(symbol_cursor.next);
+                symbol_cursor = symbol_cursor.next;
                 return cur;
             }
         }
