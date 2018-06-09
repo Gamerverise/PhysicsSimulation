@@ -33,7 +33,8 @@ public class NonDetParsingState
                                         TOKEN_VALUE_TYPE,
                                         SYMBOL_BUFFER_TYPE>>
 {
-    public LinkedListLegacy<NonDetParsingStateFrame> frame_stack = new LinkedListLegacy<>();
+    public LinkedListLegacy<NonDetParsingStateFrame>
+            frame_stack = new LinkedListLegacy<>(new NonDetParsingStateFrame());
 
     int num_branches_explored = 0;
 

@@ -12,5 +12,5 @@ public abstract class ParseNode
         this.src_string = src_string;
     }
 
-    public abstract String print(int tree_level);
+    public abstract String sprint(int indent);
 }

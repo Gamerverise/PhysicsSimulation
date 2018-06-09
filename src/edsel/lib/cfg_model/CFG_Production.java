@@ -29,4 +29,26 @@ CFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
         return new Reduction<>
                 (this.id, branch_num, sub_reductions, num_branches_explored, src_string);
     }
+
+    public String sprint() {
+        StringBuilder result = new StringBuilder(sprint_id());
+
+        for (int i = 0; i < rhs.length; i++)
+            result.append("\n ").append(sprint_branch(i));
+
+        return result.toString();
+    }
+
+    public String sprint_id() {
+        return id.toString();
+    }
+
+    public String sprint_branch(int branch_num) {
+        StringBuilder result = new StringBuilder("Branch ").append(branch_num).append(":");
+
+        for (int i = 0; i < rhs[branch_num].length; i++)
+            result.append(" ").append(rhs[branch_num][i].sprint_id());
+
+        return result.toString();
+    }
 }

@@ -27,4 +27,12 @@ CFG_Terminal
     Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     reduce(CharBuffer<TOKEN_BUFFER_TYPE>.CharBufferString str)
     { return new Token<>(id, null, str); }
+
+    public String sprint() {
+        return sprint_id();
+    }
+
+    public String sprint_id() {
+        return id.toString();
+    }
 }

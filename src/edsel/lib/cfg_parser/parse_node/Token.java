@@ -39,11 +39,12 @@ public class Token
 
     // =========================================================================================
 
-    public String print(int tree_level) {
+    public String sprint(int indent) {
         return
-                spaces(tree_level) +
-                        id.toString() +
-                        ": " +
-                        src_string.get_string();
+                new StringBuilder(spaces(indent))
+                        .append(id.toString())
+                        .append(": ")
+                        .append(src_string.get_string())
+                        .toString();
     }
 }

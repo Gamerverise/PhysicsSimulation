@@ -15,11 +15,11 @@ import edsel.lib.cfg_parser.parsing_restriction.EndRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.GateRestriction;
 import edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
-import lib.data_structures.list.link.LinkLegacy;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
 import static lib.text_io.FormattedText.indent;
+import static lib.text_io.FormattedText.spaces;
 
 public abstract
 class NonDetParser
@@ -72,7 +72,9 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-        System.out.println(indent(state.get_cur_depth(), production.id.toString()));
+//        System.out.println(indent(2 * state.get_cur_depth(), production.sprint_id()));
+
+        state.set_last_symbol_explored(production);
         state.inc_cur_depth();
 
         Reduction<ENUM_PRODUCTION_ID> reduction = null;
@@ -87,17 +89,22 @@ class NonDetParser
 
             Reduction<ENUM_PRODUCTION_ID> tmp_reduction = parse_branch_recursive(production, i, branch_state);
 
+            state.num_branches_explored += branch_state.num_branches_explored;
+
             if (tmp_reduction != null) {
                 if (reduction != null)
                     throw new AmbiguousParserInput();
                 else {
+                    System.out.println(
+                            new StringBuilder(indent(state.get_cur_depth(), "Reduced "))
+                                    .append(tmp_reduction.sprint(0)));
+
                     reduction = tmp_reduction;
                     result_state = branch_state;
                 }
             }
         }
 
-        state.num_branches_explored = result_state.num_branches_explored;
         state.dec_cur_depth();
 
         if (reduction == null)
@@ -106,6 +113,20 @@ class NonDetParser
         state.accept_branch(result_state);
 
         return reduction;
+    }
+
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_branch_restriction_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            PARSING_STATE_TYPE state
+    )
+            throws AmbiguousParserInput, InputNotAccepted
+    {
+        state.set_last_symbol_explored(production);
+        state.inc_cur_depth();
+
+        return parse_branch_recursive(production, branch_num, state);
     }
 
     @SuppressWarnings("unchecked")
@@ -117,6 +138,15 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
+//        System.out.println(indent(2*(state.get_cur_depth() - 1) + 1, production.sprint_branch(branch_num)));
+        System.out.println(
+                indent(
+                        state.get_cur_depth() - 1,
+                        new StringBuilder(production.sprint_id())
+                                .append(", ")
+                                .append(production.sprint_branch(branch_num))
+                                .toString()));
+
         state.num_branches_explored++;
 
         CFG_Symbol[] cur_branch = production.rhs[branch_num];
@@ -171,7 +201,7 @@ class NonDetParser
 
                                 sub_reductions[j]
                                         =
-                                        parse_branch_recursive(
+                                        parse_branch_restriction_recursive(
                                                 branch_restriction.production,
                                                 branch_restriction.branch_num,
                                                 state);
@@ -203,6 +233,11 @@ class NonDetParser
                     }
                 } else if (cur_expected_symbol instanceof CFG_Terminal) {
 
+                    System.out.println(
+                            indent(
+                                    state.get_cur_depth(),
+                                    cur_expected_symbol.sprint_id()));
+
                     if (cur_symbol instanceof Token) {
 
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token
@@ -215,6 +250,10 @@ class NonDetParser
                                         cur_expected_symbol;
 
                         if (token.id == cur_expected_terminal.id) {
+
+                            System.out.println(
+                                    new StringBuilder(indent(state.get_cur_depth() + 1, "Accepted token: "))
+                                            .append(token.sprint(0)));
 
                             state.set_last_symbol_explored(cur_expected_terminal);
                             sub_reductions[j] = token;

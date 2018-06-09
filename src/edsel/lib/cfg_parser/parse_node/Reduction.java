@@ -57,19 +57,13 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
 
     // =========================================================================================
 
-    public String print(int tree_level) {
-        StringBuilder string
-                = new StringBuilder(spaces(tree_level))
+    public String sprint(int indent) {
+        return new StringBuilder(spaces(indent))
                 .append(production_id.toString())
                 .append(", branch ")
-                .append(branch_num);
-
-        for (ParseNode child : sub_reductions) {
-            string
-                    .append("\n")
-                    .append(child.print(tree_level + 1));
-        }
-
-        return string.toString();
+                .append(branch_num)
+                .append(": ")
+                .append(src_string.get_string())
+                .toString();
     }
 }

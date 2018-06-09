@@ -14,6 +14,8 @@ public class NonDetParsingStateFrame
 
     public int exploration_depth = 0;
 
+    public NonDetParsingStateFrame() {}
+
     public NonDetParsingStateFrame(NonDetParsingStateFrame frame) {
         symbol_cursor = frame.symbol_cursor;
         last_symbol_explored = frame.last_symbol_explored;
