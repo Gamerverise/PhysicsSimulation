@@ -4,7 +4,6 @@ import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.ParsingState;
 import lib.data_structures.list.LinkedListLegacy;
-import lib.data_structures.list.link.LinkLegacy;
 
 public class NonDetParsingState
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
