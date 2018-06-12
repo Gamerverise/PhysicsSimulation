@@ -1,10 +1,10 @@
 package lib.data_structures.list;
 
 import lib.data_structures.list.iter.LinkedListIterator;
-import lib.data_structures.list.link.LinkLegacy;
 import lib.data_structures.list.link.LinkLegacyBase;
 import lib.java_lang_extensions.function_types.FunctionR1;
 import lib.java_lang_extensions.parametrized_types.Copyable;
+import lib.text_io.Sprintable;
 import lib.tokens.enums.CopyType;
 
 public abstract
@@ -147,7 +147,7 @@ class LinkedListLegacyBase
 
     // =========================================================================================
 
-    public String sprint(FunctionR1<String, T> sprint_function) {
+    public StringBuilder sbprint(FunctionR1<StringBuilder, T> sprint_function) {
         StringBuilder result = new StringBuilder();
 
         LinkedListIterator<T, LINK_TYPE> iter = iterator();
@@ -158,7 +158,7 @@ class LinkedListLegacyBase
         while (iter.hasNext())
             result.append(", ").append(sprint_function.call(iter.next().elem));
 
-        return result.toString();
+        return result;
     }
 
     // =========================================================================================

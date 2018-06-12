@@ -1,9 +1,10 @@
 package lib.data_structures.list.link;
 
 import lib.java_lang_extensions.parametrized_types.Copyable;
+import lib.text_io.Sprintable;
 import lib.tokens.enums.CopyType;
 
-public class Link<T extends Copyable<T>>
+public class Link<T extends Copyable<T> & Sprintable>
         extends LinkLegacyBase<T, Link<T>>
 {
     public Link() {

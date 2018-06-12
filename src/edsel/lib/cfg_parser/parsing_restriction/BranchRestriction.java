@@ -19,4 +19,12 @@ public class BranchRestriction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_I
         super(production, mode);
         this.branch_num = branch_num;
     }
+
+    public StringBuilder sprint() {
+        return
+                new StringBuilder("Branch Restriction: ")
+                        .append(production.id.toString())
+                        .append(", branch ")
+                        .append(branch_num);
+    }
 }

@@ -18,7 +18,8 @@ import edsel.lib.io.CharBuffer.CharBufferString;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
-import static lib.text_io.FormattedText.indent;
+import static lib.java_api_extensions.PrintStreamX.outx;
+import static lib.text_io.FormattedText.cat;
 import static lib.text_io.FormattedText.spaces;
 
 public abstract
@@ -72,8 +73,6 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-//        System.out.println(indent(2 * state.get_cur_depth(), production.sprint_id()));
-
         state.set_last_symbol_explored(production);
         state.inc_cur_depth();
 
@@ -95,9 +94,11 @@ class NonDetParser
                 if (reduction != null)
                     throw new AmbiguousParserInput();
                 else {
-                    System.out.println(
-                            new StringBuilder(indent(state.get_cur_depth(), "* Reduced "))
-                                    .append(tmp_reduction.sprint(0)));
+                    outx.println(
+                            cat(
+                                    spaces(state.get_cur_depth())
+                                    .append("* Reduced "),
+                                    tmp_reduction.sprint()));
 
                     reduction = tmp_reduction;
                     result_state = branch_state;
@@ -138,14 +139,11 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-//        System.out.println(indent(2*(state.get_cur_depth() - 1) + 1, production.sprint_branch(branch_num)));
-        System.out.println(
-                indent(
-                        state.get_cur_depth() - 1,
-                        new StringBuilder(production.sprint_id())
-                                .append(", ")
-                                .append(production.sprint_branch(branch_num))
-                                .toString()));
+        outx.println(
+                spaces(state.get_cur_depth() - 1)
+                        .append(production.sprint_id())
+                        .append(", ")
+                        .append(production.sprint_branch(branch_num)));
 
         state.num_branches_explored++;
 
@@ -233,10 +231,9 @@ class NonDetParser
                     }
                 } else if (cur_expected_symbol instanceof CFG_Terminal) {
 
-                    System.out.println(
-                            indent(
-                                    state.get_cur_depth(),
-                                    cur_expected_symbol.sprint_id()));
+                    outx.println(
+                            spaces(state.get_cur_depth())
+                                    .append(cur_expected_symbol.sprint_id()));
 
                     if (cur_symbol instanceof Token) {
 
@@ -251,9 +248,9 @@ class NonDetParser
 
                         if (token.id == cur_expected_terminal.id) {
 
-                            System.out.println(
-                                    new StringBuilder(indent(state.get_cur_depth() + 1, "* Accepted token "))
-                                            .append(token.sprint(0)));
+                            outx.println(
+                                    spaces(state.get_cur_depth() + 1).append("* Accepted token ")
+                                            .append(token.sprint()));
 
                             state.set_last_symbol_explored(cur_expected_terminal);
                             sub_reductions[j] = token;

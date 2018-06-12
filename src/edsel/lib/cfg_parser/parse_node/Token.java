@@ -4,7 +4,6 @@ import edsel.lib.cfg_parser.SymbolBufferSymbol;
 import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 
-import static lib.text_io.FormattedText.spaces;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 
 public class Token
@@ -39,16 +38,13 @@ public class Token
 
     // =========================================================================================
 
-    public String sprint() {
-        return sprint(0);
+    public String sprint_id() {
+        return id.toString();
     }
 
-    public String sprint(int indent) {
-        return
-                new StringBuilder(spaces(indent))
-                        .append(id.toString())
-                        .append(": ")
-                        .append(src_string.get_string())
-                        .toString();
+    public StringBuilder sprint() {
+        return new StringBuilder(id.toString())
+                .append(": ")
+                .append(src_string.get_string());
     }
 }

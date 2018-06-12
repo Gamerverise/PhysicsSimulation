@@ -1,5 +1,7 @@
 package edsel.lib.cfg_parser;
 
-public interface SymbolBufferSymbol {
-    public String sprint();
-}
+import lib.text_io.Sprintable;
+
+public interface SymbolBufferSymbol
+    extends Sprintable
+{}

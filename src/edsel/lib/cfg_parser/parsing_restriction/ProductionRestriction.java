@@ -3,7 +3,7 @@ package edsel.lib.cfg_parser.parsing_restriction;
 import edsel.lib.cfg_model.CFG_Production;
 
 public class ProductionRestriction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-        implements ParsingRestriction
+        extends ParsingRestriction
 {
     public enum RestrictionMode {PREFIX_MODE, EXACT_MODE}
 
@@ -19,5 +19,9 @@ public class ProductionRestriction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTI
     {
         this.production = production;
         this.mode = mode;
+    }
+
+    public StringBuilder sprint() {
+        return new StringBuilder("Production Restriction: ").append(production.sprint_id());
     }
 }

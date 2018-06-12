@@ -6,7 +6,8 @@ import edsel.lib.io.CharBuffer;
 
 public class
 CFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
-        implements CFG_Symbol
+        implements
+        CFG_Symbol
 {
     public ENUM_PRODUCTION_ID id;
     public CFG_Symbol[][] rhs;
@@ -30,25 +31,29 @@ CFG_Production<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
                 (this.id, branch_num, sub_reductions, num_branches_explored, src_string);
     }
 
-    public String sprint() {
-        StringBuilder result = new StringBuilder(sprint_id());
-
-        for (int i = 0; i < rhs.length; i++)
-            result.append("\n ").append(sprint_branch(i));
-
-        return result.toString();
-    }
-
     public String sprint_id() {
         return id.toString();
     }
 
-    public String sprint_branch(int branch_num) {
+    public StringBuilder sprint_branch(int branch_num) {
         StringBuilder result = new StringBuilder("Branch ").append(branch_num).append(":");
 
         for (int i = 0; i < rhs[branch_num].length; i++)
             result.append(" ").append(rhs[branch_num][i].sprint_id());
 
-        return result.toString();
+        return result;
+    }
+
+    public StringBuilder sprint() {
+        StringBuilder result = new StringBuilder("Production ").append(sprint_id()).append(": ");
+
+        int i;
+        for (i = 0; i < rhs.length; i++)
+            result.append(" ").append(sprint_branch(i));
+
+        if (i == 0)
+            result.append("degenerate production has no branches");
+
+        return result;
     }
 }

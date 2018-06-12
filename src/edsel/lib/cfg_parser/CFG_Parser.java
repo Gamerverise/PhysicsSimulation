@@ -1,7 +1,6 @@
 package edsel.lib.cfg_parser;
 
 import java.util.Objects;
-import java.util.Stack;
 
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
@@ -11,11 +10,9 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.*;
-import edsel.lib.cfg_parser.parsing_restriction.old.TerminalRestriction;
 import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
 import lib.data_structures.list.LinkedListLegacy;
-import lib.data_structures.list.iter.LinkedListIterator;
 import lib.data_structures.list.link.LinkLegacy;
 
 import static java.lang.Character.isDigit;
@@ -313,8 +310,8 @@ public abstract class CFG_Parser
             return false;
         }
 
-        public String sprint() {
-            return symbol_buffer.sprint(SymbolBufferSymbol::sprint);
+        public StringBuilder sbprint() {
+            return symbol_buffer.sbprint(SymbolBufferSymbol::sprint);
         }
     }
 }

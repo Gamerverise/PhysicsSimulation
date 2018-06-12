@@ -3,7 +3,6 @@ package edsel.lib.cfg_parser.parse_node;
 import edsel.lib.io.CharBuffer;
 import lib.tokens.enums.CopyType;
 
-import static lib.text_io.FormattedText.spaces;
 import static lib.tokens.enums.CopyType.COPY_DEEP;
 import static lib.tokens.enums.CopyType.COPY_SHALLOW;
 
@@ -57,17 +56,11 @@ public class Reduction<ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>>
 
     // =========================================================================================
 
-    public String sprint() {
-        return sprint(0);
-    }
-
-    public String sprint(int indent) {
-        return new StringBuilder(spaces(indent))
-                .append(production_id.toString())
+    public StringBuilder sprint() {
+        return new StringBuilder(production_id.toString())
                 .append(", branch ")
                 .append(branch_num)
                 .append(": ")
-                .append(src_string.get_string())
-                .toString();
+                .append(src_string.get_string());
     }
 }

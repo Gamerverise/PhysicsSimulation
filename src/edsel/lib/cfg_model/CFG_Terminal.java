@@ -28,11 +28,11 @@ CFG_Terminal
     reduce(CharBuffer<TOKEN_BUFFER_TYPE>.CharBufferString str)
     { return new Token<>(id, null, str); }
 
-    public String sprint() {
-        return sprint_id();
-    }
-
     public String sprint_id() {
         return id.toString();
+    }
+
+    public StringBuilder sprint() {
+        return new StringBuilder(sprint_id());
     }
 }

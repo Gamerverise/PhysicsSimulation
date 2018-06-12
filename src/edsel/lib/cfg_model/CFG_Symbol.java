@@ -1,6 +1,8 @@
 package edsel.lib.cfg_model;
 
-public interface CFG_Symbol {
-    String sprint();
+import lib.text_io.Sprintable;
+
+public interface CFG_Symbol extends Sprintable
+{
     String sprint_id();
 }
