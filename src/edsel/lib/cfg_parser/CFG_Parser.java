@@ -2,6 +2,7 @@ package edsel.lib.cfg_parser;
 
 import java.util.Objects;
 
+import edsel.lib.cfg_model.CFG;
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
@@ -14,12 +15,14 @@ import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
 import lib.data_structures.list.LinkedListLegacy;
 import lib.data_structures.list.link.LinkLegacy;
+import lib.text_io.Sprintable;
 
 import static java.lang.Character.isDigit;
 
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.EXACT_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.ProductionRestriction.RestrictionMode.PREFIX_MODE;
 import static edsel.lib.cfg_parser.parsing_restriction.RestrictionOperator.*;
+import static lib.java_api_extensions.PrintStreamX.outx;
 
 public abstract class CFG_Parser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
@@ -56,11 +59,16 @@ public abstract class CFG_Parser
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(String filename)
+    parse_recursive(CFG cfg, String filename)
             throws AmbiguousParserInput, InputNotAccepted
     {
         SYMBOL_BUFFER_TYPE input = get_new_input(filename);
+
+        outx.println(input.sprint());
+        outx.println();
+
         PARSING_STATE_TYPE state = get_new_parsing_state(input);
+
         return parse_recursive(start_production, state);
     }
 
@@ -88,7 +96,9 @@ public abstract class CFG_Parser
 
     // =========================================================================================
 
-    public abstract SYMBOL_BUFFER_TYPE get_new_input(String filename);
+    public abstract SYMBOL_BUFFER_TYPE get_new_input(String filename)
+            throws InputNotAccepted;
+
     public abstract PARSING_STATE_TYPE get_new_parsing_state(SYMBOL_BUFFER_TYPE input);
 
     // =========================================================================================
@@ -116,50 +126,62 @@ public abstract class CFG_Parser
     public abstract class SymbolBuffer
             extends
             TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+            implements
+            Sprintable
     {
         // =========================================================================================
 
         public LinkLegacy<SymbolBufferSymbol> symbol_cursor = null;
         public LinkedListLegacy<SymbolBufferSymbol> symbol_buffer = new LinkedListLegacy<>();
 
+        public int how_many_terminals = 0;
+
         // =========================================================================================
 
         public SymbolBuffer(String filename)
+                throws InputNotAccepted
         {
             this(filename, DEFAULT_SEPARATOR_CHARS);
         }
 
         public SymbolBuffer(String filename, byte[] separator_chars)
+                throws InputNotAccepted
         {
             super(filename, separator_chars);
+
+            for (
+                    SymbolBufferSymbol cur_symbol = lex_next_symbol();
+                    cur_symbol !=  null;
+                    cur_symbol = lex_next_symbol())
+            {
+                symbol_buffer.append(cur_symbol);
+
+                if (cur_symbol instanceof Token)
+                    how_many_terminals++;
+            }
+
+            symbol_buffer.append((SymbolBufferSymbol) null);
+            symbol_buffer.tail.next = symbol_buffer.tail;
+
+            symbol_cursor = symbol_buffer.head;
         }
 
         // =========================================================================================
 
-        public void extend_symbol_buffer(SymbolBufferSymbol symbol) {
-            symbol_buffer.append(symbol);
-            symbol_cursor = symbol_buffer.tail;
+        public SymbolBufferSymbol next_symbol()
+        {
+            symbol_cursor = symbol_cursor.next;
+            return symbol_cursor.elem;
         }
 
-        public SymbolBufferSymbol next_symbol()
-                throws InputNotAccepted
+        public SymbolBufferSymbol get_cur_symbol()
         {
-            SymbolBufferSymbol next_sym;
+            return symbol_cursor.elem;
+        }
 
-            if (symbol_cursor == null) {
-                next_sym = lex_next_symbol();
-
-                if (next_sym == null)
-                    return null;
-
-                extend_symbol_buffer(next_sym);
-
-                return next_sym;
-            } else {
-                SymbolBufferSymbol cur = symbol_cursor.elem;
-                symbol_cursor = symbol_cursor.next;
-                return cur;
-            }
+        public void advance_symbol_cursor()
+        {
+            symbol_cursor = symbol_cursor.next;
         }
 
         public SymbolBufferSymbol lex_next_symbol()
@@ -246,8 +268,6 @@ public abstract class CFG_Parser
             } else
                 next_symbol = next_token();
 
-            extend_symbol_buffer(next_symbol);
-
             return next_symbol;
         }
 
@@ -310,8 +330,21 @@ public abstract class CFG_Parser
             return false;
         }
 
-        public StringBuilder sbprint() {
-            return symbol_buffer.sbprint(SymbolBufferSymbol::sprint);
+        public StringBuilder sprint() {
+            StringBuilder result = new StringBuilder();
+
+            LinkLegacy<SymbolBufferSymbol> cur = symbol_buffer.head;
+
+            if (cur.next != cur.next.next) {
+                result.append(cur.elem.sprint());
+
+                while (cur.next != cur.next.next) {
+                    cur = cur.next;
+                    result.append(", ").append(cur.elem.sprint());
+                }
+            }
+
+            return result;
         }
     }
 }

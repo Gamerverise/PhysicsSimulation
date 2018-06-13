@@ -29,6 +29,6 @@ class LinkedListBase
     }
 
     public StringBuilder sprint() {
-        return sbprint(Sprintable::sprint);
+        return sprint(Sprintable::sprint);
     }
 }

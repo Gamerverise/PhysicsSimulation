@@ -18,7 +18,7 @@ public class NonDetParserTest {
 
             System.out.print("\nParsing: " + filename + "\n\n");
 
-            reduction = RegexParser.RegexParser.parse_recursive(filename);
+            reduction = RegexParser.RegexParser_LALR_1.parse_recursive(filename);
 
             if (reduction != null)
                 System.out.print("\nFinished parsing: " + filename);

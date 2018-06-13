@@ -73,8 +73,10 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-        state.set_last_symbol_explored(production);
         state.inc_cur_depth();
+
+        if (state.get_cur_depth() > state.input.how_many_terminals)
+            return null;
 
         Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
@@ -124,7 +126,6 @@ class NonDetParser
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
-        state.set_last_symbol_explored(production);
         state.inc_cur_depth();
 
         return parse_branch_recursive(production, branch_num, state);
@@ -153,7 +154,7 @@ class NonDetParser
 
         for (int j = 0; j < cur_branch.length; j++) {
 
-            SymbolBufferSymbol cur_symbol = state.input.next_symbol();
+            SymbolBufferSymbol cur_symbol = state.input.get_cur_symbol();
 
             if (cur_symbol == null)
                 return null;
@@ -176,11 +177,6 @@ class NonDetParser
 
                     CFG_Production<ENUM_PRODUCTION_ID> cur_expected_production
                             = (CFG_Production<ENUM_PRODUCTION_ID>) cur_expected_symbol;
-
-                    if (state.chk_consecutive_expected_production(cur_expected_production))
-                        return null;
-
-                    state.set_last_symbol_explored(cur_expected_production);
 
                     if (cur_symbol instanceof ProductionRestriction) {
 
@@ -252,8 +248,9 @@ class NonDetParser
                                     spaces(state.get_cur_depth() + 1).append("* Accepted token ")
                                             .append(token.sprint()));
 
-                            state.set_last_symbol_explored(cur_expected_terminal);
                             sub_reductions[j] = token;
+
+                            state.input.advance_symbol_cursor();
                         } else
                             return null;
                     } else

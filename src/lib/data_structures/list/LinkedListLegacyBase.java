@@ -147,7 +147,7 @@ class LinkedListLegacyBase
 
     // =========================================================================================
 
-    public StringBuilder sbprint(FunctionR1<StringBuilder, T> sprint_function) {
+    public StringBuilder sprint(FunctionR1<StringBuilder, T> sprint_function) {
         StringBuilder result = new StringBuilder();
 
         LinkedListIterator<T, LINK_TYPE> iter = iterator();

@@ -1,4 +1,4 @@
-package edsel.lib.cfg_parser.cfg_anaysis;
+package edsel.lib.cfg_parser.cfg_transforms;
 
 import edsel.lib.cfg_model.CFG_Production;
 

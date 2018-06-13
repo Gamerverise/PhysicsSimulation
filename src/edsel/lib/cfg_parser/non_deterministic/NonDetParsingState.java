@@ -1,6 +1,5 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
-import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.ParsingState;
 import lib.data_structures.list.LinkedListLegacy;
@@ -42,15 +41,6 @@ public class NonDetParsingState
     }
 
     // =========================================================================================
-
-    public void set_last_symbol_explored(CFG_Symbol symbol) {
-        frame_stack.peek().last_symbol_explored = symbol;
-    }
-
-    public boolean chk_consecutive_expected_production(CFG_Symbol symbol)
-    {
-        return symbol == frame_stack.peek().last_symbol_explored;
-    }
 
     public int get_prefixes_in_progress() {
         return frame_stack.peek().num_prefixes_in_progress;

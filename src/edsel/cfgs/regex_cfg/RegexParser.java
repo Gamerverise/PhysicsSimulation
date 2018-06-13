@@ -1,27 +1,30 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
+import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_parser.CFG_Parser;
+import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParsingState;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.*;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
-import static lib.java_lang_extensions.var_var_args.SubVarArgs.V;
 
 public class RegexParser extends
         NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer,
                 NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>
 {
-    public RegexParser()
+    public RegexParser(CFG_Production<RegexProductionID>... productions)
     {
         super(
                 START,
-                V(SUB_EXPR, GROUP, AND, OR, REPEAT),
+                productions,
                 OP, CP, VB, ST, UB, LITERAL);
     }
 
-    public RegexSymbolBuffer get_new_input(String filename) {
+    public RegexSymbolBuffer get_new_input(String filename)
+            throws InputNotAccepted
+    {
         return new RegexSymbolBuffer(filename);
     }
 
@@ -32,7 +35,16 @@ public class RegexParser extends
         return new NonDetParsingState<>(input);
     }
 
-    public static RegexParser RegexParser = new RegexParser();
+    public static RegexParser RegexParser = new RegexParser(SUB_EXPR, GROUP, AND, OR, REPEAT);
+
+    public static RegexParser RegexParser_LALR_1
+            =
+            new RegexParser(
+                    RegexProduction_LALR_1.SUB_EXPR,
+                    RegexProduction_LALR_1.GROUP,
+                    RegexProduction_LALR_1.AND,
+                    RegexProduction_LALR_1.OR,
+                    RegexProduction_LALR_1.REPEAT);
 
     public class
     RegexSymbolBuffer extends
@@ -45,6 +57,7 @@ public class RegexParser extends
                                     <RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>.SymbolBuffer
     {
         public RegexSymbolBuffer(String filename)
+                throws InputNotAccepted
         {
             super(filename);
         }

@@ -20,7 +20,7 @@ public class LinkedListIterator
     }
 
     public boolean hasNext() {
-        return cur.next != null;
+        return cur != null;
     }
 
     public LINK_TYPE next() {

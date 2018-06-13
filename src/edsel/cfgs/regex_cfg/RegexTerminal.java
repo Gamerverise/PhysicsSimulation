@@ -33,4 +33,6 @@ public class RegexTerminal
     public static RegexTerminal UB = new RegexTerminal(UB_ID, "_", null);
 
     public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]", "literal");
+
+    public static RegexTerminal EOF = new RegexTerminal(LITERAL_ID, "", "eof");
 }
