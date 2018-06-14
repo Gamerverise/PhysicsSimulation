@@ -18,7 +18,6 @@ public class RegexTerminal
 
     public RegexToken reduce(CharBuffer.CharBufferString str)
     {
-
         return new RegexToken(id, str.get_first_char(), str);
     }
 
@@ -34,7 +33,5 @@ public class RegexTerminal
 
     public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]", "literal");
 
-    public static RegexTerminal EOF = new RegexTerminal(LITERAL_ID, "", "eof");
-
-    public static RegexTerminal[] RegexTerminals = {OP, CP, VB, ST, UB, LITERAL, EOF};
+    public static RegexTerminal[] RegexTerminals = {OP, CP, VB, ST, UB, LITERAL};
 }

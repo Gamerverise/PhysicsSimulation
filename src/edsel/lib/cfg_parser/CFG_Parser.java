@@ -124,9 +124,11 @@ public abstract class CFG_Parser
         {
             super(filename, separator_chars);
 
+            SymbolBufferSymbol cur_symbol;
+
             for (
-                    SymbolBufferSymbol cur_symbol = lex_next_symbol();
-                    cur_symbol !=  null;
+                    cur_symbol = lex_next_symbol();
+                    cur_symbol. != cfg.eof_id;
                     cur_symbol = lex_next_symbol())
             {
                 symbol_buffer.append(cur_symbol);
@@ -134,6 +136,9 @@ public abstract class CFG_Parser
                 if (cur_symbol instanceof Token)
                     how_many_terminals++;
             }
+
+            symbol_buffer.append(cur_symbol);
+            how_many_terminals++;
 
             symbol_buffer.append((SymbolBufferSymbol) null);
             symbol_buffer.tail.next = symbol_buffer.tail;
@@ -167,7 +172,7 @@ public abstract class CFG_Parser
             if (cursor_pos >= buf.length)
                 return
                         new Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                                (cfg.eof_terminal.id, null, new CharBufferString(buf.length, buf.length));
+                                (cfg.eof_id, null, new CharBufferString(buf.length, buf.length));
 
             SymbolBufferSymbol next_symbol = null;
             char next_char = (char) buf[cursor_pos];

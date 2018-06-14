@@ -1,5 +1,6 @@
 package edsel.lib.cfg_model;
 
+import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.io.CharBuffer;
 
 import java.util.Objects;
@@ -14,18 +15,18 @@ public class CFG
     public CFG_Production<ENUM_PRODUCTION_ID>[] productions;
     public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[] terminals;
 
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> eof_terminal;
+    public ENUM_TERMINAL_ID eof_id;
 
     public CFG(
             CFG_Production<ENUM_PRODUCTION_ID> start_production,
             CFG_Production<ENUM_PRODUCTION_ID>[] productions,
             CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>[] terminals,
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> eof_terminal)
+            ENUM_TERMINAL_ID eof_id)
     {
         this.start_production = start_production;
         this.productions = productions;
         this.terminals = terminals;
-        this.eof_terminal = eof_terminal;
+        this.eof_id = eof_id;
     }
 
 

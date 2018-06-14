@@ -14,6 +14,10 @@ public class RegexParser extends
         NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer,
                 NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>
 {
+    public static RegexParser RegexParser = new RegexParser(RegexCFG);
+
+    public static RegexParser RegexParser_LALR_1 = new RegexParser(RegexCFG_LALR_1);
+
     public RegexParser(RegexCFG cfg)
     {
         super(cfg);
@@ -31,10 +35,6 @@ public class RegexParser extends
     {
         return new NonDetParsingState<>(input);
     }
-
-    public static RegexParser RegexParser = new RegexParser(RegexCFG);
-
-    public static RegexParser RegexParser_LALR_1 = new RegexParser(RegexCFG_LALR_1);
 
     public class
     RegexSymbolBuffer extends

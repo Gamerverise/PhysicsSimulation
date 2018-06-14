@@ -62,6 +62,13 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
 
     // =========================================================================================
 
+    public abstract class CharBufferStringBase
+    {
+        public abstract char get_first_char();
+
+        public abstract String get_string();
+    }
+
     public class CharBufferString extends Copyable<CharBufferString>
     {
         public int src_start = -1;
@@ -87,6 +94,16 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
 
         public String get_string() {
             return new String(buf, src_start, src_end - src_start);
+        }
+    }
+
+    public class CharBufferEOF extends CharBufferString {
+        public char get_first_char() {
+            return (char) 0;
+        };
+
+        public String get_string() {
+            return "";
         }
     }
 }

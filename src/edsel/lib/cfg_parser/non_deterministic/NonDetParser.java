@@ -152,6 +152,7 @@ class NonDetParser
 
             SymbolBufferSymbol cur_symbol = state.input.get_cur_symbol();
 
+            cur_symbol never null, eof instead
             if (cur_symbol == null)
                 return null;
 
@@ -257,6 +258,8 @@ class NonDetParser
             }
         }
 
+        check start production here?
+
         int src_text_start = sub_reductions[0].src_string.src_start;
 
         int src_text_end = sub_reductions[sub_reductions.length - 1].src_string.src_end;
@@ -266,5 +269,4 @@ class NonDetParser
 
         return production.reduce(branch_num, sub_reductions, state.num_branches_explored, string);
     }
-
 }

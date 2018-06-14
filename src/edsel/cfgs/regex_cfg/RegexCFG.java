@@ -10,6 +10,12 @@ import static edsel.cfgs.regex_cfg.RegexTerminal.RegexTerminals;
 
 public class RegexCFG extends CFG<RegexProductionID, RegexTerminalID, Character>
 {
+    public static RegexCFG RegexCFG
+            = new RegexCFG(RegexProduction.START, RegexProductions, RegexTerminals);
+
+    public static RegexCFG RegexCFG_LALR_1
+            = new RegexCFG(RegexProduction_LALR_1.START, RegexProductions_LALR_1, RegexTerminals);
+
     public RegexCFG(
             CFG_Production<RegexProductionID> start_production,
             CFG_Production<RegexProductionID>[] productions,
@@ -17,10 +23,4 @@ public class RegexCFG extends CFG<RegexProductionID, RegexTerminalID, Character>
     {
         super(start_production, productions, terminals, EOF);
     }
-
-    public static RegexCFG RegexCFG
-            = new RegexCFG(RegexProduction.START, RegexProductions, RegexTerminals);
-
-    public static RegexCFG RegexCFG_LALR_1
-            = new RegexCFG(RegexProduction_LALR_1.START, RegexProductions_LALR_1, RegexTerminals);
 }
