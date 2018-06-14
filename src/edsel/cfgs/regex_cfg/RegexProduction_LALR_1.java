@@ -15,6 +15,9 @@ public class RegexProduction_LALR_1 extends CFG_Production<RegexProductionID>
     public static RegexProduction_LALR_1 OR            = new RegexProduction_LALR_1();
     public static RegexProduction_LALR_1 REPEAT        = new RegexProduction_LALR_1();
 
+    public static RegexProduction_LALR_1[] RegexProductions_LALR_1
+            = new RegexProduction_LALR_1[] {START, SUB_EXPR, GROUP, AND, OR, REPEAT};
+
     /*
 
     START

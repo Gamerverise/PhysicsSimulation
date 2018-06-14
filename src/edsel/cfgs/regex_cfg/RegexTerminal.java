@@ -7,7 +7,7 @@ import edsel.lib.io.CharBuffer;
 import static edsel.cfgs.regex_cfg.RegexTerminalID.*;
 
 public class RegexTerminal
-        extends CFG_Terminal<RegexTerminalID, Character, RegexParser.RegexSymbolBuffer>
+        extends CFG_Terminal<RegexTerminalID, Character>
 {
     public char character;
 
@@ -35,4 +35,6 @@ public class RegexTerminal
     public static RegexTerminal LITERAL = new RegexTerminal(LITERAL_ID, "[^()|*_\"]", "literal");
 
     public static RegexTerminal EOF = new RegexTerminal(LITERAL_ID, "", "eof");
+
+    public static RegexTerminal[] RegexTerminals = {OP, CP, VB, ST, UB, LITERAL, EOF};
 }

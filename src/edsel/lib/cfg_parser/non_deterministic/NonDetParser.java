@@ -1,5 +1,6 @@
 package edsel.lib.cfg_parser.non_deterministic;
 
+import edsel.lib.cfg_model.CFG;
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
 import edsel.lib.cfg_model.CFG_Terminal;
@@ -56,13 +57,8 @@ class NonDetParser
                                         TOKEN_VALUE_TYPE,
                                         SYMBOL_BUFFER_TYPE>>
 {
-    @SafeVarargs
-    public NonDetParser(
-            CFG_Production<ENUM_PRODUCTION_ID>                                          start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>[]                                        productions,
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>...     terminals)
-    {
-        super(start_production, productions, terminals);
+    public NonDetParser(CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg) {
+        super(cfg);
     }
 
     @SuppressWarnings("unchecked")
@@ -236,10 +232,10 @@ class NonDetParser
                         Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> token
                                 = (Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>) cur_symbol;
 
-                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                                 cur_expected_terminal
                                 =
-                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>)
+                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>)
                                         cur_expected_symbol;
 
                         if (token.id == cur_expected_terminal.id) {

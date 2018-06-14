@@ -44,22 +44,17 @@ public abstract class CFG_Parser
                                         SYMBOL_BUFFER_TYPE,
                                         PARSING_STATE_TYPE>>
 {
-    public CFG_Production<ENUM_PRODUCTION_ID> start_production;
-    public CFG_Production<ENUM_PRODUCTION_ID>[] productions;
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>[] terminals;
+    CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg;
 
-    @SafeVarargs
-    public CFG_Parser(
-            CFG_Production<ENUM_PRODUCTION_ID> start_production,
-            CFG_Production<ENUM_PRODUCTION_ID>[] productions,
-            CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>... terminals) {
-        this.start_production = start_production;
-        this.productions = productions;
-        this.terminals = terminals;
+    public CFG_Parser(CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg) {
+        this.cfg = cfg;
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(CFG cfg, String filename)
+    parse_recursive(
+            CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg,
+            String filename
+    )
             throws AmbiguousParserInput, InputNotAccepted
     {
         SYMBOL_BUFFER_TYPE input = get_new_input(filename);
@@ -69,14 +64,14 @@ public abstract class CFG_Parser
 
         PARSING_STATE_TYPE state = get_new_parsing_state(input);
 
-        return parse_recursive(start_production, state);
+        return parse_recursive(cfg.start_production, state);
     }
 
     public Reduction<ENUM_PRODUCTION_ID>
     parse_recursive(PARSING_STATE_TYPE state)
             throws AmbiguousParserInput, InputNotAccepted
     {
-        return parse_recursive(start_production, state);
+        return parse_recursive(cfg.start_production, state);
     }
 
     public abstract Reduction<ENUM_PRODUCTION_ID>
@@ -102,26 +97,6 @@ public abstract class CFG_Parser
     public abstract PARSING_STATE_TYPE get_new_parsing_state(SYMBOL_BUFFER_TYPE input);
 
     // =========================================================================================
-
-    public CFG_Production<ENUM_PRODUCTION_ID>
-    get_production(CharBufferString production_name) {
-        for (CFG_Production<ENUM_PRODUCTION_ID> production : productions)
-            if (Objects.equals(production_name.get_string(), production.name))
-                return production;
-
-        return null;
-    }
-
-    public CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
-    get_terminal(CharBufferString terminal_name) {
-        String terminal_name_str = terminal_name.get_string();
-
-        for (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE> terminal : terminals)
-            if (Objects.equals(terminal_name_str, terminal.name))
-                return terminal;
-
-        return null;
-    }
 
     public abstract class SymbolBuffer
             extends
@@ -190,7 +165,9 @@ public abstract class CFG_Parser
             eat_separators();
 
             if (cursor_pos >= buf.length)
-                return null;
+                return
+                        new Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                                (cfg.eof_terminal.id, null, new CharBufferString(buf.length, buf.length));
 
             SymbolBufferSymbol next_symbol = null;
             char next_char = (char) buf[cursor_pos];
@@ -210,10 +187,10 @@ public abstract class CFG_Parser
 
                         cursor_pos += 2;
 
-                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                        CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                                 terminal
                                 =
-                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>)
+                                (CFG_Terminal<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>)
                                         get_restriction(TerminalRestriction.class, ':');
 
                         if (terminal == null)
@@ -288,9 +265,9 @@ public abstract class CFG_Parser
             cursor_pos++;
 
             if (restriction_type == ProductionRestriction.class)
-                return get_production(restriction_name);
+                return cfg.get_production(restriction_name);
             else if (restriction_type == TerminalRestriction.class)
-                return get_terminal(restriction_name);
+                return cfg.get_terminal(restriction_name);
 
             throw new InputNotAccepted();
         }

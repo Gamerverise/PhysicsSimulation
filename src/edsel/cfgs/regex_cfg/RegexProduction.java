@@ -15,6 +15,9 @@ public class RegexProduction extends CFG_Production<RegexProductionID>
     public static RegexProduction OR            = new RegexProduction();
     public static RegexProduction REPEAT        = new RegexProduction();
 
+    public static RegexProduction[] RegexProductions
+            = new RegexProduction[] {START, SUB_EXPR, GROUP, AND, OR, REPEAT};
+
     static {
         START.init(START_ID, "start",
                 V(SUB_EXPR));

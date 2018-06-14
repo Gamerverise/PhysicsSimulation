@@ -1,25 +1,22 @@
 package edsel.cfgs.regex_cfg;
 
 import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
-import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParsingState;
 
-import static edsel.cfgs.regex_cfg.RegexProduction.*;
+import static edsel.cfgs.regex_cfg.RegexCFG.RegexCFG;
+import static edsel.cfgs.regex_cfg.RegexCFG.RegexCFG_LALR_1;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
 public class RegexParser extends
         NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer,
                 NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>
 {
-    public RegexParser(CFG_Production<RegexProductionID>... productions)
+    public RegexParser(RegexCFG cfg)
     {
-        super(
-                START,
-                productions,
-                OP, CP, VB, ST, UB, LITERAL);
+        super(cfg);
     }
 
     public RegexSymbolBuffer get_new_input(String filename)
@@ -35,16 +32,9 @@ public class RegexParser extends
         return new NonDetParsingState<>(input);
     }
 
-    public static RegexParser RegexParser = new RegexParser(SUB_EXPR, GROUP, AND, OR, REPEAT);
+    public static RegexParser RegexParser = new RegexParser(RegexCFG);
 
-    public static RegexParser RegexParser_LALR_1
-            =
-            new RegexParser(
-                    RegexProduction_LALR_1.SUB_EXPR,
-                    RegexProduction_LALR_1.GROUP,
-                    RegexProduction_LALR_1.AND,
-                    RegexProduction_LALR_1.OR,
-                    RegexProduction_LALR_1.REPEAT);
+    public static RegexParser RegexParser_LALR_1 = new RegexParser(RegexCFG_LALR_1);
 
     public class
     RegexSymbolBuffer extends

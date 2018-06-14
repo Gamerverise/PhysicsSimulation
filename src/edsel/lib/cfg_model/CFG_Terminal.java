@@ -7,9 +7,7 @@ import edsel.lib.io.TokenBuffer;
 public class
 CFG_Terminal
         <ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE,
-                TOKEN_BUFFER_TYPE
-                        extends TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, TOKEN_BUFFER_TYPE>>
+                TOKEN_VALUE_TYPE>
         implements
         CFG_Symbol
 {
@@ -25,7 +23,7 @@ CFG_Terminal
 
     public
     Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    reduce(CharBuffer<TOKEN_BUFFER_TYPE>.CharBufferString str)
+    reduce(CharBuffer<?>.CharBufferString str)
     { return new Token<>(id, null, str); }
 
     public String sprint_id() {
