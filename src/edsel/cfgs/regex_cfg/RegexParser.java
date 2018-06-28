@@ -1,6 +1,5 @@
 package edsel.cfgs.regex_cfg;
 
-import edsel.cfgs.regex_cfg.RegexParser.RegexSymbolBuffer;
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.non_deterministic.NonDetParser;
@@ -11,8 +10,7 @@ import static edsel.cfgs.regex_cfg.RegexCFG.RegexCFG_LALR_1;
 import static edsel.cfgs.regex_cfg.RegexTerminal.*;
 
 public class RegexParser extends
-        NonDetParser<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer,
-                NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>
+        NonDetParser<RegexProductionID, RegexTerminalID, Character>
 {
     public static RegexParser RegexParser = new RegexParser(RegexCFG);
 
@@ -30,7 +28,7 @@ public class RegexParser extends
     }
 
     public
-    NonDetParsingState<RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>
+    NonDetParsingState<RegexProductionID, RegexTerminalID, Character>
     get_new_parsing_state(RegexSymbolBuffer input)
     {
         return new NonDetParsingState<>(input);
@@ -41,10 +39,7 @@ public class RegexParser extends
             CFG_Parser
                     <RegexProductionID,
                             RegexTerminalID,
-                            Character,
-                            RegexSymbolBuffer,
-                            NonDetParsingState
-                                    <RegexProductionID, RegexTerminalID, Character, RegexSymbolBuffer>>.SymbolBuffer
+                            Character>.SymbolBuffer
     {
         public RegexSymbolBuffer(String filename)
                 throws InputNotAccepted

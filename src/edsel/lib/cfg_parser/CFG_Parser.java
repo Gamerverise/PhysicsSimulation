@@ -1,7 +1,5 @@
 package edsel.lib.cfg_parser;
 
-import java.util.Objects;
-
 import edsel.lib.cfg_model.CFG;
 import edsel.lib.cfg_model.CFG_Production;
 import edsel.lib.cfg_model.CFG_Symbol;
@@ -11,7 +9,6 @@ import edsel.lib.cfg_parser.exception.InputNotAccepted;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
 import edsel.lib.cfg_parser.parsing_restriction.*;
-import edsel.lib.io.CharBuffer.CharBufferString;
 import edsel.lib.io.TokenBuffer;
 import lib.data_structures.list.LinkedListLegacy;
 import lib.data_structures.list.link.LinkLegacy;
@@ -27,80 +24,79 @@ import static lib.java_api_extensions.PrintStreamX.outx;
 public abstract class CFG_Parser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE,
-                SYMBOL_BUFFER_TYPE extends
-                        CFG_Parser
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE,
-                                        PARSING_STATE_TYPE>
-                                .SymbolBuffer,
-                PARSING_STATE_TYPE extends
-                        ParsingState
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE,
-                                        PARSING_STATE_TYPE>>
+                TOKEN_VALUE_TYPE>
 {
-    CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg;
+    public CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg;
 
     public CFG_Parser(CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg) {
         this.cfg = cfg;
     }
 
-    public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(
-            CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg,
-            String filename
-    )
+    public ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    parse_file(String filename)
             throws AmbiguousParserInput, InputNotAccepted
     {
-        SYMBOL_BUFFER_TYPE input = get_new_input(filename);
+        CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>.SymbolBuffer
+                input = get_new_input(filename);
 
         outx.println(input.sprint());
         outx.println();
 
-        PARSING_STATE_TYPE state = get_new_parsing_state(input);
+        ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                state = get_new_parsing_state(input);
 
-        return parse_recursive(cfg.start_production, state);
+        return parse(state);
     }
 
-    public Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(PARSING_STATE_TYPE state)
-            throws AmbiguousParserInput, InputNotAccepted
-    {
-        return parse_recursive(cfg.start_production, state);
-    }
-
-    public abstract Reduction<ENUM_PRODUCTION_ID>
-    parse_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID> production,
-            PARSING_STATE_TYPE state
+    public abstract
+    ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    parse(
+            ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                    state
     )
             throws AmbiguousParserInput, InputNotAccepted;
 
-    public abstract Reduction<ENUM_PRODUCTION_ID>
+    public abstract
+    ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    parse_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID>
+                    production,
+            ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                    state
+    )
+            throws AmbiguousParserInput, InputNotAccepted;
+
+    public abstract
+    ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     parse_branch_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID> production,
-            int branch_num,
-            PARSING_STATE_TYPE state
+            CFG_Production<ENUM_PRODUCTION_ID>
+                    production,
+            int
+                    branch_num,
+            ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+                    state
     )
        throws AmbiguousParserInput, InputNotAccepted;
 
     // =========================================================================================
 
-    public abstract SYMBOL_BUFFER_TYPE get_new_input(String filename)
+    public abstract
+    CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>.SymbolBuffer
+    get_new_input(String filename)
             throws InputNotAccepted;
 
-    public abstract PARSING_STATE_TYPE get_new_parsing_state(SYMBOL_BUFFER_TYPE input);
+    public abstract
+    ParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    get_new_parsing_state(
+            CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>.SymbolBuffer
+                    input);
 
     // =========================================================================================
 
-    public abstract class SymbolBuffer
+    public abstract
+    class SymbolBuffer
             extends
-            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+            TokenBuffer<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SymbolBuffer>
             implements
             Sprintable
     {
@@ -128,7 +124,7 @@ public abstract class CFG_Parser
 
             for (
                     cur_symbol = lex_next_symbol();
-                    cur_symbol. != cfg.eof_id;
+                    cur_symbol != null;
                     cur_symbol = lex_next_symbol())
             {
                 symbol_buffer.append(cur_symbol);
@@ -170,9 +166,7 @@ public abstract class CFG_Parser
             eat_separators();
 
             if (cursor_pos >= buf.length)
-                return
-                        new Token<ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                                (cfg.eof_id, null, new CharBufferString(buf.length, buf.length));
+                return null;
 
             SymbolBufferSymbol next_symbol = null;
             char next_char = (char) buf[cursor_pos];

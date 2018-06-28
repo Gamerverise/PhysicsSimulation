@@ -113,11 +113,7 @@ public class RegexProduction_LALR_1 extends CFG_Production<RegexProductionID>
 
     static {
         START.init(START_ID, "start",
-                V(GROUP, EOF),
-                V(AND, EOF),
-                V(OR, EOF),
-                V(REPEAT, EOF),
-                V(LITERAL, EOF));
+                V(SUB_EXPR));
 
         SUB_EXPR.init(SUB_EXPR_ID, "subexpr",
                 V(GROUP),

@@ -5,7 +5,6 @@ import edsel.lib.cfg_model.CFG_Production;
 
 import static edsel.cfgs.regex_cfg.RegexProduction.RegexProductions;
 import static edsel.cfgs.regex_cfg.RegexProduction_LALR_1.RegexProductions_LALR_1;
-import static edsel.cfgs.regex_cfg.RegexTerminal.EOF;
 import static edsel.cfgs.regex_cfg.RegexTerminal.RegexTerminals;
 
 public class RegexCFG extends CFG<RegexProductionID, RegexTerminalID, Character>
@@ -21,6 +20,6 @@ public class RegexCFG extends CFG<RegexProductionID, RegexTerminalID, Character>
             CFG_Production<RegexProductionID>[] productions,
             RegexTerminal[] terminals)
     {
-        super(start_production, productions, terminals, EOF);
+        super(start_production, productions, terminals);
     }
 }

@@ -11,9 +11,15 @@ public class CFG_Analysis
 {
     public LinkedListLegacy<CFG_Production<ENUM_PRODUCTION_ID>>[] lalr_parse_table;
 
+    // A start-eof ambiguity is a case where the start symbol can be reduced before the EOF is reached.
+
     public void find_start_eof_ambiguities() {}
 
     public void find_empty_productions() {}
+
+    public void find_unreachable_productions() {}
+
+    public void find_irreducible_productions() {}
 
     public void find_productions_with_no_terminal_symbols() {}
 

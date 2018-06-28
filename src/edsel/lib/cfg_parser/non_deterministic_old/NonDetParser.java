@@ -1,4 +1,4 @@
-package edsel.lib.cfg_parser.non_deterministic;
+package edsel.lib.cfg_parser.non_deterministic_old;
 
 import edsel.lib.cfg_model.CFG;
 import edsel.lib.cfg_model.CFG_Production;
@@ -8,6 +8,7 @@ import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.SymbolBufferSymbol;
 import edsel.lib.cfg_parser.exception.AmbiguousParserInput;
 import edsel.lib.cfg_parser.exception.InputNotAccepted;
+import edsel.lib.cfg_parser.non_deterministic.NonDetParsingState;
 import edsel.lib.cfg_parser.parse_node.ParseNode;
 import edsel.lib.cfg_parser.parse_node.Reduction;
 import edsel.lib.cfg_parser.parse_node.Token;
@@ -27,67 +28,115 @@ public abstract
 class NonDetParser
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE>
+                TOKEN_VALUE_TYPE,
+                SYMBOL_BUFFER_TYPE extends
+                        CFG_Parser
+                                <ENUM_PRODUCTION_ID,
+                                        ENUM_TERMINAL_ID,
+                                        TOKEN_VALUE_TYPE,
+                                        SYMBOL_BUFFER_TYPE,
+                                        edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID,
+                                                                                                ENUM_TERMINAL_ID,
+                                                                                                TOKEN_VALUE_TYPE,
+                                                                                                SYMBOL_BUFFER_TYPE>>.SymbolBuffer,
+                PARSING_STATE_TYPE extends
+                        edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID,
+                                                                ENUM_TERMINAL_ID,
+                                                                TOKEN_VALUE_TYPE,
+                                                                SYMBOL_BUFFER_TYPE>>
         extends
         CFG_Parser
                 <ENUM_PRODUCTION_ID,
                         ENUM_TERMINAL_ID,
-                        TOKEN_VALUE_TYPE>
+                        TOKEN_VALUE_TYPE,
+                        SYMBOL_BUFFER_TYPE,
+                        edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID,
+                                                                ENUM_TERMINAL_ID,
+                                                                TOKEN_VALUE_TYPE,
+                                                                SYMBOL_BUFFER_TYPE>>
 {
     public NonDetParser(CFG<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE> cfg) {
         super(cfg);
     }
 
-    public NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    parse(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    state
-    )
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_start_production(PARSING_STATE_TYPE state)
             throws AmbiguousParserInput, InputNotAccepted
     {
-        NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                result_state = parse_recursive_core(production, state);
+        state.inc_cur_depth();
 
+        if (state.get_cur_depth() > state.input.how_many_terminals)
+            return null;
 
-        if (state.get_reduction() != null && state.input.get_cur_symbol() == null)
-            state.accept_branch(result_state);
+        Reduction<ENUM_PRODUCTION_ID> reduction = null;
 
-        return result_state;
+        edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                result_state = null;
+
+        for (int i = 0; i < production.rhs.length; i++) {
+
+            edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+                    branch_state = state.branch();
+
+            Reduction<ENUM_PRODUCTION_ID> tmp_reduction = parse_branch_recursive(production, i, branch_state);
+
+            state.num_branches_explored += branch_state.num_branches_explored;
+
+            if (tmp_reduction != null) {
+                if (reduction != null)
+                    throw new AmbiguousParserInput();
+                else {
+                    outx.println(
+                            cat(
+                                    spaces(state.get_cur_depth())
+                                            .append("* Reduced "),
+                                    tmp_reduction.sprint()));
+
+                    reduction = tmp_reduction;
+                    result_state = branch_state;
+                }
+            }
+        }
+
+        state.dec_cur_depth();
+
+        if (reduction == null)
+            return null;
+
+        state.accept_branch(result_state);
+
+        return reduction;
     }
 
     @SuppressWarnings("unchecked")
-    public NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    parse_recursive_core(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    state
+    public Reduction<ENUM_PRODUCTION_ID>
+    parse_recursive(
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            PARSING_STATE_TYPE state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
         state.inc_cur_depth();
 
         if (state.get_cur_depth() > state.input.how_many_terminals)
-            state.set_reduction(null);
+            return null;
 
-        NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+        Reduction<ENUM_PRODUCTION_ID> reduction = null;
+
+        edsel.lib.cfg_parser.non_deterministic.NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
                 result_state = null;
 
         for (int i = 0; i < production.rhs.length; i++) {
 
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
                     branch_state = state.branch();
 
-            parse_branch_recursive(production, i, branch_state);
+            Reduction<ENUM_PRODUCTION_ID> tmp_reduction = parse_branch_recursive(production, i, branch_state);
 
             state.num_branches_explored += branch_state.num_branches_explored;
 
-            Reduction<ENUM_PRODUCTION_ID> tmp_reduction = branch_state.get_reduction();
-
             if (tmp_reduction != null) {
-                if (result_state != null)
+                if (reduction != null)
                     throw new AmbiguousParserInput();
                 else {
                     outx.println(
@@ -96,6 +145,7 @@ class NonDetParser
                                     .append("* Reduced "),
                                     tmp_reduction.sprint()));
 
+                    reduction = tmp_reduction;
                     result_state = branch_state;
                 }
             }
@@ -103,37 +153,19 @@ class NonDetParser
 
         state.dec_cur_depth();
 
-        return result_state;
+        if (reduction == null)
+            return null;
+
+        state.accept_branch(result_state);
+
+        return reduction;
     }
 
-    public NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-    parse_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    state
-    )
-            throws AmbiguousParserInput, InputNotAccepted
-    {
-        NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                new_state = parse_recursive_core(production, state);
-
-        Reduction<ENUM_PRODUCTION_ID> reduction = new_state.get_reduction();
-
-        if (reduction != null)
-            state.accept_branch();
-
-        return state;
-    }
-
-    public NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    public Reduction<ENUM_PRODUCTION_ID>
     parse_branch_restriction_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            int
-                    branch_num,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    state
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            PARSING_STATE_TYPE state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -143,14 +175,11 @@ class NonDetParser
     }
 
     @SuppressWarnings("unchecked")
-    public NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
+    public Reduction<ENUM_PRODUCTION_ID>
     parse_branch_recursive(
-            CFG_Production<ENUM_PRODUCTION_ID>
-                    production,
-            int
-                    branch_num,
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
-                    state
+            CFG_Production<ENUM_PRODUCTION_ID> production,
+            int branch_num,
+            PARSING_STATE_TYPE state
     )
             throws AmbiguousParserInput, InputNotAccepted
     {
@@ -170,6 +199,7 @@ class NonDetParser
 
             SymbolBufferSymbol cur_symbol = state.input.get_cur_symbol();
 
+            cur_symbol never null, eof instead
             if (cur_symbol == null)
                 return null;
 
@@ -215,7 +245,8 @@ class NonDetParser
                                                 state);
                             } else
                                 sub_reductions[j]
-                                        = parse_recursive(production_restriction.production, state);
+                                        =
+                                        parse_recursive(production_restriction.production, state);
 
                             if (sub_reductions[j] == null)
                                 return null;
@@ -273,6 +304,8 @@ class NonDetParser
                     assert false;
             }
         }
+
+        check start production here?
 
         int src_text_start = sub_reductions[0].src_string.src_start;
 

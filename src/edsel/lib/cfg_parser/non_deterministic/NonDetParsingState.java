@@ -2,41 +2,28 @@ package edsel.lib.cfg_parser.non_deterministic;
 
 import edsel.lib.cfg_parser.CFG_Parser;
 import edsel.lib.cfg_parser.ParsingState;
+import edsel.lib.cfg_parser.parse_node.Reduction;
 import lib.data_structures.list.LinkedListLegacy;
 
 public class NonDetParsingState
         <ENUM_PRODUCTION_ID extends Enum<ENUM_PRODUCTION_ID>,
                 ENUM_TERMINAL_ID extends Enum<ENUM_TERMINAL_ID>,
-                TOKEN_VALUE_TYPE,
-                SYMBOL_BUFFER_TYPE extends
-                        CFG_Parser
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE,
-                                        NonDetParsingState
-                                                <ENUM_PRODUCTION_ID,
-                                                        ENUM_TERMINAL_ID,
-                                                        TOKEN_VALUE_TYPE,
-                                                        SYMBOL_BUFFER_TYPE>>.SymbolBuffer>
+                TOKEN_VALUE_TYPE>
         extends
         ParsingState
                 <ENUM_PRODUCTION_ID,
                         ENUM_TERMINAL_ID,
-                        TOKEN_VALUE_TYPE,
-                        SYMBOL_BUFFER_TYPE,
-                        NonDetParsingState
-                                <ENUM_PRODUCTION_ID,
-                                        ENUM_TERMINAL_ID,
-                                        TOKEN_VALUE_TYPE,
-                                        SYMBOL_BUFFER_TYPE>>
+                        TOKEN_VALUE_TYPE>
 {
-    public LinkedListLegacy<NonDetParsingStateFrame>
-            frame_stack = new LinkedListLegacy<>(new NonDetParsingStateFrame());
+    public LinkedListLegacy<NonDetParsingStateFrame<ENUM_PRODUCTION_ID>>
+            frame_stack = new LinkedListLegacy<>(new NonDetParsingStateFrame<>());
 
     int num_branches_explored = 0;
 
-    public NonDetParsingState(SYMBOL_BUFFER_TYPE input) {
+    public NonDetParsingState(
+            CFG_Parser<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>.SymbolBuffer
+                    input)
+    {
         super(input);
     }
 
@@ -81,14 +68,24 @@ public class NonDetParsingState
 
     // =========================================================================================
 
+    public void set_reduction(Reduction<ENUM_PRODUCTION_ID> reduction) {
+        frame_stack.peek().reduction = reduction;
+    }
+
+    public Reduction<ENUM_PRODUCTION_ID> get_reduction() {
+        return frame_stack.peek().reduction;
+    }
+
+    // =========================================================================================
+
     public
-    NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+    NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
     branch()
     {
-        NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+        NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                 result = new NonDetParsingState<>(input);
 
-        result.frame_stack = new LinkedListLegacy<>(new NonDetParsingStateFrame(frame_stack.peek()));
+        result.frame_stack = new LinkedListLegacy<>(new NonDetParsingStateFrame<>(frame_stack.peek()));
 
         result.num_branches_explored = num_branches_explored;
 
@@ -96,7 +93,7 @@ public class NonDetParsingState
     }
 
     public void accept_branch(
-            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE, SYMBOL_BUFFER_TYPE>
+            NonDetParsingState<ENUM_PRODUCTION_ID, ENUM_TERMINAL_ID, TOKEN_VALUE_TYPE>
                     state)
     {
         frame_stack.append(state.frame_stack.head);

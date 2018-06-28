@@ -96,14 +96,4 @@ public class CharBuffer<CHAR_BUFFER_TYPE extends CharBuffer<CHAR_BUFFER_TYPE>>
             return new String(buf, src_start, src_end - src_start);
         }
     }
-
-    public class CharBufferEOF extends CharBufferString {
-        public char get_first_char() {
-            return (char) 0;
-        };
-
-        public String get_string() {
-            return "";
-        }
-    }
 }

@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/src/GravityGame" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_lexer/lexer_transitions" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/lalr" />
+      <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/non_deterministic_old" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/parsing_restriction/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/cfg_parser/transitions/old" />
       <excludeFolder url="file://$MODULE_DIR$/src/edsel/lib/io/old" />
